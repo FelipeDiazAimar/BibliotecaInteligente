@@ -1,0 +1,103 @@
+/* portada.css */
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  overflow-x: hidden;
+  /* Quita el background de aquí */
+}
+
+.overlay {
+  background: 
+    linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+    url('../assets/fondo-biblioteca.png') no-repeat center center/cover;
+  min-height: 100vh;
+  width: 100%;           /* Cambia de 100vw a 100% */
+  position: fixed;
+  top: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 0;
+}
+
+nav {
+  width: 100%;
+  padding: 2rem 7vw 0 0; /* Prueba con 7vw para más margen derecho */
+  display: flex;
+  justify-content: flex-end;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 2.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  transition: color 0.2s;
+}
+nav a:hover {
+  color: #4eaaff;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+main h1 {
+  color: #fff;
+  font-size: 3.2rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+  text-shadow: 2px 2px 8px #222;
+}
+
+main h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  margin-bottom: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-align: center;
+}
+
+button {
+  background: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.9em 2.5em;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s;
+}
+button:hover {
+  background: #1769aa;
+}
+
+footer {
+  color: #fff;
+  text-align: center;
+  padding: 1.2rem 0 0.7rem 0;
+  font-size: 1rem;
+  opacity: 0.85;
+  letter-spacing: 0.02em;
+}
