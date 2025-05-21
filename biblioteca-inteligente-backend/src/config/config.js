@@ -2,24 +2,17 @@ require('dotenv').config();
 
 module.exports = {
   development: {
-    username: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'biblioteca_inteligente',
-    host: process.env.DB_HOST || '127.0.0.1',
-    dialect: 'mysql',
+    dialect: 'sqlite',
+    storage: process.env.DB_STORAGE || './dev.sqlite',
   },
   test: {
-    username: 'root',
-    password: null,
-    database: 'database_test',
-    host: '127.0.0.1',
-    dialect: 'mysql'
+    dialect: 'sqlite',
+    storage: ':memory:',
   },
   production: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
+    dialect: 'sqlite',
+    storage: process.env.DB_STORAGE || './prod.sqlite',
   }
 };
+
+// Ya está usando SQLite, no requiere cambios.

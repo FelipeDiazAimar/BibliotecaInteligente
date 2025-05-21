@@ -7,11 +7,22 @@ const env = process.env.NODE_ENV || 'development';
 const dbConfig = config[env];
 
 // Crea la conexión a la base de datos usando los datos del archivo .env
-const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
-  host: dbConfig.host,
-  dialect: dbConfig.dialect,
-  logging: console.log
-});
+let sequelize;
+if (dbConfig.dialect === 'sqlite') {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: dbConfig.storage,
+    logging: console.log
+  });
+} else {
+  sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
+    host: dbConfig.host,
+    dialect: dbConfig.dialect,
+    logging: console.log
+  });
+}
+
+// No hay referencias a MySQL aquí, Sequelize usará el dialecto de la config.
 
 // Carga todos los modelos definidos en la carpeta models
 const modelDefiners = [
