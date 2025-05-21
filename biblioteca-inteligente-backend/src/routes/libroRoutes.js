@@ -4,8 +4,8 @@
 const express = require('express');
 const { body } = require('express-validator');
 const router = express.Router();
-const libroController = require('../src/controllers/libroController');
-const auth = require('../src/middlewares/auth');
+const libroController = require('../controllers/libroController');
+const auth = require('../middlewares/auth');
 
 // GET /api/libros - Trae todos los libros
 router.get('/', libroController.getAll);

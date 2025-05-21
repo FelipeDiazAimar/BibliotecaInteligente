@@ -1,7 +1,7 @@
 // Este archivo inicia el servidor y se asegura de que la base de datos esté lista.
 
-const app = require('./app');
-const { sequelize } = require('./models');
+const app = require('./src/app');
+const { sequelize } = require('./src/models');
 
 const PORT = process.env.PORT || 3000;
 
