@@ -1,8 +1,8 @@
 // Este archivo ejecuta el seeder para cargar los libros de ejemplo en la base de datos.
 // Borra los libros anteriores y carga los nuevos que están en seedLibros.js.
 
-const { sequelize, Libro } = require('./models');
-const seedLibros = require('./seeders/seedLibros');
+const { sequelize, Libro } = require('./src/models');
+const seedLibros = require('./src/seeders/seedLibros');
 
 async function run() {
   try {
