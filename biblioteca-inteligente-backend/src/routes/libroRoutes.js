@@ -13,8 +13,8 @@ router.get('/', libroController.getAll);
 // GET /api/libros/:id - Trae un libro por su ID
 router.get('/:id', libroController.getById);
 
-// POST /api/libros - Agrega un libro nuevo (requiere estar logueado)
-router.post('/', auth, body('titulo').notEmpty(), body('autor').notEmpty(), libroController.create);
+// POST /api/libros - Agrega un libro nuevo (sin autenticación para pruebas)
+router.post('/', body('titulo').notEmpty(), body('autor').notEmpty(), libroController.create);
 
 // PUT /api/libros/:id - Modifica un libro existente (requiere estar logueado)
 router.put('/:id', auth, libroController.update);

@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Portada from './pages/portada.jsx'
-
+import LibroForm from './components/LibroForm' // Importa el formulario
 
 // Componente principal de la aplicación
 function App() {
@@ -12,6 +12,7 @@ function App() {
   // Estado para guardar la lista de libros que trae el backend
   const [libros, setLibros] = useState([])
   const [mostrarPortada, setMostrarPortada] = useState(true)
+  const [mostrarFormulario, setMostrarFormulario] = useState(false)
 
   // useEffect se ejecuta una vez cuando se carga la página
   useEffect(() => {
@@ -51,14 +52,33 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+      {/* Botón para mostrar/ocultar el formulario de agregar libro */}
+      <div>
+        <button onClick={() => setMostrarFormulario(v => !v)}>
+          {mostrarFormulario ? 'Cerrar formulario' : 'Agregar libro'}
+        </button>
+        {mostrarFormulario && (
+          <LibroForm onLibroAgregado={() => {
+            setMostrarFormulario(false)
+            // Recarga la lista de libros después de agregar uno nuevo
+            fetch('http://localhost:3000/api/libros')
+              .then(res => res.json())
+              .then(data => setLibros(data))
+              .catch(err => console.error(err))
+          }} />
+        )}
+      </div>
       {/* Lista de libros traídos del backend */}
       <div>
         <h1>Lista de Libros</h1>
         <ul>
-          {/* Por cada libro, muestra un elemento de la lista */}
           {libros.map(libro => (
-            <li key={libro.id}>
-              {libro.titulo} - {libro.autor}
+            <li key={libro.id || Math.random()}>
+              {libro.titulo && libro.autor
+                ? `${libro.titulo} - ${libro.autor}`
+                : <span style={{color: 'red'}}>Libro sin datos</span>
+              }
+              {/* Botón de eliminar removido */}
             </li>
           ))}
         </ul>
