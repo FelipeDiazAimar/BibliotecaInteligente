@@ -3,11 +3,25 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Libro = sequelize.define('Libro', {
-    titulo: DataTypes.STRING,           // Título del libro
-    autor: DataTypes.STRING,            // Autor del libro
-    anioPublicacion: DataTypes.INTEGER, // Año en que se publicó
-    materia: DataTypes.STRING,          // Materia o tema (opcional)
-    disponible: {                       // Si el libro está disponible o no
+    nroInventario: DataTypes.STRING,           // Nro Inventario
+    biblioteca: DataTypes.STRING,              // Biblioteca
+    signaturaTopografica: DataTypes.STRING,    // Signatura Topográfica
+    titulo: DataTypes.STRING,                  // Título
+    subtitulo: DataTypes.STRING,               // SubTítulo
+    autor: DataTypes.STRING,                   // Autores
+    editorial: DataTypes.STRING,               // Editorial
+    edicion: DataTypes.STRING,                 // Edición
+    lugar: DataTypes.STRING,                   // Lugar
+    anioPublicacion: DataTypes.INTEGER,        // Año
+    paginas: DataTypes.INTEGER,                // Páginas
+    isbn: DataTypes.STRING,                    // ISBN
+    serie: DataTypes.STRING,                   // Serie
+    fechaIngreso: DataTypes.STRING,            // Fecha de Ingreso (puedes usar DATE si prefieres)
+    observaciones: DataTypes.STRING,           // Observaciones
+    idioma: DataTypes.STRING,                  // Idioma
+    diasPrestamo: DataTypes.STRING,            // Días Préstamo
+    portada: DataTypes.BLOB('long'),           // Imagen de portada (BLOB)
+    disponible: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     }

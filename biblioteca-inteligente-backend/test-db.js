@@ -1,9 +1,9 @@
 // Este archivo sirve para probar la conexión a la base de datos y sincronizar los modelos.
 // Útil para asegurarte de que todo está bien configurado.
 
-const { sequelize } = require('./models');
+const { sequelize } = require('./src/models');
 const { body } = require('express-validator');
-const libroController = require('./controllers/libroController');
+const libroController = require('./src/controllers/libroController');
 
 async function testConnection() {
   try {

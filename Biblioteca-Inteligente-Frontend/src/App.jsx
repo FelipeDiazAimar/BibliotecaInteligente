@@ -73,12 +73,36 @@ function App() {
         <h1>Lista de Libros</h1>
         <ul>
           {libros.map(libro => (
-            <li key={libro.id || Math.random()}>
-              {libro.titulo && libro.autor
-                ? `${libro.titulo} - ${libro.autor}`
-                : <span style={{color: 'red'}}>Libro sin datos</span>
-              }
-              {/* Botón de eliminar removido */}
+            <li key={libro.id || Math.random()} style={{marginBottom: '2rem', border: '1px solid #ccc', padding: '1rem'}}>
+              <strong>Título:</strong> {libro.titulo}<br />
+              <strong>Subtítulo:</strong> {libro.subtitulo}<br />
+              <strong>Autor:</strong> {libro.autor}<br />
+              <strong>Editorial:</strong> {libro.editorial}<br />
+              <strong>Edición:</strong> {libro.edicion}<br />
+              <strong>Lugar:</strong> {libro.lugar}<br />
+              <strong>Año:</strong> {libro.anioPublicacion}<br />
+              <strong>Páginas:</strong> {libro.paginas}<br />
+              <strong>ISBN:</strong> {libro.isbn}<br />
+              <strong>Serie:</strong> {libro.serie}<br />
+              <strong>Fecha de Ingreso:</strong> {libro.fechaIngreso}<br />
+              <strong>Observaciones:</strong> {libro.observaciones}<br />
+              <strong>Idioma:</strong> {libro.idioma}<br />
+              <strong>Días Préstamo:</strong> {libro.diasPrestamo}<br />
+              <strong>Nro Inventario:</strong> {libro.nroInventario}<br />
+              <strong>Biblioteca:</strong> {libro.biblioteca}<br />
+              <strong>Signatura Topográfica:</strong> {libro.signaturaTopografica}<br />
+              <strong>Disponible:</strong> {libro.disponible ? 'Sí' : 'No'}<br />
+              {/* Portada */}
+              {libro.portada && (
+                <div>
+                  <strong>Portada:</strong><br />
+                  <img
+                    src={`http://localhost:3000/api/libros/${libro.id}/portada`}
+                    alt="Portada"
+                    style={{maxWidth: '150px', maxHeight: '200px', border: '1px solid #888'}}
+                  />
+                </div>
+              )}
             </li>
           ))}
         </ul>

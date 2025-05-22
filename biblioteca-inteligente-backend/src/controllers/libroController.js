@@ -28,8 +28,12 @@ exports.getById = async (req, res) => {
 // Agrega un libro nuevo a la base de datos
 exports.create = async (req, res) => {
   try {
-    const libro = await Libro.create(req.body); // Crea un libro con los datos recibidos
-    res.status(201).json(libro); // Devuelve el libro creado
+    const data = { ...req.body };
+    if (req.file) {
+      data.portada = req.file.buffer;
+    }
+    const libro = await Libro.create(data);
+    res.status(201).json(libro);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -58,5 +62,18 @@ exports.delete = async (req, res) => {
     res.status(204).end(); // Si todo salió bien, responde sin contenido
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+exports.getPortada = async (req, res) => {
+  try {
+    const libro = await Libro.findByPk(req.params.id);
+    if (!libro || !libro.portada) {
+      return res.status(404).send('Portada no encontrada');
+    }
+    res.set('Content-Type', 'image/jpeg'); // O image/png si sabes el tipo
+    res.send(libro.portada);
+  } catch (error) {
+    res.status(500).send('Error al obtener la portada');
   }
 };
