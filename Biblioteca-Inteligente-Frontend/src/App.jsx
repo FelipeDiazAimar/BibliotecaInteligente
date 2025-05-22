@@ -4,6 +4,8 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Portada from './pages/portada.jsx'
 import LibroForm from './components/LibroForm' // Importa el formulario
+import LoginAlumno from './pages/LoginAlumno' // Importa el login
+import RegistroUsuario from './pages/RegistroUsuario' // Importa el registro de usuario
 
 // Componente principal de la aplicación
 function App() {
@@ -13,6 +15,8 @@ function App() {
   const [libros, setLibros] = useState([])
   const [mostrarPortada, setMostrarPortada] = useState(true)
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
+  const [mostrarLogin, setMostrarLogin] = useState(false) // Nuevo estado
+  const [mostrarRegistro, setMostrarRegistro] = useState(false);
 
   // useEffect se ejecuta una vez cuando se carga la página
   useEffect(() => {
@@ -23,8 +27,44 @@ function App() {
       .catch(err => console.error(err)) // Si hay error, lo muestra en consola
   }, [])
 
+  // Cambia la portada para mostrar el login en vez de la lista de libros
   if (mostrarPortada) {
-    return <Portada onAcceder={() => setMostrarPortada(false)} />
+    return <Portada onAcceder={() => {
+      setMostrarPortada(false)
+      setMostrarLogin(true)
+    }} />
+  }
+
+  if (mostrarRegistro) {
+    return (
+      <RegistroUsuario
+        onRegistrado={() => {
+          setMostrarRegistro(false);
+          setMostrarLogin(true);
+        }}
+        onAtras={() => {
+          setMostrarRegistro(false);
+          setMostrarLogin(true);
+        }}
+      />
+    );
+  }
+
+  // Si está en login, muestra el login
+  if (mostrarLogin) {
+    return (
+      <LoginAlumno
+        onLogin={() => setMostrarLogin(false)}
+        onAtras={() => {
+          setMostrarLogin(false)
+          setMostrarPortada(true)
+        }}
+        onCrearUsuario={() => {
+          setMostrarLogin(false);
+          setMostrarRegistro(true);
+        }}
+      />
+    )
   }
 
   // Lo que se muestra en pantalla
