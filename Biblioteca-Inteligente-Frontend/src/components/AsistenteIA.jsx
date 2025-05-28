@@ -14,7 +14,7 @@ export default function AsistenteIA({ libros }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({
-          prompt: `Lista de libros:\n${libros.map(l => `- ${l.titulo} (${l.autor})`).join('\n')}\n\nPregunta: ${pregunta}`
+          prompt: `Lista de libros:\n${libros.map(l => `- ${l.titulo} (${l.autor}, ${l.anio || ''}, ${l.genero || ''})`).join('\n')}\n\nPregunta: ${pregunta}`
         })
       });
       const data = await res.json();
