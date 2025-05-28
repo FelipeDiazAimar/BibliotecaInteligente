@@ -6,18 +6,32 @@ const config = require('../config/config');
 const env = process.env.NODE_ENV || 'development';
 const dbConfig = config[env];
 
-// Crea la conexión a la base de datos usando los datos del archivo .env
-const sequelize = new Sequelize(
-  dbConfig.database,
-  dbConfig.username,
-  dbConfig.password,
-  {
-    host: dbConfig.host,
-    port: dbConfig.port,
-    dialect: dbConfig.dialect,
+let sequelize;
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    protocol: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
     logging: dbConfig.logging
-  }
-);
+  });
+} else {
+  sequelize = new Sequelize(
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
+    {
+      host: dbConfig.host,
+      port: dbConfig.port,
+      dialect: dbConfig.dialect,
+      logging: dbConfig.logging
+    }
+  );
+}
 
 // No hay referencias a MySQL aquí, Sequelize usará el dialecto de la config.
 
