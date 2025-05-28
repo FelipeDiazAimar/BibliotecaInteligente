@@ -6,6 +6,7 @@ import Portada from './pages/portada.jsx'
 import LibroForm from './components/LibroForm' // Importa el formulario
 import LoginAlumno from './pages/LoginAlumno' // Importa el login
 import RegistroUsuario from './pages/RegistroUsuario' // Importa el registro de usuario
+import AsistenteIA from './components/AsistenteIA';
 
 // Componente principal de la aplicación
 function App() {
@@ -108,6 +109,7 @@ function App() {
           }} />
         )}
       </div>
+      <AsistenteIA libros={libros} />
       {/* Lista de libros traídos del backend */}
       <div>
         <h1>Lista de Libros</h1>

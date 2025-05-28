@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import '../styles/portada.css';
+import '../styles/LoginAlumno.css';
 
 export default function LoginAlumno({ onLogin, onAtras, onCrearUsuario }) {
   const [legajo, setLegajo] = useState('');
@@ -28,117 +28,66 @@ export default function LoginAlumno({ onLogin, onAtras, onCrearUsuario }) {
   };
 
   return (
-    <div className="overlay">
-      <nav>
+    <div className="login-overlay">
+      <nav className="login-nav">
         <ul>
           <li><a href="#">Acerca de</a></li>
           <li><a href="#">Contacto</a></li>
           <li>
             <button
-              style={{
-                background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', fontWeight: 500
-              }}
+              className="login-nav-btn"
               onClick={onAtras}
             >Atrás</button>
           </li>
           <li>
             <button
-              style={{
-                background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', fontWeight: 500
-              }}
+              className="login-nav-btn"
               onClick={onCrearUsuario}
             >Crear usuario</button>
           </li>
         </ul>
       </nav>
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{
-          background: 'rgba(0,0,0,0.45)',
-          borderRadius: 16,
-          padding: '2.5rem 2.5rem 2rem 2.5rem',
-          minWidth: 340,
-          boxShadow: '0 4px 24px rgba(0,0,0,0.18)'
-        }}>
+      <main className="login-main">
+        <div className="login-form-container">
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
-            <div style={{
-              width: 90, height: 90, borderRadius: '50%',
-              border: '3px solid #fff', display: 'flex',
-              alignItems: 'center', justifyContent: 'center',
-              marginBottom: 16
-            }}>
+            <div className="login-avatar">
               <svg width="54" height="54" fill="none" stroke="#fff" strokeWidth="2" viewBox="0 0 24 24">
                 <circle cx="12" cy="8" r="4"/>
                 <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
               </svg>
             </div>
-            <div style={{ color: '#fff', fontWeight: 'bold', fontSize: 22, textAlign: 'center', letterSpacing: 1 }}>
+            <div className="login-title">
               BIBLIOTECA<br />INTELIGENTE
             </div>
-            <div style={{ color: '#fff', fontSize: 15, marginTop: 2, letterSpacing: 2 }}>UTN</div>
+            <div className="login-utn">UTN</div>
           </div>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <form onSubmit={handleSubmit} className="login-form">
             <div>
-              <label style={{ color: '#fff', fontSize: 15 }}>Legajo</label>
+              <label>Legajo</label>
               <input
                 type="text"
                 value={legajo}
                 onChange={e => setLegajo(e.target.value)}
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.7em',
-                  borderRadius: 7,
-                  border: 'none',
-                  marginTop: 4,
-                  fontSize: 16
-                }}
                 autoFocus
               />
             </div>
             <div>
-              <label style={{ color: '#fff', fontSize: 15 }}>Contraseña</label>
+              <label>Contraseña</label>
               <input
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.7em',
-                  borderRadius: 7,
-                  border: 'none',
-                  marginTop: 4,
-                  fontSize: 16
-                }}
               />
             </div>
-            {error && <div style={{ color: '#ffbaba', background: '#6a0000', borderRadius: 6, padding: '0.5em', fontSize: 14, textAlign: 'center' }}>{error}</div>}
-            <button type="submit" style={{
-              background: '#2196f3',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
-              padding: '0.9em 0',
-              fontSize: '1.1rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              marginTop: 8
-            }}>
+            {error && <div className="login-error">{error}</div>}
+            <button type="submit" className="login-btn">
               Iniciar Sesión
             </button>
             <button
               type="button"
-              style={{
-                background: '#4caf50',
-                color: '#fff',
-                border: 'none',
-                borderRadius: 8,
-                padding: '0.9em 0',
-                fontSize: '1.1rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                marginTop: 10
-              }}
+              className="login-btn-secondary"
               onClick={onCrearUsuario}
             >
               Crear usuario
@@ -146,7 +95,7 @@ export default function LoginAlumno({ onLogin, onAtras, onCrearUsuario }) {
           </form>
         </div>
       </main>
-      <footer>
+      <footer className="login-footer">
         © 2025 Biblioteca Inteligente. Todos los derechos reservados.
       </footer>
     </div>
