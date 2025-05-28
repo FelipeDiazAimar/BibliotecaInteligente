@@ -1,221 +1,219 @@
-import { useState } from 'react';
-import '../styles/portada.css';
+import React, { useState, useEffect } from 'react';
+import '../styles/RegistroUsuario.css';
 
-export default function RegistroUsuario({ onRegistrado, onAtras }) {
+function Toast({ show, message, type, onClose }) {
+  if (!show) return null;
+  return (
+    <div
+      className={`registro-toast ${type}`}
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        top: 30,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 9999,
+        minWidth: 320,
+        maxWidth: 400,
+        padding: '1em 2em',
+        borderRadius: 10,
+        color: '#fff',
+        fontWeight: 600,
+        fontSize: 18,
+        boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+        cursor: 'pointer',
+        background:
+          type === 'success'
+            ? 'linear-gradient(90deg,#43e97b 0,#38f9d7 100%)'
+            : 'linear-gradient(90deg,#ff5858 0,#f857a6 100%)',
+        animation: 'fadeInDown 0.5s'
+      }}
+    >
+      {message}
+    </div>
+  );
+}
+
+function RegistroUsuario({ onRegistrado, onAtras }) {
   const [form, setForm] = useState({
-    legajo: '',
     nombre: '',
-    apellido: '',
     email: '',
+    legajo: '',
+    carrera: '',
     password: '',
+    confirmar: '',
     rol: 'estudiante'
   });
-  const [error, setError] = useState('');
-  const [ok, setOk] = useState('');
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const [nextAdminName, setNextAdminName] = useState('admin1');
+
+  // Al montar, consulta cuántos admins existen
+  useEffect(() => {
+    fetch('http://localhost:3000/api/usuarios')
+      .then(res => res.json())
+      .then(users => {
+        const adminUsers = users.filter(u => u.rol === 'admin');
+        setNextAdminName('admin' + (adminUsers.length + 1));
+      })
+      .catch(() => setNextAdminName('admin1'));
+  }, []);
 
   const handleChange = e => {
-    const { name, value } = e.target;
-    setForm(f => ({ ...f, [name]: value }));
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  };
+
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type }), 3500);
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setError('');
-    setOk('');
+    // Si selecciona admin, solo permite nombre adminN
+    if (
+      form.rol === 'admin' &&
+      form.nombre.trim().toLowerCase() !== nextAdminName
+    ) {
+      showToast('No es posible crear una cuenta de administrador.', 'error');
+      return;
+    }
+    if (form.password !== form.confirmar) {
+      showToast('Las contraseñas no coinciden.', 'error');
+      return;
+    }
     try {
       const res = await fetch('http://localhost:3000/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
+        body: JSON.stringify({
+          nombre: form.nombre,
+          email: form.email,
+          legajo: form.legajo,
+          carrera: form.carrera,
+          password: form.password,
+          rol: form.rol
+        })
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || 'Error al registrar usuario');
+        showToast(data.error || 'Error de registro', 'error');
         return;
       }
-      setOk('Usuario creado correctamente');
+      showToast('¡Usuario creado correctamente!', 'success');
       setTimeout(() => {
         if (onRegistrado) onRegistrado();
-      }, 1200);
+      }, 1500);
     } catch {
-      setError('Error de red');
+      showToast('Error de red', 'error');
     }
   };
 
   return (
-    <div className="overlay">
+    <div className="registro-overlay">
+      <Toast show={toast.show} message={toast.message} type={toast.type} onClose={() => setToast({ ...toast, show: false })} />
       <nav>
         <ul>
           <li><a href="#">Acerca de</a></li>
           <li><a href="#">Contacto</a></li>
           <li>
-            <button
-              style={{
-                background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', fontWeight: 500
-              }}
-              onClick={onAtras}
-            >Atrás</button>
+            <button className="nav-btn" onClick={onAtras}>Atrás</button>
           </li>
         </ul>
       </nav>
-      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{
-          background: 'rgba(0,0,0,0.45)',
-          borderRadius: 16,
-          padding: '2.5rem 2.5rem 2rem 2.5rem',
-          minWidth: 340,
-          boxShadow: '0 4px 24px rgba(0,0,0,0.18)'
-        }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
-            <div style={{
-              width: 90, height: 90, borderRadius: '50%',
-              border: '3px solid #fff', display: 'flex',
-              alignItems: 'center', justifyContent: 'center',
-              marginBottom: 16
-            }}>
-              <svg width="54" height="54" fill="none" stroke="#fff" strokeWidth="2" viewBox="0 0 24 24">
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
-              </svg>
-            </div>
-            <div style={{ color: '#fff', fontWeight: 'bold', fontSize: 22, textAlign: 'center', letterSpacing: 1 }}>
-              CREAR USUARIO
-            </div>
-            <div style={{ color: '#fff', fontSize: 15, marginTop: 2, letterSpacing: 2 }}>UTN</div>
+      <div className="registro-main">
+        <div className="registro-header">
+          <div className="registro-logo">
+            <span className="registro-titulo">BIBLIOTECA<br />INTELIGENTE</span>
+            <span className="registro-utn">UTN <span role="img" aria-label="libro">📚</span></span>
           </div>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
-            <div>
-              <label style={{ color: '#fff', fontSize: 15 }}>Legajo</label>
-              <input
-                type="text"
-                name="legajo"
-                value={form.legajo}
-                onChange={handleChange}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.7em',
-                  borderRadius: 7,
-                  border: 'none',
-                  marginTop: 4,
-                  fontSize: 16
-                }}
-                autoFocus
-              />
-            </div>
-            <div>
-              <label style={{ color: '#fff', fontSize: 15 }}>Nombre</label>
-              <input
-                type="text"
-                name="nombre"
-                value={form.nombre}
-                onChange={handleChange}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.7em',
-                  borderRadius: 7,
-                  border: 'none',
-                  marginTop: 4,
-                  fontSize: 16
-                }}
-              />
-            </div>
-            <div>
-              <label style={{ color: '#fff', fontSize: 15 }}>Apellido</label>
-              <input
-                type="text"
-                name="apellido"
-                value={form.apellido}
-                onChange={handleChange}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.7em',
-                  borderRadius: 7,
-                  border: 'none',
-                  marginTop: 4,
-                  fontSize: 16
-                }}
-              />
-            </div>
-            <div>
-              <label style={{ color: '#fff', fontSize: 15 }}>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.7em',
-                  borderRadius: 7,
-                  border: 'none',
-                  marginTop: 4,
-                  fontSize: 16
-                }}
-              />
-            </div>
-            <div>
-              <label style={{ color: '#fff', fontSize: 15 }}>Contraseña</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.7em',
-                  borderRadius: 7,
-                  border: 'none',
-                  marginTop: 4,
-                  fontSize: 16
-                }}
-              />
-            </div>
-            <div>
-              <label style={{ color: '#fff', fontSize: 15 }}>Rol</label>
-              <select
-                name="rol"
-                value={form.rol}
-                onChange={handleChange}
-                style={{
-                  width: '100%',
-                  padding: '0.7em',
-                  borderRadius: 7,
-                  border: 'none',
-                  marginTop: 4,
-                  fontSize: 16
-                }}
-              >
-                <option value="estudiante">Estudiante</option>
-                <option value="profesor">Profesor</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            {error && <div style={{ color: '#ffbaba', background: '#6a0000', borderRadius: 6, padding: '0.5em', fontSize: 14, textAlign: 'center' }}>{error}</div>}
-            {ok && <div style={{ color: '#d4ffb2', background: '#1b5e20', borderRadius: 6, padding: '0.5em', fontSize: 14, textAlign: 'center' }}>{ok}</div>}
-            <button type="submit" style={{
-              background: '#4caf50',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
-              padding: '0.9em 0',
-              fontSize: '1.1rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              marginTop: 8
-            }}>
-              Crear usuario
-            </button>
-          </form>
         </div>
-      </main>
+        <form className="registro-form" onSubmit={handleSubmit}>
+          <div className="registro-avatar">
+            <svg width="70" height="70" fill="none" stroke="#fff" strokeWidth="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+            </svg>
+          </div>
+          <input
+            name="nombre"
+            type="text"
+            placeholder="Nombre completo"
+            value={form.nombre}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="email"
+            type="email"
+            placeholder="Correo electrónico"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="legajo"
+            type="text"
+            placeholder="Legajo"
+            value={form.legajo}
+            onChange={handleChange}
+            required
+          />
+          <select
+            name="carrera"
+            value={form.carrera}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Selecciona tu carrera</option>
+            <option value="Ingeniería Electromecánica">Ingeniería Electromecánica</option>
+            <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
+            <option value="Ingeniería en Sistemas de Información">Ingeniería en Sistemas de Información</option>
+            <option value="Ingeniería Química">Ingeniería Química</option>
+            <option value="Licenciatura en Administración Rural">Licenciatura en Administración Rural</option>
+            <option value="Tecnicatura Universitaria en Programación">Tecnicatura Universitaria en Programación</option>
+            <option value="Tecnicatura Universitaria en Electrónica">Tecnicatura Universitaria en Electrónica</option>
+            <option value="Tecnicatura Universitaria en Mantenimiento Industrial">Tecnicatura Universitaria en Mantenimiento Industrial</option>
+          </select>
+          <select
+            name="rol"
+            value={form.rol}
+            onChange={handleChange}
+            required
+          >
+            <option value="estudiante">Estudiante</option>
+            <option value="profesor">Profesor</option>
+            <option value="admin">Admin</option>
+          </select>
+          <input
+            name="password"
+            type="password"
+            placeholder="Contraseña"
+            value={form.password}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="confirmar"
+            type="password"
+            placeholder="Confirmar contraseña"
+            value={form.confirmar}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" className="registro-btn">Registrarse</button>
+          <div className="login-link" style={{ marginTop: 16 }}>
+            ¿Ya tienes una cuenta?{' '}
+            <a href="#" onClick={e => { e.preventDefault(); onAtras(); }}>
+              Inicia sesión
+            </a>
+          </div>
+        </form>
+      </div>
       <footer>
         © 2025 Biblioteca Inteligente. Todos los derechos reservados.
       </footer>
     </div>
   );
 }
+
+export default RegistroUsuario;
