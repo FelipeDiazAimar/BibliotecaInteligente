@@ -2,12 +2,20 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Respuesta = sequelize.define('Respuesta', {
-    texto: DataTypes.TEXT, // El texto de la respuesta
+    texto: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
     fecha: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
     }
   });
+
+  Respuesta.associate = function(models) {
+    Respuesta.belongsTo(models.Prompt, { foreignKey: 'promptId' });
+    Respuesta.belongsTo(models.Usuario, { foreignKey: 'usuarioId' });
+  };
 
   return Respuesta;
 };

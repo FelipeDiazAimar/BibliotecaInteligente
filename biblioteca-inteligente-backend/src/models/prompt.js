@@ -2,16 +2,19 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Prompt = sequelize.define('Prompt', {
-    texto: DataTypes.TEXT, // El texto enviado a la IA
+    texto: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
     fecha: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
     }
   });
 
-  // Relaciona el prompt con el usuario que lo envió
   Prompt.associate = function(models) {
     Prompt.belongsTo(models.Usuario, { foreignKey: 'usuarioId' });
+    Prompt.hasOne(models.Respuesta, { foreignKey: 'promptId' });
   };
 
   return Prompt;

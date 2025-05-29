@@ -1,8 +1,10 @@
 const axios = require('axios');
-const { Libro } = require('../models');
+const { Libro, Prompt, Respuesta } = require('../models');
 
 exports.ask = async (req, res) => {
   try {
+    const usuarioId = req.usuario.id;
+
     // Traer todos los libros con más atributos
     const libros = await Libro.findAll({
       attributes: [
@@ -23,6 +25,12 @@ exports.ask = async (req, res) => {
 
     const promptIA = `Estos son los libros disponibles en la biblioteca:\n\n${listaLibros}\n\nResponde a la siguiente consulta del usuario usando la información de los libros:\n${req.body.prompt}`;
 
+    // Guardar el prompt en la base de datos
+    const promptGuardado = await Prompt.create({
+      texto: req.body.prompt,
+      usuarioId
+    });
+
     // Enviar el prompt a la IA
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
@@ -39,7 +47,16 @@ exports.ask = async (req, res) => {
       }
     );
 
-    res.json({ respuesta: response.data.choices[0].message.content });
+    const textoRespuesta = response.data.choices[0].message.content;
+
+    // Guardar la respuesta en la base de datos
+    await Respuesta.create({
+      texto: textoRespuesta,
+      promptId: promptGuardado.id,
+      usuarioId
+    });
+
+    res.json({ respuesta: textoRespuesta });
   } catch (error) {
     if (error.response) {
       res.status(500).json({ error: `OpenRouter: ${error.response.status} - ${JSON.stringify(error.response.data)}` });

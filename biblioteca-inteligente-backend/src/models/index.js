@@ -40,7 +40,6 @@ const modelDefiners = [
   require('./usuario'),
   require('./libro'),
   require('./busqueda'),
-  require('./pregunta'),
   require('./respuesta'),
   require('./prompt')
 ];
