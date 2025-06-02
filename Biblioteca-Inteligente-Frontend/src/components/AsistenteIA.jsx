@@ -1,9 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function AsistenteIA({ libros }) {
+export default function AsistenteIA() {
   const [pregunta, setPregunta] = useState('');
   const [respuesta, setRespuesta] = useState('');
   const [cargando, setCargando] = useState(false);
+  const [historial, setHistorial] = useState([]);
+
+  // Cargar historial al montar
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    fetch('http://localhost:3000/api/asistente/historial', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setHistorial(data || []));
+  }, []);
 
   const handleAsk = async (e) => {
     e.preventDefault();
@@ -14,11 +26,17 @@ export default function AsistenteIA({ libros }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({
-          prompt: `Lista de libros:\n${libros.map(l => `- ${l.titulo} (${l.autor}, ${l.anio || ''}, ${l.genero || ''})`).join('\n')}\n\nPregunta: ${pregunta}`
+          prompt: pregunta // Solo envía la pregunta, no la lista de libros
         })
       });
       const data = await res.json();
       setRespuesta(data.respuesta || data.error || 'Sin respuesta');
+      // Recargar historial después de preguntar
+      fetch('http://localhost:3000/api/asistente/historial', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      })
+        .then(res => res.json())
+        .then(data => setHistorial(data || []));
     } catch {
       setRespuesta('Error de red');
     }
@@ -47,6 +65,24 @@ export default function AsistenteIA({ libros }) {
           <div>{respuesta}</div>
         </div>
       )}
+      {/* Historial de consultas */}
+      <div style={{marginTop: 24}}>
+        <h3>Historial de consultas</h3>
+        <div style={{maxHeight: 250, overflowY: 'auto', background: '#fff', borderRadius: 6, border: '1px solid #ddd', padding: 12}}>
+          {historial.length === 0 && <div style={{color: '#888'}}>No hay historial.</div>}
+          {historial.map(item => (
+            <div key={item.id} style={{marginBottom: 16, borderBottom: '1px solid #eee', paddingBottom: 8}}>
+              <div><strong>Consulta:</strong> {item.texto}</div>
+              <div style={{marginLeft: 12, color: '#1769aa'}}>
+                <strong>Respuesta:</strong> {item.Respuesta?.texto || <span style={{color: '#888'}}>Sin respuesta</span>}
+              </div>
+              <div style={{fontSize: 12, color: '#888', marginTop: 2}}>
+                {new Date(item.createdAt).toLocaleString()}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

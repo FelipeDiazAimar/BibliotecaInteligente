@@ -6,7 +6,7 @@ const { sequelize } = require('./src/models');
 const PORT = process.env.PORT || 3000;
 
 // Sincroniza la base de datos y luego inicia el servidor
-sequelize.sync({ force: false }) // Cambia a true solo si quieres borrar y crear todo de nuevo (solo en desarrollo)
+sequelize.sync({ alter: true }) // Cambia a true solo si quieres borrar y crear todo de nuevo (solo en desarrollo)
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);

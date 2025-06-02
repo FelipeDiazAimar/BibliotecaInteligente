@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Respuesta.associate = function(models) {
-    Respuesta.belongsTo(models.Prompt, { foreignKey: 'promptId' });
+    Respuesta.belongsTo(models.Prompt, { foreignKey: 'promptId', as: 'Prompt' });
     Respuesta.belongsTo(models.Usuario, { foreignKey: 'usuarioId' });
   };
 

@@ -68,6 +68,22 @@ function App() {
     )
   }
 
+  // FUNCIÓN PARA CERRAR SESIÓN
+  async function logout() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    await fetch('http://localhost:3000/api/auth/logout', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    localStorage.removeItem('token');
+    setMostrarLogin(true); // o setMostrarPortada(true), según tu flujo
+  }
+
   // Lo que se muestra en pantalla
   return (
     <>
@@ -149,6 +165,7 @@ function App() {
           ))}
         </ul>
       </div>
+      <button onClick={logout}>Cerrar sesión</button>
     </>
   )
 }

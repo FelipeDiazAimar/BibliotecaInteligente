@@ -65,3 +65,18 @@ exports.ask = async (req, res) => {
     }
   }
 };
+
+exports.historial = async (req, res) => {
+  try {
+    const usuarioId = req.usuario.id;
+    // Trae los prompts y sus respuestas del usuario, ordenados por fecha
+    const prompts = await require('../models').Prompt.findAll({
+      where: { usuarioId },
+      include: [{ model: require('../models').Respuesta }],
+      order: [['createdAt', 'DESC']]
+    });
+    res.json(prompts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

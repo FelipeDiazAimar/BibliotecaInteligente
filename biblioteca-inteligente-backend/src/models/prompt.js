@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Prompt.associate = function(models) {
     Prompt.belongsTo(models.Usuario, { foreignKey: 'usuarioId' });
-    Prompt.hasOne(models.Respuesta, { foreignKey: 'promptId' });
+    Prompt.hasOne(models.Respuesta, { foreignKey: 'promptId', as: 'Respuesta' });
   };
 
   return Prompt;

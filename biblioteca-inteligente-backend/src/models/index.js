@@ -49,14 +49,12 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize, Sequelize.DataTypes);
 }
 
-// Establece las relaciones entre modelos (asociaciones)
-const { Usuario, Busqueda, Prompt } = sequelize.models;
-
-Usuario.hasMany(Busqueda, { foreignKey: 'usuarioId' });
-Busqueda.belongsTo(Usuario, { foreignKey: 'usuarioId' });
-
-Usuario.hasMany(Prompt, { foreignKey: 'usuarioId' });
-Prompt.belongsTo(Usuario, { foreignKey: 'usuarioId' });
+// Llama a associate en cada modelo si existe
+Object.values(sequelize.models).forEach(model => {
+  if (typeof model.associate === 'function') {
+    model.associate(sequelize.models);
+  }
+});
 
 // Exporta los modelos y la conexión para usarlos en el resto de la app
 module.exports = {
