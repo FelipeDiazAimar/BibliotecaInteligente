@@ -1,9 +1,13 @@
 const { Busqueda } = require('../models');
 
-// Trae todas las búsquedas realizadas por los usuarios
+// Trae todas las búsquedas realizadas por los usuarios, o solo las de un usuario si se pasa usuarioId
 exports.getAll = async (req, res) => {
   try {
-    const busquedas = await Busqueda.findAll();
+    const where = {};
+    if (req.query.usuarioId) {
+      where.usuarioId = req.query.usuarioId;
+    }
+    const busquedas = await Busqueda.findAll({ where });
     res.json(busquedas);
   } catch (error) {
     res.status(500).json({ error: error.message });
