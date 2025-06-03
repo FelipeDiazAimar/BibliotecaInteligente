@@ -2,7 +2,7 @@ import '../styles/PanelUsuario.css';
 import Header from '../components/Header';
 import vozImg from '../assets/ondas-sonoras.png';
 
-export default function PanelUsuario({ usuario, onAtras, onVozIA }) {
+export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
   return (
     <div className="panel-overlay">
       <Header
@@ -13,9 +13,14 @@ export default function PanelUsuario({ usuario, onAtras, onVozIA }) {
           </div>
         }
         right={
-          <button className="panel-atras-btn" onClick={onAtras}>
-            Atrás
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <button className="panel-atras-btn" onClick={onAtras}>
+              Atrás
+            </button>
+            <button className="panel-logout-btn" onClick={onLogout}>
+              Cerrar sesión
+            </button>
+          </div>
         }
       />
       <main className="panel-main">

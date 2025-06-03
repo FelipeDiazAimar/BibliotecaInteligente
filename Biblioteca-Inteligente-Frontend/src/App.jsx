@@ -93,6 +93,7 @@ function App() {
           setUsuario(null);
         }}
         onVozIA={() => setMostrarVozIA(true)}
+        onLogout={logout} // <-- agrega esto
       />
     );
   }
