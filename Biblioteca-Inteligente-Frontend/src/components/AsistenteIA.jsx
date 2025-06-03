@@ -14,7 +14,8 @@ export default function AsistenteIA() {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
-      .then(data => setHistorial(data || []));
+      .then(data => setHistorial(Array.isArray(data) ? data : []))
+      .catch(() => setHistorial([])); // Si hay error, historial vacío
   }, []);
 
   const handleAsk = async (e) => {
@@ -36,7 +37,7 @@ export default function AsistenteIA() {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       })
         .then(res => res.json())
-        .then(data => setHistorial(data || []));
+        .then(data => setHistorial(Array.isArray(data) ? data : []));
     } catch {
       setRespuesta('Error de red');
     }
@@ -69,8 +70,10 @@ export default function AsistenteIA() {
       <div style={{marginTop: 24}}>
         <h3>Historial de consultas</h3>
         <div style={{maxHeight: 250, overflowY: 'auto', background: '#fff', borderRadius: 6, border: '1px solid #ddd', padding: 12}}>
-          {historial.length === 0 && <div style={{color: '#888'}}>No hay historial.</div>}
-          {historial.map(item => (
+          {Array.isArray(historial) && historial.length === 0 && (
+            <div>No hay historial.</div>
+          )}
+          {Array.isArray(historial) && historial.map(item => (
             <div key={item.id} style={{marginBottom: 16, borderBottom: '1px solid #eee', paddingBottom: 8}}>
               <div><strong>Consulta:</strong> {item.texto}</div>
               <div style={{marginLeft: 12, color: '#1769aa'}}>

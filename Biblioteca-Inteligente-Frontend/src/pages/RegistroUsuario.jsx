@@ -164,10 +164,10 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
             onChange={handleChange}
             required
           >
-            <option value="">Selecciona tu carrera</option>
+            <option value="" disabled>Selecciona tu carrera</option>
+            <option value="Ingeniería en Sistemas de Información">Ingeniería en Sistemas de Información</option>
             <option value="Ingeniería Electromecánica">Ingeniería Electromecánica</option>
             <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
-            <option value="Ingeniería en Sistemas de Información">Ingeniería en Sistemas de Información</option>
             <option value="Ingeniería Química">Ingeniería Química</option>
             <option value="Licenciatura en Administración Rural">Licenciatura en Administración Rural</option>
             <option value="Tecnicatura Universitaria en Programación">Tecnicatura Universitaria en Programación</option>

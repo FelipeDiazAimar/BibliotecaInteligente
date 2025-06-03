@@ -6,10 +6,17 @@ const { Usuario, Prompt, Respuesta } = require('../models');
 exports.register = async (req, res) => {
   try {
     // Crea el usuario con los datos recibidos
-    const usuario = await Usuario.create(req.body);
+    const usuario = await Usuario.create({
+      nombre: req.body.nombre,
+      email: req.body.email,
+      legajo: req.body.legajo,
+      carrera: req.body.carrera, // <-- asegúrate de incluir esto
+      password: req.body.password,
+      rol: req.body.rol
+    });
     // Genera un token para que el usuario pueda autenticarse
     const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, process.env.JWT_SECRET, { expiresIn: '8h' });
-    res.status(201).json({ token });
+    res.status(201).json({ token, id: usuario.id });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -35,7 +42,7 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );
-    res.json({ token });
+    res.json({ token, id: usuario.id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

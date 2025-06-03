@@ -69,14 +69,15 @@ exports.ask = async (req, res) => {
 exports.historial = async (req, res) => {
   try {
     const usuarioId = req.usuario.id;
-    // Trae los prompts y sus respuestas del usuario, ordenados por fecha
-    const prompts = await require('../models').Prompt.findAll({
+    // Usa el alias 'Respuesta' en el include
+    const prompts = await Prompt.findAll({
       where: { usuarioId },
-      include: [{ model: require('../models').Respuesta }],
+      include: [{ model: Respuesta, as: 'Respuesta' }],
       order: [['createdAt', 'DESC']]
     });
     res.json(prompts);
   } catch (error) {
+    console.error('Error en /api/asistente/historial:', error);
     res.status(500).json({ error: error.message });
   }
 };

@@ -1,0 +1,160 @@
+.panel-overlay {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2.5rem 2.5rem 0 2.5rem;
+}
+
+.panel-logo {
+  font-size: 2.1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  color: #222;
+}
+
+.panel-utn {
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin-top: 0.5rem;
+  display: block;
+  color: #222;
+}
+
+.panel-atras-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.5em;
+}
+
+.panel-user-icon {
+  font-size: 1.5em;
+}
+
+.panel-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2.5rem;
+}
+
+.panel-user-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 1.2rem 2.2rem;
+  margin-bottom: 1.5rem;
+  gap: 1.2rem;
+  min-width: 320px;
+}
+
+.panel-user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #f2f2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-user-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.panel-user-carrera {
+  font-size: 1rem;
+  color: #666;
+}
+
+.panel-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  width: 100%;
+  max-width: 350px;
+  margin-bottom: 2.2rem;
+}
+
+.panel-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: #f7f7f7;
+  color: #222;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  transition: background 0.18s, color 0.18s;
+}
+
+.panel-link-turnero { border-left: 6px solid #2196f3; }
+.panel-link-catalogo { border-left: 6px solid #4caf50; }
+.panel-link-contacto { border-left: 6px solid #ffd600; }
+
+.panel-link:hover {
+  background: #e3f2fd;
+  color: #1769aa;
+}
+
+.panel-link-icon {
+  font-size: 1.5em;
+}
+
+.panel-voz-btn {
+  width: 100%;
+  max-width: 350px;
+  background: #2196f3;
+  border: none;
+  border-radius: 10px;
+  padding: 1.2rem 0;
+  margin-top: 1.2rem;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.panel-voz-btn:hover {
+  background: #1769aa;
+}
+
+.panel-voz-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-footer {
+  color: #888;
+  text-align: center;
+  padding: 1.2rem 0 0.7rem 0;
+  font-size: 1rem;
+  opacity: 0.85;
+  letter-spacing: 0.02em;
+}

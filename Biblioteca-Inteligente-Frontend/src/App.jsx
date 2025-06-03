@@ -7,6 +7,7 @@ import LibroForm from './components/LibroForm' // Importa el formulario
 import LoginAlumno from './pages/LoginAlumno' // Importa el login
 import RegistroUsuario from './pages/RegistroUsuario' // Importa el registro de usuario
 import AsistenteIA from './components/AsistenteIA';
+import PanelUsuario from './pages/PanelUsuario';
 
 // Componente principal de la aplicación
 function App() {
@@ -18,17 +19,19 @@ function App() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false)
   const [mostrarLogin, setMostrarLogin] = useState(false) // Nuevo estado
   const [mostrarRegistro, setMostrarRegistro] = useState(false);
+  const [usuario, setUsuario] = useState(null);
+  const [mostrarPanelUsuario, setMostrarPanelUsuario] = useState(false);
 
-  // useEffect se ejecuta una vez cuando se carga la página
+  // useEffect se executa uma vez quando a página é carregada
   useEffect(() => {
-    // Hace una petición al backend para traer los libros
+    // Faz uma requisição ao backend para trazer os livros
     fetch('http://localhost:3000/api/libros')
-      .then(res => res.json())      // Convierte la respuesta a JSON
-      .then(data => setLibros(data))// Guarda los libros en el estado
-      .catch(err => console.error(err)) // Si hay error, lo muestra en consola
+      .then(res => res.json())      // Converte a resposta para JSON
+      .then(data => setLibros(data))// Guarda os livros no estado
+      .catch(err => console.error(err)) // Se houver erro, mostra no console
   }, [])
 
-  // Cambia la portada para mostrar el login en vez de la lista de libros
+  // Altera a capa para mostrar o login em vez da lista de libros
   if (mostrarPortada) {
     return <Portada onAcceder={() => {
       setMostrarPortada(false)
@@ -51,11 +54,11 @@ function App() {
     );
   }
 
-  // Si está en login, muestra el login
+  // Se está no login, mostra o login
   if (mostrarLogin) {
     return (
       <LoginAlumno
-        onLogin={() => setMostrarLogin(false)}
+        onLogin={handleLogin} // <-- usa handleLogin aqui
         onAtras={() => {
           setMostrarLogin(false)
           setMostrarPortada(true)
@@ -68,7 +71,37 @@ function App() {
     )
   }
 
-  // FUNCIÓN PARA CERRAR SESIÓN
+  // Quando o usuário faz login corretamente:
+  async function handleLogin() {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (token && userId) {
+      const res = await fetch(`http://localhost:3000/api/usuarios/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setUsuario(data);
+      setMostrarPanelUsuario(true);
+      setMostrarLogin(false);      // <-- OCULTA LOGIN
+      setMostrarPortada(false);    // <-- OCULTA PORTADA
+    }
+  }
+
+  // Se o usuário está no painel, apenas mostra o painel
+  if (mostrarPanelUsuario && usuario) {
+    return (
+      <PanelUsuario
+        usuario={usuario}
+        onAtras={() => {
+          setMostrarPanelUsuario(false);
+          setUsuario(null);
+          // NO borres el token aquí
+        }}
+      />
+    );
+  }
+
+  // FUNÇÃO PARA FECHAR SESSÃO
   async function logout() {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -81,13 +114,13 @@ function App() {
     });
 
     localStorage.removeItem('token');
-    setMostrarLogin(true); // o setMostrarPortada(true), según tu flujo
+    setMostrarLogin(true); // o setMostrarPortada(true), segundo seu fluxo
   }
 
-  // Lo que se muestra en pantalla
+  // O que é mostrado na tela
   return (
     <>
-      {/* Logos de Vite y React, solo decorativo */}
+      {/* Logos do Vite e React, apenas decorativo */}
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -97,7 +130,7 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
-      {/* Botón de ejemplo para aumentar el contador */}
+      {/* Botão de exemplo para aumentar o contador */}
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
@@ -109,7 +142,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      {/* Botón para mostrar/ocultar el formulario de agregar libro */}
+      {/* Botão para mostrar/ocultar o formulário de agregar libro */}
       <div>
         <button onClick={() => setMostrarFormulario(v => !v)}>
           {mostrarFormulario ? 'Cerrar formulario' : 'Agregar libro'}
@@ -117,7 +150,6 @@ function App() {
         {mostrarFormulario && (
           <LibroForm onLibroAgregado={() => {
             setMostrarFormulario(false)
-            // Recarga la lista de libros después de agregar uno nuevo
             fetch('http://localhost:3000/api/libros')
               .then(res => res.json())
               .then(data => setLibros(data))
@@ -126,7 +158,6 @@ function App() {
         )}
       </div>
       <AsistenteIA libros={libros} />
-      {/* Lista de libros traídos del backend */}
       <div>
         <h1>Lista de Libros</h1>
         <ul>

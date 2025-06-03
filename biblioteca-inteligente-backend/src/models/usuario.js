@@ -20,7 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     rol: {
       type: DataTypes.ENUM('estudiante', 'profesor', 'admin'),
       defaultValue: 'estudiante'
-    }
+    },
+    carrera: DataTypes.STRING,
   }, {
     // Antes de guardar el usuario, encripta la contraseña
     hooks: {

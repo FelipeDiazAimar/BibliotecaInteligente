@@ -21,6 +21,7 @@ export default function LoginAlumno({ onLogin, onAtras, onCrearUsuario }) {
         return;
       }
       localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.id); // Guarda el id aquí
       if (onLogin) onLogin();
     } catch {
       setError('Error de red');

@@ -22,7 +22,7 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-    res.json({ token });
+    res.json({ token, id: usuario.id }); // Agrega el id aquí
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error en el servidor' });
@@ -45,10 +45,12 @@ exports.getAllUsuarios = async (req, res) => {
 // Trae un usuario por su ID (sin mostrar la contraseña)
 exports.getUsuarioById = async (req, res) => {
   try {
+    console.log('Buscando usuario con id:', req.params.id);
     const usuario = await Usuario.findByPk(req.params.id, {
       attributes: { exclude: ['password'] }
     });
     if (!usuario) {
+      console.log('No se encontró usuario');
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
     res.json(usuario);
