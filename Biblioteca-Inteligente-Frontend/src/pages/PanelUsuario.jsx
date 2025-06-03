@@ -2,7 +2,7 @@ import '../styles/PanelUsuario.css';
 import Header from '../components/Header';
 import vozImg from '../assets/ondas-sonoras.png';
 
-export default function PanelUsuario({ usuario, onAtras }) {
+export default function PanelUsuario({ usuario, onAtras, onVozIA }) {
   return (
     <div className="panel-overlay">
       <Header
@@ -45,7 +45,10 @@ export default function PanelUsuario({ usuario, onAtras }) {
             Contacto
           </a>
         </div>
-        <button className="panel-voz-btn">
+        <button
+          className="panel-voz-btn"
+          onClick={onVozIA}
+        >
           <span className="panel-voz-icon">
             <img src={vozImg} alt="Voz" width={32} height={32} />
           </span>

@@ -6,6 +6,7 @@ import LoginAlumno from './pages/LoginAlumno'
 import RegistroUsuario from './pages/RegistroUsuario'
 import AsistenteIA from './components/AsistenteIA'
 import PanelUsuario from './pages/PanelUsuario'
+import VozIA from './pages/VozIA'
 
 function App() {
   const [libros, setLibros] = useState([])
@@ -15,6 +16,7 @@ function App() {
   const [mostrarRegistro, setMostrarRegistro] = useState(false)
   const [usuario, setUsuario] = useState(null)
   const [mostrarPanelUsuario, setMostrarPanelUsuario] = useState(false)
+  const [mostrarVozIA, setMostrarVozIA] = useState(false)
 
   useEffect(() => {
     fetch('http://localhost:3000/api/libros')
@@ -76,6 +78,12 @@ function App() {
     }
   }
 
+  if (mostrarVozIA) {
+    return (
+      <VozIA onAtras={() => setMostrarVozIA(false)} />
+    );
+  }
+
   if (mostrarPanelUsuario && usuario) {
     return (
       <PanelUsuario
@@ -84,6 +92,7 @@ function App() {
           setMostrarPanelUsuario(false);
           setUsuario(null);
         }}
+        onVozIA={() => setMostrarVozIA(true)}
       />
     );
   }

@@ -1,0 +1,165 @@
+.vozia-container {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.vozia-overlay {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.vozia-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2rem 2.5rem 0 2.5rem;
+}
+
+.vozia-logo {
+  font-size: 2.1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  color: #222;
+  text-align: left;
+  display: block;
+}
+
+.vozia-utn {
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin-top: 0.5rem;
+  display: block;
+  color: #222;
+}
+
+.vozia-nav {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.vozia-nav a {
+  color: #222;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.vozia-nav a:hover {
+  color: #3f51ff;
+}
+
+.vozia-atras-btn {
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.vozia-user-icon {
+  margin-left: 1.5rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.vozia-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Cambia a flex-start para que el contenido crezca hacia abajo */
+  width: 100%;
+}
+
+.vozia-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+}
+
+.vozia-wave {
+  margin-top: 12rem;    /* Margen fijo debajo del header */
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.vozia-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 700px;
+}
+
+.vozia-input {
+  flex: 1;
+  padding: 1.1em 1.2em;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  font-size: 1.1rem;
+  background: #f7f7f7;
+  color: #000000; /* Cambia el color del texto a negro */
+  box-sizing: border-box;
+  outline: none;
+  min-width: 32vw;
+}
+
+/* Mantén el placeholder gris */
+.vozia-input::placeholder {
+  color: #888;
+  opacity: 1;
+}
+
+.vozia-btn {
+  background: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.9em 2.5em;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 1;
+  transition: background 0.2s, color 0.2s;
+}
+
+.vozia-btn:hover:enabled {
+  background: #bdbdbd;
+  color: #222;
+}
+
+.vozia-btn:disabled {
+  background: #e0e0e0;
+  color: #888;
+  cursor: default;
+  opacity: 0.7;
+}
+
+.vozia-historial {
+  width: 100%;
+  margin-bottom: 0; /* <-- Ajusta este valor para reducir o aumentar el margen entre historial y el input */
+}
+
+.vozia-footer {
+  color: #888;
+  text-align: center;
+  padding: 1.2rem 0 0.7rem 0;
+  font-size: 1rem;
+  opacity: 0.85;
+  letter-spacing: 0.02em;
+}
