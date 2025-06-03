@@ -1,19 +1,23 @@
 import '../styles/PanelUsuario.css';
+import Header from '../components/Header';
+import vozImg from '../assets/ondas-sonoras.png';
 
 export default function PanelUsuario({ usuario, onAtras }) {
   return (
     <div className="panel-overlay">
-      <header className="panel-header">
-        <div>
+      <Header
+        left={
           <div className="panel-logo">
             <span>BIBLIOTECA<br />INTELIGENTE</span>
             <span className="panel-utn">UTN <span role="img" aria-label="libro">📚</span></span>
           </div>
-        </div>
-        <button className="panel-atras-btn" onClick={onAtras}>
-          Atrás <span className="panel-user-icon">👤</span>
-        </button>
-      </header>
+        }
+        right={
+          <button className="panel-atras-btn" onClick={onAtras}>
+            Atrás
+          </button>
+        }
+      />
       <main className="panel-main">
         <div className="panel-user-card">
           <div className="panel-user-avatar">
@@ -43,9 +47,7 @@ export default function PanelUsuario({ usuario, onAtras }) {
         </div>
         <button className="panel-voz-btn">
           <span className="panel-voz-icon">
-            <svg width="32" height="32" fill="none" stroke="#fff" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M12 3v10m0 0a4 4 0 0 0 4-4V7a4 4 0 0 0-8 0v2a4 4 0 0 0 4 4zm0 0v4m-4 0h8"/>
-            </svg>
+            <img src={vozImg} alt="Voz" width={32} height={32} />
           </span>
         </button>
       </main>
