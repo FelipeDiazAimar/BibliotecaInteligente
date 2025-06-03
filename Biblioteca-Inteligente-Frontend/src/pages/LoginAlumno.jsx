@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/LoginAlumno.css';
 
-export default function LoginAlumno({ onLogin, onAtras, onCrearUsuario }) {
+export default function LoginAlumno({ onLogin }) {
+  const navigate = useNavigate();
   const [legajo, setLegajo] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -21,8 +23,14 @@ export default function LoginAlumno({ onLogin, onAtras, onCrearUsuario }) {
         return;
       }
       localStorage.setItem('token', data.token);
-      localStorage.setItem('userId', data.id); // Guarda el id aquí
-      if (onLogin) onLogin();
+      localStorage.setItem('userId', data.id);
+
+      // Llama a la función para actualizar el usuario en App.jsx
+      if (onLogin) await onLogin();
+
+      // Ahora navega según el rol
+      if (data.rol === 'admin') navigate('/admin');
+      else navigate('/panel');
     } catch {
       setError('Error de red');
     }
@@ -37,13 +45,13 @@ export default function LoginAlumno({ onLogin, onAtras, onCrearUsuario }) {
           <li>
             <button
               className="login-nav-btn"
-              onClick={onAtras}
+              onClick={() => navigate('/')}
             >Atrás</button>
           </li>
           <li>
             <button
               className="login-nav-btn"
-              onClick={onCrearUsuario}
+              onClick={() => navigate('/registro')}
             >Crear usuario</button>
           </li>
         </ul>
@@ -89,7 +97,7 @@ export default function LoginAlumno({ onLogin, onAtras, onCrearUsuario }) {
             <button
               type="button"
               className="login-btn-secondary"
-              onClick={onCrearUsuario}
+              onClick={() => navigate('/registro')}
             >
               Crear usuario
             </button>

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/AdminPanel.css';
 import AsistenteIA from '../components/AsistenteIA';
 import LibroForm from '../components/LibroForm';
 
-const AdminPanel = ({ usuario, onLogout, onAtras }) => {
+const AdminPanel = ({ usuario }) => { // Elimina onLogout, onAtras
   const [libros, setLibros] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const navigate = useNavigate();
 
   // Recarga libros después de agregar uno nuevo
   const recargarLibros = () => {
@@ -27,8 +29,9 @@ const AdminPanel = ({ usuario, onLogout, onAtras }) => {
           <span style={{ fontSize: 18, color: "#2196f3", marginLeft: 8 }}>UTN 📚</span>
         </div>
         <div>
-          <button className="admin-back-btn" onClick={onAtras}>Atrás</button>
-          <button className="admin-logout-btn" onClick={onLogout}>Cerrar sesión</button>
+          {/* Elimina el botón que usa onAtras si ya no lo necesitas */}
+          {/* <button className="admin-back-btn" onClick={onAtras}>Atrás</button> */}
+          <button className="admin-logout-btn" onClick={() => navigate('/login')}>Cerrar sesión</button>
         </div>
       </nav>
       <main className="admin-main">
@@ -44,7 +47,7 @@ const AdminPanel = ({ usuario, onLogout, onAtras }) => {
             <div className="panel-user-carrera">{usuario.carrera}</div>
             <div style={{fontWeight: 700, color: "#2196f3"}}>Administrador</div>
           </div>
-        </div>
+        </div> {/* <-- CIERRA AQUÍ el div de panel-user-card */}
 
         <button
           className="admin-form-toggle"

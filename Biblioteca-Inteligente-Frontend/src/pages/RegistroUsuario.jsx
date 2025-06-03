@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/RegistroUsuario.css';
 
 function Toast({ show, message, type, onClose }) {
@@ -35,6 +36,7 @@ function Toast({ show, message, type, onClose }) {
 }
 
 function RegistroUsuario({ onRegistrado, onAtras }) {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     nombre: '',
     email: '',
@@ -102,6 +104,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
       showToast('¡Usuario creado correctamente!', 'success');
       setTimeout(() => {
         if (onRegistrado) onRegistrado();
+        navigate('/login');
       }, 1500);
     } catch {
       showToast('Error de red', 'error');
@@ -116,7 +119,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
           <li><a href="#">Acerca de</a></li>
           <li><a href="#">Contacto</a></li>
           <li>
-            <button className="nav-btn" onClick={onAtras}>Atrás</button>
+            <button className="nav-btn" onClick={() => navigate('/login')}>Atrás</button>
           </li>
         </ul>
       </nav>

@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import '../styles/VozIA.css';
 
-export default function VozIA({ onAtras }) {
+export default function VozIA() { // Elimina onAtras
   const [pregunta, setPregunta] = useState('');
   const [cargando, setCargando] = useState(false);
   const [historial, setHistorial] = useState([]);
   const formRef = useRef(null);
+  const navigate = useNavigate();
 
   // Cargar historial al montar
   useEffect(() => {
@@ -61,7 +63,7 @@ export default function VozIA({ onAtras }) {
             <a href="#" className="panel-link">Catalogo</a>
             <a href="#" className="panel-link">Turnero</a>
             <a href="#" className="panel-link">Contacto</a>
-            <button className="panel-atras-btn" onClick={onAtras}>Atrás</button>
+            <button className="panel-atras-btn" onClick={() => navigate('/panel')}>Atrás</button>
             <span className="panel-user-icon" title="Usuario">
               <svg width="28" height="28" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
                 <circle cx="12" cy="8" r="4"/>
