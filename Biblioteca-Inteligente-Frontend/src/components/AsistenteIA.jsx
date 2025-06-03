@@ -47,7 +47,7 @@ export default function AsistenteIA() {
   return (
     <div style={{margin: '2rem 0', padding: 16, border: '1px solid #2196f3', borderRadius: 10, background: '#f5faff'}}>
       <h2>Asistente IA Biblioteca</h2>
-      <form onSubmit={handleAsk} style={{display: 'flex', gap: 8, marginBottom: 12}}>
+      <form onSubmit={handleAsk} style={{display: 'flex', gap: 8, marginBottom: 12 , color:'black'}}>
         <input
           type="text"
           value={pregunta}

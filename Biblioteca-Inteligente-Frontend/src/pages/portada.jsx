@@ -5,7 +5,7 @@ export default function Portada({ onAcceder }) {
   return (
     <div className="overlay">
       <Navbar />
-      <main>
+      <main className="portada-main">
         <h1>BIBLIOTECA<br />INTELIGENTE</h1>
         <h2>UTN</h2>
         <button onClick={onAcceder}>Acceder</button>

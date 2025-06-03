@@ -7,6 +7,7 @@ import RegistroUsuario from './pages/RegistroUsuario'
 import AsistenteIA from './components/AsistenteIA'
 import PanelUsuario from './pages/PanelUsuario'
 import VozIA from './pages/VozIA'
+import AdminPanel from './pages/AdminPanel'; // importa tu nuevo panel
 
 function App() {
   const [libros, setLibros] = useState([])
@@ -85,6 +86,16 @@ function App() {
   }
 
   if (mostrarPanelUsuario && usuario) {
+    // Si es admin, muestra el panel de admin
+    if (usuario.rol === 'admin') {
+      return (
+        <AdminPanel
+          usuario={usuario}
+          onLogout={logout}
+        />
+      );
+    }
+    // Si no, muestra el panel de usuario normal
     return (
       <PanelUsuario
         usuario={usuario}
@@ -93,7 +104,7 @@ function App() {
           setUsuario(null);
         }}
         onVozIA={() => setMostrarVozIA(true)}
-        onLogout={logout} // <-- agrega esto
+        onLogout={logout}
       />
     );
   }
