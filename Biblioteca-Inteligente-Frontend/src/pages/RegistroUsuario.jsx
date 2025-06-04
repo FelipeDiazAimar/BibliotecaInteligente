@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/RegistroUsuario.css';
 
 function Toast({ show, message, type, onClose }) {
@@ -117,7 +117,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
       <nav>
         <ul>
           <li><a href="#">Acerca de</a></li>
-          <li><a href="#">Contacto</a></li>
+          <li><Link to="/contacto">Contacto</Link></li>
           <li>
             <button className="nav-btn" onClick={() => navigate('/login')}>Atrás</button>
           </li>

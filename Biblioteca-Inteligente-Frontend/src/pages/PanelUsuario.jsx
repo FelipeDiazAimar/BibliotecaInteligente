@@ -1,6 +1,7 @@
 import '../styles/PanelUsuario.css';
 import Header from '../components/Header';
 import vozImg from '../assets/ondas-sonoras.png';
+import { Link } from 'react-router-dom';
 
 export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
   return (
@@ -45,10 +46,10 @@ export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
             <span className="panel-link-icon">📖</span>
             Catalogo Virtual
           </a>
-          <a className="panel-link panel-link-contacto" href="#">
+          <Link className="panel-link panel-link-contacto" to="/contacto">
             <span className="panel-link-icon">📞</span>
             Contacto
-          </a>
+          </Link>
         </div>
         <button
           className="panel-voz-btn"

@@ -5,8 +5,8 @@ export default function Navbar() {
   return (
     <nav>
       <ul>
-        <li><a href="#">Acerca de</a></li>
-        <li><a href="#">Contacto</a></li>
+        <li><Link to="/acerca">Acerca de</Link></li>
+        <li><Link to="/contacto">Contacto</Link></li>
         <li><Link to="/login">Iniciar sesión</Link></li>
       </ul>
     </nav>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/AdminPanel.css';
 import AsistenteIA from '../components/AsistenteIA';
 import LibroForm from '../components/LibroForm';

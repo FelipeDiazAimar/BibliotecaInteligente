@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../styles/LoginAlumno.css';
 
 export default function LoginAlumno({ onLogin }) {
@@ -41,7 +41,7 @@ export default function LoginAlumno({ onLogin }) {
       <nav className="login-nav">
         <ul>
           <li><a href="#">Acerca de</a></li>
-          <li><a href="#">Contacto</a></li>
+          <li><Link to="/contacto">Contacto</Link></li>
           <li>
             <button
               className="login-nav-btn"

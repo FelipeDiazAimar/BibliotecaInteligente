@@ -10,6 +10,7 @@ import PanelUsuario from './pages/PanelUsuario'
 import VozIA from './pages/VozIA'
 import AdminPanel from './pages/AdminPanel'
 import RutasProtegidas from './components/RutasProtegidas'
+import Contacto from './pages/Contacto'
 
 function App() {
   const [libros, setLibros] = useState([])
@@ -60,6 +61,7 @@ function App() {
           />
         } />
         <Route path="/registro" element={<RegistroUsuario />} />
+        <Route path="/contacto" element={<Contacto />} /> {/* <-- Agrega esta línea */}
         {/* Rutas protegidas */}
         <Route path="/*" element={
           <RutasProtegidas usuario={usuario} logout={logout} />
