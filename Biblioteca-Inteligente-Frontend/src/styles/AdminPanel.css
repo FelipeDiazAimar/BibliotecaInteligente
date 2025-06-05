@@ -184,3 +184,98 @@
   opacity: 0.85;
   letter-spacing: 0.02em;
 }
+
+.admin-user-panel {
+  background: #f7f7f7;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 2rem 2rem 1.5rem 2rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 520px;
+}
+
+.admin-user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-user-form input,
+.admin-user-form select {
+  padding: 0.7em;
+  border-radius: 7px;
+  border: 1px solid #bbb;
+  font-size: 1rem;
+  background: #fff;
+  color: #222;
+}
+
+.admin-user-btn {
+  background: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.9em 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.admin-user-btn:hover {
+  background: #1769aa;
+}
+
+.admin-user-msg {
+  margin-top: 8px;
+  color: #2196f3;
+  font-weight: 600;
+  text-align: center;
+}
+
+.admin-user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-user-item {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.admin-user-actions button {
+  background: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4em 1em;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-left: 0.5em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.admin-user-actions button.eliminar {
+  background: #e53935;
+}
+
+.admin-user-actions button:hover {
+  background: #1769aa;
+}
+
+.admin-user-actions button.eliminar:hover {
+  background: #b71c1c;
+}

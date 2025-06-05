@@ -59,3 +59,44 @@ exports.getUsuarioById = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener usuario' });
   }
 };
+
+// Actualiza un usuario existente
+exports.updateUsuario = async (req, res) => {
+  try {
+    const usuario = await Usuario.findByPk(req.params.id);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    // Si se envía una nueva contraseña, encripta antes de guardar
+    if (req.body.password) {
+      const bcrypt = require('bcrypt');
+      const salt = await bcrypt.genSalt(10);
+      req.body.password = await bcrypt.hash(req.body.password, salt);
+    } else {
+      // No actualizar la contraseña si está vacía
+      delete req.body.password;
+    }
+
+    await usuario.update(req.body);
+    res.json({ mensaje: 'Usuario actualizado correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Elimina un usuario por ID
+exports.deleteUsuario = async (req, res) => {
+  try {
+    const usuario = await Usuario.findByPk(req.params.id);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    await usuario.destroy();
+    res.json({ mensaje: 'Usuario eliminado correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: error.message });
+  }
+};

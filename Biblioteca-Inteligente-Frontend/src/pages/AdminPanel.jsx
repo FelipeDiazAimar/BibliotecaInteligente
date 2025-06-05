@@ -1,12 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/AdminPanel.css';
 import AsistenteIA from '../components/AsistenteIA';
 import LibroForm from '../components/LibroForm';
 
-const AdminPanel = ({ usuario }) => { // Elimina onLogout, onAtras
+const initialUserForm = {
+  nombre: '',
+  email: '',
+  legajo: '',
+  carrera: '',
+  rol: 'estudiante',
+  password: ''
+};
+
+const carrerasDisponibles = [
+  "Ingeniería en Sistemas de Información",
+  "Ingeniería Electromecánica",
+  "Ingeniería Electrónica",
+  "Ingeniería Química",
+  "Licenciatura en Administración Rural",
+  "Tecnicatura Universitaria en Programación",
+  "Tecnicatura Universitaria en Electrónica",
+  "Tecnicatura Universitaria en Mantenimiento Industrial"
+];
+
+const AdminPanel = ({ usuario }) => {
   const [libros, setLibros] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [usuarios, setUsuarios] = useState([]);
+  const [mostrarUsuarios, setMostrarUsuarios] = useState(false);
+  const [editandoUsuario, setEditandoUsuario] = useState(null);
+  const [userForm, setUserForm] = useState(initialUserForm);
+  const [mensajeUsuario, setMensajeUsuario] = useState('');
   const navigate = useNavigate();
 
   // Recarga libros después de agregar uno nuevo
@@ -17,20 +42,93 @@ const AdminPanel = ({ usuario }) => { // Elimina onLogout, onAtras
       .catch(err => console.error(err));
   };
 
-  React.useEffect(() => {
+  // Cargar usuarios
+  const recargarUsuarios = () => {
+    fetch('http://localhost:3000/api/usuarios')
+      .then(res => res.json())
+      .then(data => setUsuarios(data))
+      .catch(err => console.error(err));
+  };
+
+  useEffect(() => {
     recargarLibros();
+    recargarUsuarios();
   }, []);
+
+  // Manejo de formulario de usuario
+  const handleUserChange = e => {
+    setUserForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  };
+
+  const handleUserSubmit = async e => {
+    e.preventDefault();
+    if (editandoUsuario) {
+      // Editar usuario existente
+      const res = await fetch(`http://localhost:3000/api/usuarios/${editandoUsuario.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userForm)
+      });
+      if (res.ok) {
+        setMensajeUsuario('Usuario actualizado correctamente');
+        setEditandoUsuario(null);
+        setUserForm(initialUserForm);
+        recargarUsuarios();
+      } else {
+        setMensajeUsuario('Error al actualizar usuario');
+      }
+    } else {
+      // Crear usuario nuevo
+      const res = await fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userForm)
+      });
+      if (res.ok) {
+        setMensajeUsuario('Usuario creado correctamente');
+        setUserForm(initialUserForm);
+        recargarUsuarios();
+      } else {
+        setMensajeUsuario('Error al crear usuario');
+      }
+    }
+    setTimeout(() => setMensajeUsuario(''), 2500);
+  };
+
+  const handleEditarUsuario = usuario => {
+    setEditandoUsuario(usuario);
+    setUserForm({
+      nombre: usuario.nombre,
+      email: usuario.email,
+      legajo: usuario.legajo,
+      carrera: usuario.carrera,
+      rol: usuario.rol,
+      password: ''
+    });
+    setMostrarUsuarios(true);
+  };
+
+  const handleEliminarUsuario = async id => {
+    if (!window.confirm('¿Seguro que deseas eliminar este usuario?')) return;
+    const res = await fetch(`http://localhost:3000/api/usuarios/${id}`, {
+      method: 'DELETE'
+    });
+    if (res.ok) {
+      setMensajeUsuario('Usuario eliminado');
+      recargarUsuarios();
+    } else {
+      setMensajeUsuario('Error al eliminar usuario');
+    }
+    setTimeout(() => setMensajeUsuario(''), 2500);
+  };
 
   return (
     <div className="admin-overlay">
       <nav className="admin-navbar">
         <div className="admin-logo">
-          BIBLIOTECA<br />INTELIGENTE
-          <span style={{ fontSize: 18, color: "#2196f3", marginLeft: 8 }}>UTN 📚</span>
+          BIBLIOTECA<br />INTELIGENTE <span style={{ fontSize: 18, color: "#2196f3", marginLeft: 8 }}>UTN 📚</span>
         </div>
         <div>
-          {/* Elimina el botón que usa onAtras si ya no lo necesitas */}
-          {/* <button className="admin-back-btn" onClick={onAtras}>Atrás</button> */}
           <button className="admin-logout-btn" onClick={() => navigate('/login')}>Cerrar sesión</button>
         </div>
       </nav>
@@ -47,7 +145,7 @@ const AdminPanel = ({ usuario }) => { // Elimina onLogout, onAtras
             <div className="panel-user-carrera">{usuario.carrera}</div>
             <div style={{fontWeight: 700, color: "#2196f3"}}>Administrador</div>
           </div>
-        </div> {/* <-- CIERRA AQUÍ el div de panel-user-card */}
+        </div>
 
         <button
           className="admin-form-toggle"
@@ -62,6 +160,61 @@ const AdminPanel = ({ usuario }) => { // Elimina onLogout, onAtras
               setMostrarFormulario(false);
               recargarLibros();
             }} />
+          </div>
+        )}
+
+        {/* Gestión de usuarios */}
+        <button
+          className="admin-form-toggle"
+          style={{ background: '#4caf50', marginBottom: 16 }}
+          onClick={() => setMostrarUsuarios(f => !f)}
+        >
+          {mostrarUsuarios ? 'Cerrar gestión de usuarios' : 'Gestión de usuarios'}
+        </button>
+
+        {mostrarUsuarios && (
+          <div className="admin-user-panel">
+            <h2 className="admin-section-title">Gestión de Usuarios</h2>
+            <form className="admin-user-form" onSubmit={handleUserSubmit}>
+              <input name="nombre" value={userForm.nombre} onChange={handleUserChange} placeholder="Nombre" required />
+              <input name="email" value={userForm.email} onChange={handleUserChange} placeholder="Email" type="email" required />
+              <input name="legajo" value={userForm.legajo} onChange={handleUserChange} placeholder="Legajo" required />
+              <select
+                name="carrera"
+                value={userForm.carrera}
+                onChange={handleUserChange}
+                required
+              >
+                <option value="" disabled>Selecciona una carrera</option>
+                {carrerasDisponibles.map(carrera => (
+                  <option key={carrera} value={carrera}>{carrera}</option>
+                ))}
+              </select>
+              <select name="rol" value={userForm.rol} onChange={handleUserChange} required>
+                <option value="estudiante">Estudiante</option>
+                <option value="profesor">Profesor</option>
+                <option value="admin">Admin</option>
+              </select>
+              <input name="password" value={userForm.password} onChange={handleUserChange} placeholder={editandoUsuario ? "Nueva contraseña (opcional)" : "Contraseña"} type="password" required={!editandoUsuario} />
+              <button type="submit" className="admin-user-btn">
+                {editandoUsuario ? 'Actualizar usuario' : 'Agregar usuario'}
+              </button>
+              {mensajeUsuario && <div className="admin-user-msg">{mensajeUsuario}</div>}
+            </form>
+            <ul className="admin-user-list">
+              {usuarios.map(u => (
+                <li key={u.id} className="admin-user-item">
+                  <div>
+                    <strong>{u.nombre}</strong> ({u.rol})<br />
+                    <span style={{fontSize: 13, color: '#555'}}>Legajo: {u.legajo} | Email: {u.email} | Carrera: {u.carrera}</span>
+                  </div>
+                  <div className="admin-user-actions">
+                    <button onClick={() => handleEditarUsuario(u)}>Editar</button>
+                    <button onClick={() => handleEliminarUsuario(u.id)} className="eliminar">Eliminar</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
