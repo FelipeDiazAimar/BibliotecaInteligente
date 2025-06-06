@@ -20,7 +20,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('estudiante', 'profesor', 'admin'),
       defaultValue: 'estudiante'
     },
-    carrera: DataTypes.STRING,
+    carrera: {
+      type: DataTypes.ENUM('Ingeniería en Sistemas de Información', 'Ingeniería Electromecánica', 'Ingeniería Electrónica','Ingeniería Química','Licenciatura en Administración Rural','Tecnicatura Universitaria en Programación','Tecnicatura Universitaria en Electrónica','Tecnicatura Universitaria en Mantenimiento Industrial'),
+      allowNull: true // Puede ser null si no aplica (ej. admin)
+    },
   }, {
     // Antes de guardar el usuario, encripta la contraseña
     hooks: {
