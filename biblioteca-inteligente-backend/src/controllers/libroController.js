@@ -42,11 +42,16 @@ exports.create = async (req, res) => {
 // Modifica los datos de un libro existente
 exports.update = async (req, res) => {
   try {
-    const [updated] = await Libro.update(req.body, { where: { id: req.params.id } }); // Actualiza el libro
-    if (!updated) {
+    const libro = await Libro.findByPk(req.params.id);
+    if (!libro) {
       return res.status(404).json({ error: 'Libro no encontrado' });
     }
-    res.status(204).end(); // Si todo salió bien, responde sin contenido
+    // Si hay archivo de portada, manejarlo aquí si usas multer
+    if (req.file) {
+      libro.portada = req.file.buffer;
+    }
+    await libro.update(req.body);
+    res.json({ mensaje: 'Libro actualizado correctamente' });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

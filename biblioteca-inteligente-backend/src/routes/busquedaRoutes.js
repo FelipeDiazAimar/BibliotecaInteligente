@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const busquedaController = require('../controllers/busquedaController');
-const auth = require('../middlewares/auth');
 
-// Ruta para ver todas las búsquedas (solo usuarios autenticados)
-router.get('/', auth, busquedaController.getAll);
-// Ruta para crear una nueva búsqueda (solo usuarios autenticados)
-router.post('/', auth, busquedaController.create);
+// GET /api/busquedas
+router.get('/', busquedaController.getBusquedas);
+
+// POST /api/busquedas
+router.post('/', busquedaController.createBusqueda);
 
 module.exports = router;
