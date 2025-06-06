@@ -4,6 +4,28 @@ import '../styles/AdminPanel.css';
 import AsistenteIA from '../components/AsistenteIA';
 import LibroForm from '../components/LibroForm';
 
+const initialLibroForm = {
+  nroInventario: '',
+  biblioteca: '',
+  signaturaTopografica: '',
+  titulo: '',
+  subtitulo: '',
+  autor: '',
+  editorial: '',
+  edicion: '',
+  lugar: '',
+  anioPublicacion: '',
+  paginas: '',
+  isbn: '',
+  serie: '',
+  fechaIngreso: '',
+  observaciones: '',
+  idioma: '',
+  diasPrestamo: '',
+  disponible: true,
+  portada: null
+};
+
 const initialUserForm = {
   nombre: '',
   email: '',
@@ -32,6 +54,15 @@ const AdminPanel = ({ usuario }) => {
   const [editandoUsuario, setEditandoUsuario] = useState(null);
   const [userForm, setUserForm] = useState(initialUserForm);
   const [mensajeUsuario, setMensajeUsuario] = useState('');
+  const [busqueda, setBusqueda] = useState('');
+  const [librosFiltrados, setLibrosFiltrados] = useState([]);
+  const [editandoLibro, setEditandoLibro] = useState(null);
+  const [libroForm, setLibroForm] = useState(initialLibroForm);
+  const [mensajeLibro, setMensajeLibro] = useState('');
+  const [busquedasRecientes, setBusquedasRecientes] = useState([]);
+  const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
+  const [editandoBusqueda, setEditandoBusqueda] = useState(null);
+  const [nuevoTerminoBusqueda, setNuevoTerminoBusqueda] = useState('');
   const navigate = useNavigate();
 
   // Recarga libros después de agregar uno nuevo
@@ -50,9 +81,40 @@ const AdminPanel = ({ usuario }) => {
       .catch(err => console.error(err));
   };
 
+  const recargarBusquedasRecientes = () => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (token && userId) {
+      fetch(`http://localhost:3000/api/busquedas?usuarioId=${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setBusquedasRecientes(data))
+        .catch(() => setBusquedasRecientes([]));
+    }
+  };
+
   useEffect(() => {
     recargarLibros();
     recargarUsuarios();
+    recargarBusquedasRecientes();
+  }, []);
+
+  useEffect(() => {
+    setLibrosFiltrados(libros);
+  }, [libros]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (token && userId) {
+      fetch(`http://localhost:3000/api/busquedas?usuarioId=${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setBusquedasRecientes(data.slice(0, 3)))
+        .catch(() => setBusquedasRecientes([]));
+    }
   }, []);
 
   // Manejo de formulario de usuario
@@ -122,6 +184,182 @@ const AdminPanel = ({ usuario }) => {
     setTimeout(() => setMensajeUsuario(''), 2500);
   };
 
+  const handleBuscarLibro = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    const filtro = busqueda.trim();
+
+    // Buscar en el backend (más eficiente y preciso)
+    if (filtro) {
+      const res = await fetch(`http://localhost:3000/api/libros/buscar?termino=${encodeURIComponent(filtro)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setLibrosFiltrados(data);
+      } else {
+        setLibrosFiltrados([]);
+      }
+    } else {
+      setLibrosFiltrados(libros);
+    }
+
+    // Registra la búsqueda en el backend
+    if (token && filtro) {
+      await fetch('http://localhost:3000/api/busquedas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ termino: filtro, usuarioId: userId })
+      });
+      recargarBusquedasRecientes();
+    }
+  };
+
+  // Manejo de formulario de libro
+  const handleLibroChange = e => {
+    const { name, value, type, checked, files } = e.target;
+    setLibroForm(f => ({
+      ...f,
+      [name]: type === 'checkbox'
+        ? checked
+        : type === 'file'
+        ? files[0]
+        : value
+    }));
+  };
+
+  const handleLibroSubmit = async e => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const data = new FormData();
+    Object.entries(libroForm).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) data.append(key, value);
+    });
+    data.set('anioPublicacion', libroForm.anioPublicacion || '');
+    data.set('paginas', libroForm.paginas || '');
+
+    let url = 'http://localhost:3000/api/libros';
+    let method = 'POST';
+    if (editandoLibro) {
+      url = `http://localhost:3000/api/libros/${editandoLibro.id}`;
+      method = 'PUT';
+    }
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` })
+      },
+      body: data
+    });
+
+    if (res.ok) {
+      setMensajeLibro(editandoLibro ? 'Libro actualizado correctamente' : 'Libro agregado correctamente');
+      setLibroForm(initialLibroForm);
+      setEditandoLibro(null);
+      setMostrarFormulario(false);
+      recargarLibros();
+    } else {
+      setMensajeLibro('Error al guardar libro');
+    }
+    setTimeout(() => setMensajeLibro(''), 2500);
+  };
+
+  const handleEditarLibro = libro => {
+    setEditandoLibro(libro);
+    setLibroForm({
+      nroInventario: libro.nroInventario || '',
+      biblioteca: libro.biblioteca || '',
+      signaturaTopografica: libro.signaturaTopografica || '',
+      titulo: libro.titulo || '',
+      subtitulo: libro.subtitulo || '',
+      autor: libro.autor || '',
+      editorial: libro.editorial || '',
+      edicion: libro.edicion || '',
+      lugar: libro.lugar || '',
+      anioPublicacion: libro.anioPublicacion || '',
+      paginas: libro.paginas || '',
+      isbn: libro.isbn || '',
+      serie: libro.serie || '',
+      fechaIngreso: libro.fechaIngreso || '',
+      observaciones: libro.observaciones || '',
+      idioma: libro.idioma || '',
+      diasPrestamo: libro.diasPrestamo || '',
+      disponible: libro.disponible,
+      portada: null
+    });
+    setMostrarFormulario(true);
+  };
+
+  const handleEliminarLibro = async id => {
+    if (!window.confirm('¿Seguro que deseas eliminar este libro?')) return;
+    const token = localStorage.getItem('token');
+    const res = await fetch(`http://localhost:3000/api/libros/${id}`, {
+      method: 'DELETE',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` })
+      }
+    });
+    if (res.ok) {
+      setMensajeLibro('Libro eliminado');
+      recargarLibros();
+    } else {
+      setMensajeLibro('Error al eliminar libro');
+    }
+    setTimeout(() => setMensajeLibro(''), 2500);
+  };
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      await fetch('http://localhost:3000/api/auth/logout', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+    }
+    // Limpia el estado de búsqueda y libros filtrados
+    setBusqueda('');
+    setLibrosFiltrados(libros); // Muestra todos los libros
+    // Si tienes más estados a limpiar, hazlo aquí
+    navigate('/login');
+  };
+
+  // Eliminar búsqueda
+  const handleEliminarBusqueda = async (id) => {
+    const token = localStorage.getItem('token');
+    if (!window.confirm('¿Seguro que deseas eliminar esta búsqueda?')) return;
+    await fetch(`http://localhost:3000/api/busquedas/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    recargarBusquedasRecientes();
+  };
+
+  // Editar búsqueda
+  const handleEditarBusqueda = (busqueda) => {
+    setEditandoBusqueda(busqueda.id);
+    setNuevoTerminoBusqueda(busqueda.termino);
+  };
+
+  const handleGuardarEdicionBusqueda = async (id) => {
+    const token = localStorage.getItem('token');
+    await fetch(`http://localhost:3000/api/busquedas/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ termino: nuevoTerminoBusqueda })
+    });
+    setEditandoBusqueda(null);
+    setNuevoTerminoBusqueda('');
+    recargarBusquedasRecientes();
+  };
+
   return (
     <div className="admin-overlay">
       <nav className="admin-navbar">
@@ -129,7 +367,7 @@ const AdminPanel = ({ usuario }) => {
           BIBLIOTECA<br />INTELIGENTE <span style={{ fontSize: 18, color: "#2196f3", marginLeft: 8 }}>UTN 📚</span>
         </div>
         <div>
-          <button className="admin-logout-btn" onClick={() => navigate('/login')}>Cerrar sesión</button>
+          <button className="admin-logout-btn" onClick={handleLogout}>Cerrar sesión</button>
         </div>
       </nav>
       <main className="admin-main">
@@ -156,10 +394,39 @@ const AdminPanel = ({ usuario }) => {
 
         {mostrarFormulario && (
           <div className="admin-form-container">
-            <LibroForm onLibroAgregado={() => {
-              setMostrarFormulario(false);
-              recargarLibros();
-            }} />
+            <form className="admin-libro-form" onSubmit={handleLibroSubmit} encType="multipart/form-data">
+              <input name="nroInventario" value={libroForm.nroInventario} onChange={handleLibroChange} placeholder="Nro Inventario" required />
+              <input name="biblioteca" value={libroForm.biblioteca} onChange={handleLibroChange} placeholder="Biblioteca" required />
+              <input name="signaturaTopografica" value={libroForm.signaturaTopografica} onChange={handleLibroChange} placeholder="Signatura Topográfica" required />
+              <input name="titulo" value={libroForm.titulo} onChange={handleLibroChange} placeholder="Título" required />
+              <input name="subtitulo" value={libroForm.subtitulo} onChange={handleLibroChange} placeholder="SubTítulo" />
+              <input name="autor" value={libroForm.autor} onChange={handleLibroChange} placeholder="Autores" required />
+              <input name="editorial" value={libroForm.editorial} onChange={handleLibroChange} placeholder="Editorial" />
+              <input name="edicion" value={libroForm.edicion} onChange={handleLibroChange} placeholder="Edición" />
+              <input name="lugar" value={libroForm.lugar} onChange={handleLibroChange} placeholder="Lugar" />
+              <input name="anioPublicacion" value={libroForm.anioPublicacion} onChange={handleLibroChange} placeholder="Año" type="number" />
+              <input name="paginas" value={libroForm.paginas} onChange={handleLibroChange} placeholder="Páginas" type="number" />
+              <input name="isbn" value={libroForm.isbn} onChange={handleLibroChange} placeholder="ISBN" />
+              <input name="serie" value={libroForm.serie} onChange={handleLibroChange} placeholder="Serie" />
+              <input name="fechaIngreso" value={libroForm.fechaIngreso} onChange={handleLibroChange} placeholder="Fecha de Ingreso" type="date" />
+              <input name="observaciones" value={libroForm.observaciones} onChange={handleLibroChange} placeholder="Observaciones" />
+              <input name="idioma" value={libroForm.idioma} onChange={handleLibroChange} placeholder="Idioma" required />
+              <input name="diasPrestamo" value={libroForm.diasPrestamo} onChange={handleLibroChange} placeholder="Días Préstamo" required />
+              <label>
+                Disponible
+                <input name="disponible" type="checkbox" checked={libroForm.disponible} onChange={handleLibroChange} />
+              </label>
+              <input
+                name="portada"
+                type="file"
+                accept="image/png, image/jpeg"
+                onChange={handleLibroChange}
+              />
+              <button type="submit" className="admin-libro-btn">
+                {editandoLibro ? 'Actualizar libro' : 'Agregar libro'}
+              </button>
+              {mensajeLibro && <div className="admin-libro-msg">{mensajeLibro}</div>}
+            </form>
           </div>
         )}
 
@@ -219,8 +486,74 @@ const AdminPanel = ({ usuario }) => {
         )}
 
         <h2 className="admin-section-title">Lista de Libros</h2>
+
+        {/* Input de búsqueda de libros */}
+        <form className="admin-busqueda-form" onSubmit={handleBuscarLibro}>
+          <input
+            type="text"
+            placeholder="Buscar libro por título o autor..."
+            value={busqueda}
+            onChange={e => setBusqueda(e.target.value)}
+            className="admin-busqueda-input"
+            onFocus={() => setMostrarSugerencias(true)}
+            onBlur={() => setTimeout(() => setMostrarSugerencias(false), 200)}
+          />
+          <button type="submit" className="admin-busqueda-btn">Buscar</button>
+          <button
+            type="button"
+            className="admin-busqueda-btn limpiar"
+            onClick={() => {
+              setBusqueda('');
+              setLibrosFiltrados(libros);
+            }}
+          >
+            Limpiar
+          </button>
+          {mostrarSugerencias && busquedasRecientes.length > 0 && (
+            <ul className="busquedas-sugerencias">
+              {busquedasRecientes.map(b => (
+                <li key={b.id} onClick={() => setBusqueda(b.termino)}>
+                  {b.termino}
+                </li>
+              ))}
+            </ul>
+          )}
+        </form>
+
+        {/* Sección de Búsquedas Recientes */}
+        <div className="admin-busquedas-recientes">
+          <h3 className="admin-subtitle">Búsquedas Recientes</h3>
+          <ul className="admin-busquedas-list">
+            {busquedasRecientes.length === 0 ? (
+              <li className="admin-busqueda-item">No hay búsquedas recientes.</li>
+            ) : (
+              busquedasRecientes.map(b => (
+                <li className="admin-busqueda-item" key={b.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {editandoBusqueda === b.id ? (
+                    <>
+                      <input
+                        value={nuevoTerminoBusqueda}
+                        onChange={e => setNuevoTerminoBusqueda(e.target.value)}
+                        style={{ marginRight: 8 }}
+                      />
+                      <button onClick={() => handleGuardarEdicionBusqueda(b.id)} className="admin-busqueda-btn">Guardar</button>
+                      <button onClick={() => setEditandoBusqueda(null)} className="admin-busqueda-btn limpiar">Cancelar</button>
+                    </>
+                  ) : (
+                    <>
+                      <span>{b.termino}</span>
+                      <button onClick={() => handleEditarBusqueda(b)} className="admin-busqueda-btn">Editar</button>
+                      <button onClick={() => handleEliminarBusqueda(b.id)} className="admin-busqueda-btn limpiar">Eliminar</button>
+                    </>
+                  )}
+                </li>
+              )))
+            }
+          </ul>
+        </div>
+
         <ul className="book-list">
-          {libros.map(libro => (
+          {librosFiltrados.map(libro => (
             <li className="book-item" key={libro.id}>
               <h3>{libro.titulo}</h3>
               <p><strong>Subtítulo:</strong> {libro.subtitulo}</p>
@@ -247,6 +580,10 @@ const AdminPanel = ({ usuario }) => {
                   style={{maxWidth: '120px', maxHeight: '160px', borderRadius: 8, marginTop: 8}}
                 />
               )}
+              <div className="admin-libro-actions">
+                <button onClick={() => handleEditarLibro(libro)}>Editar</button>
+                <button onClick={() => handleEliminarLibro(libro.id)} className="eliminar">Eliminar</button>
+              </div>
             </li>
           ))}
         </ul>

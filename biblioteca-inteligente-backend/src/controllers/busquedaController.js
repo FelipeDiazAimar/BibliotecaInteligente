@@ -1,29 +1,60 @@
 const { Busqueda } = require('../models');
+const { validationResult } = require('express-validator');
 
-// Trae todas las búsquedas realizadas por los usuarios, o solo las de un usuario si se pasa usuarioId
-exports.getAll = async (req, res) => {
+exports.getBusquedas = async (req, res) => {
   try {
     const where = {};
-    if (req.query.usuarioId) {
-      where.usuarioId = req.query.usuarioId;
-    }
-    const busquedas = await Busqueda.findAll({ where });
+    if (req.query.usuarioId) where.usuarioId = req.query.usuarioId;
+    // Solo trae las 3 más recientes
+    const busquedas = await Busqueda.findAll({
+      where,
+      order: [['createdAt', 'DESC']],
+      limit: 3
+    });
     res.json(busquedas);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Guarda una nueva búsqueda realizada por un usuario
-exports.create = async (req, res) => {
+exports.createBusqueda = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
   try {
-    // Guarda la búsqueda y asocia el usuario que la hizo
-    const busqueda = await Busqueda.create({
-      ...req.body,
-      usuarioId: req.usuario.id
-    });
-    res.status(201).json(busqueda);
+    const { termino, usuarioId } = req.body;
+    const nuevaBusqueda = await Busqueda.create({ termino, usuarioId });
+    res.status(201).json(nuevaBusqueda);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// PUT /api/busquedas/:id
+exports.updateBusqueda = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+  try {
+    const { termino } = req.body;
+    if (!termino) return res.status(400).json({ error: 'El término es obligatorio' });
+    const busqueda = await Busqueda.findByPk(req.params.id);
+    if (!busqueda) return res.status(404).json({ error: 'Búsqueda no encontrada' });
+    await busqueda.update({ termino });
+    res.json(busqueda);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// DELETE /api/busquedas/:id
+exports.deleteBusqueda = async (req, res) => {
+  try {
+    const busqueda = await Busqueda.findByPk(req.params.id);
+    if (!busqueda) return res.status(404).json({ error: 'Búsqueda no encontrada' });
+    await busqueda.destroy();
+    res.json({ mensaje: 'Búsqueda eliminada correctamente' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

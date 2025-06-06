@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Usuario, Prompt, Respuesta } = require('../models');
+const { Usuario, Prompt, Respuesta, Busqueda } = require('../models');
 
 // Controlador para registrar un usuario nuevo
 exports.register = async (req, res) => {
@@ -52,6 +52,9 @@ exports.login = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     const usuarioId = req.usuario.id;
+
+    // Borra las búsquedas del usuario
+    await Busqueda.destroy({ where: { usuarioId } });
 
     // Encuentra todos los prompts del usuario
     const prompts = await Prompt.findAll({ where: { usuarioId } });
