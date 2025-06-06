@@ -61,6 +61,8 @@ const AdminPanel = ({ usuario }) => {
   const [mensajeLibro, setMensajeLibro] = useState('');
   const [busquedasRecientes, setBusquedasRecientes] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
+  const [editandoBusqueda, setEditandoBusqueda] = useState(null);
+  const [nuevoTerminoBusqueda, setNuevoTerminoBusqueda] = useState('');
   const navigate = useNavigate();
 
   // Recarga libros después de agregar uno nuevo
@@ -326,6 +328,38 @@ const AdminPanel = ({ usuario }) => {
     navigate('/login');
   };
 
+  // Eliminar búsqueda
+  const handleEliminarBusqueda = async (id) => {
+    const token = localStorage.getItem('token');
+    if (!window.confirm('¿Seguro que deseas eliminar esta búsqueda?')) return;
+    await fetch(`http://localhost:3000/api/busquedas/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    recargarBusquedasRecientes();
+  };
+
+  // Editar búsqueda
+  const handleEditarBusqueda = (busqueda) => {
+    setEditandoBusqueda(busqueda.id);
+    setNuevoTerminoBusqueda(busqueda.termino);
+  };
+
+  const handleGuardarEdicionBusqueda = async (id) => {
+    const token = localStorage.getItem('token');
+    await fetch(`http://localhost:3000/api/busquedas/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ termino: nuevoTerminoBusqueda })
+    });
+    setEditandoBusqueda(null);
+    setNuevoTerminoBusqueda('');
+    recargarBusquedasRecientes();
+  };
+
   return (
     <div className="admin-overlay">
       <nav className="admin-navbar">
@@ -494,10 +528,24 @@ const AdminPanel = ({ usuario }) => {
               <li className="admin-busqueda-item">No hay búsquedas recientes.</li>
             ) : (
               busquedasRecientes.map(b => (
-                <li className="admin-busqueda-item" key={b.id}>
-                  <Link to="#" className="admin-busqueda-link">
-                    {b.termino}
-                  </Link>
+                <li className="admin-busqueda-item" key={b.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {editandoBusqueda === b.id ? (
+                    <>
+                      <input
+                        value={nuevoTerminoBusqueda}
+                        onChange={e => setNuevoTerminoBusqueda(e.target.value)}
+                        style={{ marginRight: 8 }}
+                      />
+                      <button onClick={() => handleGuardarEdicionBusqueda(b.id)} className="admin-busqueda-btn">Guardar</button>
+                      <button onClick={() => setEditandoBusqueda(null)} className="admin-busqueda-btn limpiar">Cancelar</button>
+                    </>
+                  ) : (
+                    <>
+                      <span>{b.termino}</span>
+                      <button onClick={() => handleEditarBusqueda(b)} className="admin-busqueda-btn">Editar</button>
+                      <button onClick={() => handleEliminarBusqueda(b.id)} className="admin-busqueda-btn limpiar">Eliminar</button>
+                    </>
+                  )}
                 </li>
               )))
             }
