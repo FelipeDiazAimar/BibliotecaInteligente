@@ -59,6 +59,8 @@ const AdminPanel = ({ usuario }) => {
   const [editandoLibro, setEditandoLibro] = useState(null);
   const [libroForm, setLibroForm] = useState(initialLibroForm);
   const [mensajeLibro, setMensajeLibro] = useState('');
+  const [busquedasRecientes, setBusquedasRecientes] = useState([]);
+  const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const navigate = useNavigate();
 
   // Recarga libros después de agregar uno nuevo
@@ -77,14 +79,41 @@ const AdminPanel = ({ usuario }) => {
       .catch(err => console.error(err));
   };
 
+  const recargarBusquedasRecientes = () => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (token && userId) {
+      fetch(`http://localhost:3000/api/busquedas?usuarioId=${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setBusquedasRecientes(data))
+        .catch(() => setBusquedasRecientes([]));
+    }
+  };
+
   useEffect(() => {
     recargarLibros();
     recargarUsuarios();
+    recargarBusquedasRecientes();
   }, []);
 
   useEffect(() => {
     setLibrosFiltrados(libros);
   }, [libros]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (token && userId) {
+      fetch(`http://localhost:3000/api/busquedas?usuarioId=${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setBusquedasRecientes(data.slice(0, 3)))
+        .catch(() => setBusquedasRecientes([]));
+    }
+  }, []);
 
   // Manejo de formulario de usuario
   const handleUserChange = e => {
@@ -156,6 +185,7 @@ const AdminPanel = ({ usuario }) => {
   const handleBuscarLibro = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
     const filtro = busqueda.trim();
 
     // Buscar en el backend (más eficiente y preciso)
@@ -179,8 +209,9 @@ const AdminPanel = ({ usuario }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ termino: filtro })
+        body: JSON.stringify({ termino: filtro, usuarioId: userId })
       });
+      recargarBusquedasRecientes();
     }
   };
 
@@ -278,6 +309,23 @@ const AdminPanel = ({ usuario }) => {
     setTimeout(() => setMensajeLibro(''), 2500);
   };
 
+  const handleLogout = async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      await fetch('http://localhost:3000/api/auth/logout', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+    }
+    // Limpia el estado de búsqueda y libros filtrados
+    setBusqueda('');
+    setLibrosFiltrados(libros); // Muestra todos los libros
+    // Si tienes más estados a limpiar, hazlo aquí
+    navigate('/login');
+  };
+
   return (
     <div className="admin-overlay">
       <nav className="admin-navbar">
@@ -285,7 +333,7 @@ const AdminPanel = ({ usuario }) => {
           BIBLIOTECA<br />INTELIGENTE <span style={{ fontSize: 18, color: "#2196f3", marginLeft: 8 }}>UTN 📚</span>
         </div>
         <div>
-          <button className="admin-logout-btn" onClick={() => navigate('/login')}>Cerrar sesión</button>
+          <button className="admin-logout-btn" onClick={handleLogout}>Cerrar sesión</button>
         </div>
       </nav>
       <main className="admin-main">
@@ -413,6 +461,8 @@ const AdminPanel = ({ usuario }) => {
             value={busqueda}
             onChange={e => setBusqueda(e.target.value)}
             className="admin-busqueda-input"
+            onFocus={() => setMostrarSugerencias(true)}
+            onBlur={() => setTimeout(() => setMostrarSugerencias(false), 200)}
           />
           <button type="submit" className="admin-busqueda-btn">Buscar</button>
           <button
@@ -425,7 +475,34 @@ const AdminPanel = ({ usuario }) => {
           >
             Limpiar
           </button>
+          {mostrarSugerencias && busquedasRecientes.length > 0 && (
+            <ul className="busquedas-sugerencias">
+              {busquedasRecientes.map(b => (
+                <li key={b.id} onClick={() => setBusqueda(b.termino)}>
+                  {b.termino}
+                </li>
+              ))}
+            </ul>
+          )}
         </form>
+
+        {/* Sección de Búsquedas Recientes */}
+        <div className="admin-busquedas-recientes">
+          <h3 className="admin-subtitle">Búsquedas Recientes</h3>
+          <ul className="admin-busquedas-list">
+            {busquedasRecientes.length === 0 ? (
+              <li className="admin-busqueda-item">No hay búsquedas recientes.</li>
+            ) : (
+              busquedasRecientes.map(b => (
+                <li className="admin-busqueda-item" key={b.id}>
+                  <Link to="#" className="admin-busqueda-link">
+                    {b.termino}
+                  </Link>
+                </li>
+              )))
+            }
+          </ul>
+        </div>
 
         <ul className="book-list">
           {librosFiltrados.map(libro => (
