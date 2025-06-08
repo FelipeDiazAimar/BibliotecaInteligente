@@ -56,15 +56,6 @@
   color: #3f51ff;
 }
 
-.vozia-atras-btn {
-  background: none;
-  border: none;
-  color: #222;
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-}
-
 .vozia-user-icon {
   margin-left: 1.5rem;
   display: flex;
@@ -162,4 +153,8 @@
   font-size: 1rem;
   opacity: 0.85;
   letter-spacing: 0.02em;
+}
+
+.panel-link{
+  background: none;
 }

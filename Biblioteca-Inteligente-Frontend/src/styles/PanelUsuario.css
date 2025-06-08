@@ -130,6 +130,7 @@
   color: #222;
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   transition: background 0.18s, color 0.18s;
+  white-space: nowrap;
 }
 
 .panel-link-turnero { border-left: 6px solid #2196f3; }

@@ -14,13 +14,9 @@ export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
           </div>
         }
         right={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <button className="panel-atras-btn" onClick={onAtras}>
-              Atrás
-            </button>
-            <button className="panel-logout-btn" onClick={onLogout}>
-              Cerrar sesión
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' , marginRight: '80px'}}>
+            <Link to="#" className="panel-link" onClick={onAtras}>Atrás</Link>
+            <Link to="#" className="panel-link" onClick={onLogout}>Cerrar sesión</Link>
           </div>
         }
       />

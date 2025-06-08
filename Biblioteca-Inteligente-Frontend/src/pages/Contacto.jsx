@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Header from '../components/Header';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function ContactPage() {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+
+  const onAtras = () => {
+    navigate(-1);
+  };
+
+  const onLogout = () => {
+    // Aquí puedes limpiar el estado de autenticación si es necesario
+    navigate('/login');
+  };
 
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
@@ -27,14 +36,17 @@ function ContactPage() {
             </div>
           </div>
         }
+// ...existing code...
         right={
-          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <button className="panel-link" onClick={() => navigate('/voz')}>Ask AI</button>
-            <button className="panel-link" onClick={() => navigate('/panel')}>Catalogo</button>
-            <button className="panel-link" onClick={() => navigate('/turnero')}>Turnero</button>
-            <button className="panel-atras-btn" onClick={() => navigate(-1)}>Atrás</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' , marginRight: '80px'}}>
+            <Link to="/voz" className="panel-link">Ask AI</Link>
+            <Link to="/catalogo" className="panel-link">Catalogo</Link>
+            <Link to="/turnero" className="panel-link">Turnero</Link>
+            <Link to="#" className="panel-link" onClick={onAtras}>Atrás</Link>
+            <Link to="#" className="panel-link" onClick={onLogout}>Cerrar sesión</Link>
           </div>
         }
+// ...existing code...
       />
       <h1>Contactanos:</h1>
       <form onSubmit={handleSubmit}>

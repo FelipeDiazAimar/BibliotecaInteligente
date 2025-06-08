@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import '../styles/VozIA.css';
 
@@ -9,6 +9,12 @@ export default function VozIA() { // Elimina onAtras
   const [historial, setHistorial] = useState([]);
   const formRef = useRef(null);
   const navigate = useNavigate();
+  // Handlers for navigation and logout
+    const onAtras = () => navigate(-1);
+    const onLogout = () => {
+      localStorage.removeItem('token');
+      navigate('/login');
+    };
 
   // Cargar historial al montar
   useEffect(() => {
@@ -59,11 +65,12 @@ export default function VozIA() { // Elimina onAtras
           </div>
         }
         right={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
-            <a href="#" className="panel-link">Catalogo</a>
-            <a href="#" className="panel-link">Turnero</a>
-            <a href="#" className="panel-link">Contacto</a>
-            <button className="panel-atras-btn" onClick={() => navigate('/panel')}>Atrás</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' , marginRight: '80px'}}>
+            <Link to="/catalogo" className="panel-link">Catalogo</Link>
+            <Link to="/turnero" className="panel-link">Turnero</Link>
+            <Link to="/contacto" className="panel-link">Contacto</Link>
+            <Link to="#" className="panel-link" onClick={onAtras}>Atrás</Link>
+            <Link to="#" className="panel-link" onClick={onLogout}>Cerrar sesión</Link>
             <span className="panel-user-icon" title="Usuario">
               <svg width="28" height="28" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
                 <circle cx="12" cy="8" r="4"/>
