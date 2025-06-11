@@ -125,6 +125,8 @@ nav ul {
   gap: 2.5rem;
   margin: 0;
   padding: 0;
+  margin-right: 40px;
+
 }
 
 nav a, .nav-btn {
@@ -271,13 +273,34 @@ footer {
   letter-spacing: 0.02em;
 }
 
+/* Toast styles para RegistroUsuario */
+.registro-toast {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  min-width: 320px;
+  max-width: 400px;
+  padding: 1em 2em;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  cursor: pointer;
+  animation: fadeInDown 0.5s;
+}
+
+.registro-toast.success {
+  background: linear-gradient(90deg,#43e97b 0,#38f9d7 100%);
+}
+
+.registro-toast.error {
+  background: linear-gradient(90deg,#ff5858 0,#f857a6 100%);
+}
+
 @keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-40px) translateX(-50%);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) translateX(-50%);
-  }
+  from { opacity: 0; transform: translateY(-40px) translateX(-50%);}
+  to   { opacity: 1; transform: translateY(0) translateX(-50%);}
 }

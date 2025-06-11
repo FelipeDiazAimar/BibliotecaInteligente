@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/RegistroUsuario.css';
+import Navbar from '../components/Navbar';
 
 function Toast({ show, message, type, onClose }) {
   if (!show) return null;
@@ -8,27 +9,6 @@ function Toast({ show, message, type, onClose }) {
     <div
       className={`registro-toast ${type}`}
       onClick={onClose}
-      style={{
-        position: 'fixed',
-        top: 30,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 9999,
-        minWidth: 320,
-        maxWidth: 400,
-        padding: '1em 2em',
-        borderRadius: 10,
-        color: '#fff',
-        fontWeight: 600,
-        fontSize: 18,
-        boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
-        cursor: 'pointer',
-        background:
-          type === 'success'
-            ? 'linear-gradient(90deg,#43e97b 0,#38f9d7 100%)'
-            : 'linear-gradient(90deg,#ff5858 0,#f857a6 100%)',
-        animation: 'fadeInDown 0.5s'
-      }}
     >
       {message}
     </div>
@@ -112,15 +92,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
   return (
     <div className="registro-overlay">
       <Toast show={toast.show} message={toast.message} type={toast.type} onClose={() => setToast({ ...toast, show: false })} />
-      <nav>
-        <ul>
-          <li><a href="#">Acerca de</a></li>
-          <li><Link to="/contacto">Contacto</Link></li>
-          <li>
-            <button className="nav-btn" onClick={() => navigate('/login')}>Atrás</button>
-          </li>
-        </ul>
-      </nav>
+      <Navbar extraLinks={[{ to: '/', label: 'Atrás' }]} hideLinks={['login']} />
       <div className="registro-main">
         <div className="registro-header">
           <div className="registro-logo">
