@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Header from '../components/Header';
 import { useNavigate, Link } from 'react-router-dom';
+import '../styles/Contacto.css';
 
 function ContactPage() {
   const [message, setMessage] = useState('');
@@ -91,28 +92,37 @@ function ContactPage() {
           <div>📍 Zeballos 1341, S2000BQA Rosario, Santa Fe</div>
           <div>☎️ (0341) 448-1871</div>
           <div>✉️ info@frro.utn.edu.ar</div>
-          <div className="contact-socials">
-            <a
-              href="https://www.frro.utn.edu.ar/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-social-link"
-              aria-label="Sitio UTN"
-            >
-              <span className="contact-icon contact-icon-utn" />
-            </a>
-            <a
-              href="https://www.facebook.com/utnfrro"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-social-link"
-              aria-label="Facebook UTN"
-            >
-              <span className="contact-icon contact-icon-fb" />
-            </a>
-          </div>
+        <div className="contact-socials contact-socials-bottom">
+          <a
+            href="https://www.facebook.com/utnfrro"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="contact-social-link"
+            aria-label="Facebook UTN"
+          >
+            <span className="contact-icon contact-icon-fb" />
+          </a>
+          <a
+            href="https://x.com/utnfrro"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="contact-social-link"
+            aria-label="X UTN"
+          >
+            <span className="contact-icon contact-icon-x" />
+          </a>
+          <a
+            href="https://www.instagram.com/utnfrro"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="contact-social-link"
+            aria-label="Instagram UTN"
+          >
+            <span className="contact-icon contact-icon-ig" />
+          </a>
         </div>
       </div>
+    </div>
     </div>
   );
 }

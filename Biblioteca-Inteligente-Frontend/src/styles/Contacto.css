@@ -5,7 +5,7 @@
     justify-content: center;
     min-height: calc(100vh - 100px); /* Adjust as needed for header/footer */
     padding: 40px 20px; /* Increased padding */
-    background-color: #f8f8f8; /* Light background color */
+    background-color: #ffffff; /* Light background color */
     font-family: 'Arial', sans-serif; /* Professional font */
     font-size: 1.25rem; /* Aumenta el tamaño base para toda la página de contacto */
 }
@@ -33,7 +33,7 @@
     width: 100%;
     max-width: 600px; /* Increased max-width */
     padding: 30px;
-    background-color: #fff; /* White background for the form */
+    background-color: #ffffff; /* White background for the form */
     border-radius: 10px; /* Rounded corners */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
@@ -78,6 +78,13 @@
   gap: 1.5em;
 }
 
+.contact-socials-bottom {
+  margin-top: 3.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 2.2em;
+}
+
 .contact-social-link {
   display: flex;
   align-items: center;
@@ -98,10 +105,9 @@
 
 .contact-icon {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   background-size: contain;
-  background-repeat: no-repeat;
   filter: grayscale(1);
   transition: filter 0.2s;
 }
@@ -110,12 +116,17 @@
   filter: grayscale(0) invert(1);
 }
 
-/* UTN logo (puedes reemplazar la URL por el logo real si tienes uno) */
-.contact-icon-utn {
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/2/2e/UTN_logo.png');
-}
-
 /* Facebook logo */
 .contact-icon-fb {
   background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg');
+}
+
+/* X logo */
+.contact-icon-x {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAA/0lEQVR4AbXPIazCMACE4d+L2qoZFEGSIGcRc/gJJB5XMzGJmK9EN0HMi+qaibkKVF1txdQe4g0YzPK5yyWXHL9TaPNQ89LojH87N1rbJcXkMF4Fk31UMrf34hm14KUeoQxGArALHTMuQD2cAWQfJXOpgTbksGr9ng8qluShJTPhyCdx63POg7rEim95ZyR68I1ggQpnCEGwyPicw6hZtPEGmnhkycqOio1zm6XuFtyw5XDXfGvuau0dXHzJp8pfBPuhIXO9ZK5ILUCdSvLYMpc6ASBtl3EaC97I4KaFaOCaBE9Zn5jUsVqR2vcTJZO1DdbGoZryVp94Ka/mQfE7f2T3df0WBhLDAAAAAElFTkSuQmCC');
+}
+
+/* Instagram logo (blanco y negro) */
+.contact-icon-ig {
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/9/95/Instagram_logo_2022.svg');
 }
