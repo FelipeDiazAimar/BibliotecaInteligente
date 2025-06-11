@@ -37,7 +37,7 @@ export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
             <span className="panel-link-icon">🕒</span>
             Turnero Virtual
           </a>
-          <a className="panel-link panel-link-catalogo" href="#">
+          <a className="panel-link panel-link-catalogo" href="/catalogo">
             <span className="panel-link-icon">📖</span>
             Catalogo Virtual
           </a>

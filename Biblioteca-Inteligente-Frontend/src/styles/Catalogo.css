@@ -1,0 +1,149 @@
+.catalogo-overlay {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.catalogo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2.5rem 2.5rem 0 2.5rem;
+}
+
+.catalogo-logo {
+  font-size: 2.1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  color: #222;
+  text-align: left;
+}
+
+.catalogo-utn {
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin-top: 0.5rem;
+  color: #222;
+}
+
+.catalogo-nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.catalogo-ai-btn {
+  background: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7em 2.2em;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 1.2rem;
+  transition: background 0.2s;
+}
+.catalogo-ai-btn:hover {
+  background: #1769aa;
+}
+
+.catalogo-link {
+  color: #222;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-right: 1.2rem;
+  transition: color 0.2s;
+}
+.catalogo-link:hover {
+  color: #2196f3;
+}
+
+.catalogo-user-icon {
+  font-size: 1.7em;
+  margin-left: 1.5rem;
+}
+
+.catalogo-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2.5rem;
+}
+
+.catalogo-busqueda-filtros {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 2.2rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+.catalogo-busqueda {
+  flex: 1;
+  padding: 1em;
+  border-radius: 8px;
+  border: 1.5px solid #bbb;
+  font-size: 1.1rem;
+  background: #fafafa;
+  color: #222;
+}
+
+.catalogo-filtro {
+  padding: 1em;
+  border-radius: 8px;
+  border: 1.5px solid #bbb;
+  font-size: 1.1rem;
+  background: #fafafa;
+  color: #222;
+  min-width: 140px;
+}
+
+.catalogo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 900px;
+  min-height: 350px;
+}
+
+.catalogo-paginacion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2.5rem 0 1.5rem 0;
+}
+
+.catalogo-paginacion button {
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.4em 1em;
+  border-radius: 6px;
+  transition: background 0.18s;
+}
+
+.catalogo-pagina-activa,
+.catalogo-paginacion button:active {
+  background: #2196f3;
+  color: #fff;
+}
+
+.catalogo-footer {
+  color: #888;
+  text-align: center;
+  padding: 1.2rem 0 0.7rem 0;
+  font-size: 1rem;
+  opacity: 0.85;
+  letter-spacing: 0.02em;
+}

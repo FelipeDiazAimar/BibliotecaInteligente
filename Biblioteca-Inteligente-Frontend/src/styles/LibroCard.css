@@ -1,0 +1,59 @@
+.libro-card {
+  background: #fff;
+  border: 2px solid #222;
+  border-radius: 10px;
+  width: 210px;
+  min-height: 260px;
+  margin: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  padding: 0.7rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.libro-card-img {
+  width: 100%;
+  height: 160px;
+  background: #fafafa;
+  border: 1.5px solid #bbb;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.7rem;
+  overflow: hidden;
+}
+
+.libro-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.libro-card-placeholder {
+  width: 90%;
+  height: 90%;
+  border: 1.5px dashed #bbb;
+  border-radius: 7px;
+  background: #f3f3f3;
+}
+
+.libro-card-info {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.05rem;
+  color: #222;
+  margin-top: 0.2rem;
+}
+
+.libro-card-titulo {
+  font-weight: bold;
+  margin-bottom: 0.2em;
+}
+
+.libro-card-autor,
+.libro-card-editorial {
+  font-size: 0.98rem;
+  color: #444;
+}
