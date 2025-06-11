@@ -33,7 +33,7 @@ function App() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      setUsuario(data);
+      setUsuario(data); // Esto debe ejecutarse correctamente
     }
   }
 
@@ -51,6 +51,20 @@ function App() {
     localStorage.removeItem('token');
     setUsuario(null);
   }
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (token && userId && !usuario) {
+      fetch(`http://localhost:3000/api/usuarios/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setUsuario(data))
+        .catch(() => setUsuario(null));
+    }
+    // Solo se ejecuta si usuario cambia a null
+  }, [usuario]);
 
   return (
     <BrowserRouter>

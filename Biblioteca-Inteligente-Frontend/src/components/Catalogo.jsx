@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import LibroCard from './LibroCard';
+import Header from './Header';
+import { Link } from 'react-router-dom';
 import '../styles/Catalogo.css';
 
 const PAGE_SIZE = 8;
@@ -141,19 +143,23 @@ export default function Catalogo() {
 
   return (
     <div className="catalogo-overlay">
-      <header className="catalogo-header">
-        <div>
-          <div className="catalogo-logo">BIBLIOTECA<br />INTELIGENTE</div>
-          <div className="catalogo-utn">UTN <span role="img" aria-label="libro">📚</span></div>
-        </div>
-        <div className="catalogo-nav">
-          <button className="catalogo-ai-btn">Ask AI</button>
-          <a href="#" className="catalogo-link">Turnero</a>
-          <a href="#" className="catalogo-link">Contacto</a>
-          <a href="#" className="catalogo-link">Atras</a>
-          <span className="catalogo-user-icon">👤</span>
-        </div>
-      </header>
+      <Header
+        left={
+          <div>
+            <div className="catalogo-logo">BIBLIOTECA<br />INTELIGENTE</div>
+            <div className="catalogo-utn">UTN <span role="img" aria-label="libro">📚</span></div>
+          </div>
+        }
+        right={
+          <div className="catalogo-nav">
+            <Link to="/voz" className="catalogo-link">Ask AI</Link>
+            <Link to="/turnero" className="catalogo-link">Turnero</Link>
+            <Link to="/contacto" className="catalogo-link">Contacto</Link>
+            <Link to="/" className="catalogo-link">Atrás</Link>
+            <span className="catalogo-user-icon">👤</span>
+          </div>
+        }
+      />
       <main className="catalogo-main">
         <form
           className="catalogo-busqueda-filtros"

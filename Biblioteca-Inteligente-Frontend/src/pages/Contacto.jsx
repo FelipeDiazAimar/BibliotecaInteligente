@@ -10,11 +10,6 @@ function ContactPage() {
     navigate(-1);
   };
 
-  const onLogout = () => {
-    // Aquí puedes limpiar el estado de autenticación si es necesario
-    navigate('/login');
-  };
-
   const handleMessageChange = (event) => {
     setMessage(event.target.value);
   };
@@ -38,11 +33,10 @@ function ContactPage() {
         }
         right={
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' , marginRight: '80px'}}>
-            <Link to="/voz" className="panel-link">Ask AI</Link>
-            <Link to="/catalogo" className="panel-link">Catalogo</Link>
-            <Link to="/turnero" className="panel-link">Turnero</Link>
+            <Link to="/login" className="panel-link">Ask AI</Link>
+            <Link to="/login" className="panel-link">Catalogo</Link>
+            <Link to="/login" className="panel-link">Turnero</Link>
             <Link to="#" className="panel-link" onClick={onAtras}>Atrás</Link>
-            <Link to="#" className="panel-link" onClick={onLogout}>Cerrar sesión</Link>
           </div>
         }
       />
