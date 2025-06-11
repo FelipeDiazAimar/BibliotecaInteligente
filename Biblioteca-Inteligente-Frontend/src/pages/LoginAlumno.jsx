@@ -28,8 +28,6 @@ export default function LoginAlumno({ onLogin }) {
 
       // Llama a la función para actualizar el usuario en App.jsx
       if (onLogin) await onLogin();
-
-      // Ahora navega según el rol
       if (data.rol === 'admin') navigate('/admin');
       else navigate('/panel');
     } catch {
