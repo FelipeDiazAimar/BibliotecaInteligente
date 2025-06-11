@@ -4,7 +4,7 @@ import '../styles/LoginAlumno.css';
 
 export default function LoginAlumno({ onLogin }) {
   const navigate = useNavigate();
-  const [legajo, setLegajo] = useState('');
+  const [dni, setdni] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
@@ -15,7 +15,7 @@ export default function LoginAlumno({ onLogin }) {
       const res = await fetch('http://localhost:3000/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ legajo, password })
+        body: JSON.stringify({ dni, password })
       });
       const data = await res.json();
       if (!res.ok) {
@@ -72,11 +72,11 @@ export default function LoginAlumno({ onLogin }) {
           </div>
           <form onSubmit={handleSubmit} className="login-form">
             <div>
-              <label>Legajo</label>
+              <label>dni</label>
               <input
                 type="text"
-                value={legajo}
-                onChange={e => setLegajo(e.target.value)}
+                value={dni}
+                onChange={e => setdni(e.target.value)}
                 required
                 autoFocus
               />

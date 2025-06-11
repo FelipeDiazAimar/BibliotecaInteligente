@@ -30,7 +30,6 @@ export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
           </div>
           <div>
             <div className="panel-user-name">{usuario.nombre}</div>
-            <div className="panel-user-carrera">{usuario.carrera}</div>
           </div>
         </div>
         <div className="panel-links">
@@ -62,6 +61,3 @@ export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
     </div>
   );
 }
-
-// Ejemplo de uso:
-// <PanelUsuario usuario={{nombre: "Valentin Mecchia", carrera: "Ing.Sistemas de informacion"}} onAtras={() => ...} />

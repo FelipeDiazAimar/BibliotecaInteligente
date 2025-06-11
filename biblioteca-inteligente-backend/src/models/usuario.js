@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
   const Usuario = sequelize.define('Usuario', {
-    legajo: {
+    dni: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true
@@ -17,12 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     password: DataTypes.STRING, // Se guarda encriptada
     rol: {
-      type: DataTypes.ENUM('estudiante', 'profesor', 'admin'),
-      defaultValue: 'estudiante'
-    },
-    carrera: {
-      type: DataTypes.ENUM('Ingeniería en Sistemas de Información', 'Ingeniería Electromecánica', 'Ingeniería Electrónica','Ingeniería Química','Licenciatura en Administración Rural','Tecnicatura Universitaria en Programación','Tecnicatura Universitaria en Electrónica','Tecnicatura Universitaria en Mantenimiento Industrial'),
-      allowNull: true // Puede ser null si no aplica (ej. admin)
+      type: DataTypes.ENUM('usuario', 'admin'),
+      defaultValue: 'usuario'
     },
   }, {
     // Antes de guardar el usuario, encripta la contraseña

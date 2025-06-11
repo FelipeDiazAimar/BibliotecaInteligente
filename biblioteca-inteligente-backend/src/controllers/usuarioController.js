@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken');
 // Controlador para iniciar sesión de usuario
 exports.login = async (req, res) => {
   try {
-    const { legajo, password } = req.body;
-    // Busca el usuario por legajo
-    const usuario = await Usuario.findOne({ where: { legajo } });
+    const { dni, password } = req.body;
+    // Busca el usuario por dni
+    const usuario = await Usuario.findOne({ where: { dni } });
     if (!usuario) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
@@ -18,7 +18,7 @@ exports.login = async (req, res) => {
     }
     // Genera un token para el usuario
     const token = jwt.sign(
-      { id: usuario.id, legajo: usuario.legajo, rol: usuario.rol },
+      { id: usuario.id, dni: usuario.dni, rol: usuario.rol },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );

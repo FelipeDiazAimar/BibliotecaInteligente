@@ -29,22 +29,10 @@ const initialLibroForm = {
 const initialUserForm = {
   nombre: '',
   email: '',
-  legajo: '',
-  carrera: '',
+  dni: '',
   rol: 'estudiante',
   password: ''
 };
-
-const carrerasDisponibles = [
-  "Ingeniería en Sistemas de Información",
-  "Ingeniería Electromecánica",
-  "Ingeniería Electrónica",
-  "Ingeniería Química",
-  "Licenciatura en Administración Rural",
-  "Tecnicatura Universitaria en Programación",
-  "Tecnicatura Universitaria en Electrónica",
-  "Tecnicatura Universitaria en Mantenimiento Industrial"
-];
 
 const AdminPanel = ({ usuario }) => {
   const [libros, setLibros] = useState([]);
@@ -162,8 +150,7 @@ const AdminPanel = ({ usuario }) => {
     setUserForm({
       nombre: usuario.nombre,
       email: usuario.email,
-      legajo: usuario.legajo,
-      carrera: usuario.carrera,
+      dni: usuario.dni,
       rol: usuario.rol,
       password: ''
     });
@@ -380,7 +367,6 @@ const AdminPanel = ({ usuario }) => {
           </div>
           <div>
             <div className="panel-user-name">{usuario.nombre}</div>
-            <div className="panel-user-carrera">{usuario.carrera}</div>
             <div style={{fontWeight: 700, color: "#2196f3"}}>Administrador</div>
           </div>
         </div>
@@ -445,21 +431,9 @@ const AdminPanel = ({ usuario }) => {
             <form className="admin-user-form" onSubmit={handleUserSubmit}>
               <input name="nombre" value={userForm.nombre} onChange={handleUserChange} placeholder="Nombre" required />
               <input name="email" value={userForm.email} onChange={handleUserChange} placeholder="Email" type="email" required />
-              <input name="legajo" value={userForm.legajo} onChange={handleUserChange} placeholder="Legajo" required />
-              <select
-                name="carrera"
-                value={userForm.carrera}
-                onChange={handleUserChange}
-                required
-              >
-                <option value="" disabled>Selecciona una carrera</option>
-                {carrerasDisponibles.map(carrera => (
-                  <option key={carrera} value={carrera}>{carrera}</option>
-                ))}
-              </select>
+              <input name="dni" value={userForm.dni} onChange={handleUserChange} placeholder="DNI" required />
               <select name="rol" value={userForm.rol} onChange={handleUserChange} required>
-                <option value="estudiante">Estudiante</option>
-                <option value="profesor">Profesor</option>
+                <option value="usuario">Usuario</option>
                 <option value="admin">Admin</option>
               </select>
               <input name="password" value={userForm.password} onChange={handleUserChange} placeholder={editandoUsuario ? "Nueva contraseña (opcional)" : "Contraseña"} type="password" required={!editandoUsuario} />
@@ -473,7 +447,7 @@ const AdminPanel = ({ usuario }) => {
                 <li key={u.id} className="admin-user-item">
                   <div>
                     <strong>{u.nombre}</strong> ({u.rol})<br />
-                    <span style={{fontSize: 13, color: '#555'}}>Legajo: {u.legajo} | Email: {u.email} | Carrera: {u.carrera}</span>
+                    <span style={{fontSize: 13, color: '#555'}}>dni: {u.dni} | Email: {u.email}</span>
                   </div>
                   <div className="admin-user-actions">
                     <button onClick={() => handleEditarUsuario(u)}>Editar</button>

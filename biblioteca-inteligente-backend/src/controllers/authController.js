@@ -9,8 +9,7 @@ exports.register = async (req, res) => {
     const usuario = await Usuario.create({
       nombre: req.body.nombre,
       email: req.body.email,
-      legajo: req.body.legajo,
-      carrera: req.body.carrera, // <-- asegúrate de incluir esto
+      dni: req.body.dni,
       password: req.body.password,
       rol: req.body.rol
     });
@@ -25,9 +24,9 @@ exports.register = async (req, res) => {
 // Controlador para iniciar sesión
 exports.login = async (req, res) => {
   try {
-    const { legajo, password } = req.body;
-    // Busca el usuario por legajo
-    const usuario = await Usuario.findOne({ where: { legajo } });
+    const { dni, password } = req.body;
+    // Busca el usuario por dni
+    const usuario = await Usuario.findOne({ where: { dni } });
     if (!usuario) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
@@ -38,7 +37,7 @@ exports.login = async (req, res) => {
     }
     // Si todo está bien, genera un token para el usuario
     const token = jwt.sign(
-      { id: usuario.id, legajo: usuario.legajo, rol: usuario.rol },
+      { id: usuario.id, dni: usuario.dni, rol: usuario.rol },
       process.env.JWT_SECRET,
       { expiresIn: '8h' }
     );

@@ -102,11 +102,6 @@
   color: #222;
 }
 
-.panel-user-carrera {
-  font-size: 1rem;
-  color: #666;
-}
-
 .panel-links {
   display: flex;
   flex-direction: column;

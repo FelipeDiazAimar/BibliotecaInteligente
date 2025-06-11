@@ -40,8 +40,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
   const [form, setForm] = useState({
     nombre: '',
     email: '',
-    legajo: '',
-    carrera: '',
+    dni: '',
     password: '',
     confirmar: '',
     rol: 'estudiante'
@@ -90,8 +89,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
         body: JSON.stringify({
           nombre: form.nombre,
           email: form.email,
-          legajo: form.legajo,
-          carrera: form.carrera,
+          dni: form.dni,
           password: form.password,
           rol: form.rol
         })
@@ -154,37 +152,20 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
             required
           />
           <input
-            name="legajo"
+            name="dni"
             type="text"
-            placeholder="Legajo"
-            value={form.legajo}
+            placeholder="Dni"
+            value={form.dni}
             onChange={handleChange}
             required
           />
-          <select
-            name="carrera"
-            value={form.carrera}
-            onChange={handleChange}
-            required
-          >
-            <option value="" disabled>Selecciona tu carrera</option>
-            <option value="Ingeniería en Sistemas de Información">Ingeniería en Sistemas de Información</option>
-            <option value="Ingeniería Electromecánica">Ingeniería Electromecánica</option>
-            <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
-            <option value="Ingeniería Química">Ingeniería Química</option>
-            <option value="Licenciatura en Administración Rural">Licenciatura en Administración Rural</option>
-            <option value="Tecnicatura Universitaria en Programación">Tecnicatura Universitaria en Programación</option>
-            <option value="Tecnicatura Universitaria en Electrónica">Tecnicatura Universitaria en Electrónica</option>
-            <option value="Tecnicatura Universitaria en Mantenimiento Industrial">Tecnicatura Universitaria en Mantenimiento Industrial</option>
-          </select>
           <select
             name="rol"
             value={form.rol}
             onChange={handleChange}
             required
           >
-            <option value="estudiante">Estudiante</option>
-            <option value="profesor">Profesor</option>
+            <option value="usuario">Usuario</option>
             <option value="admin">Admin</option>
           </select>
           <input
