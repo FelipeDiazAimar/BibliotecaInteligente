@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/LoginAlumno.css';
+import Navbar from '../components/Navbar';
 
 export default function LoginAlumno({ onLogin }) {
   const navigate = useNavigate();
@@ -38,24 +39,13 @@ export default function LoginAlumno({ onLogin }) {
 
   return (
     <div className="login-overlay">
-      <nav className="login-nav">
-        <ul>
-          <li><a href="#">Acerca de</a></li>
-          <li><Link to="/contacto">Contacto</Link></li>
-          <li>
-            <button
-              className="login-nav-btn"
-              onClick={() => navigate('/')}
-            >Atrás</button>
-          </li>
-          <li>
-            <button
-              className="login-nav-btn"
-              onClick={() => navigate('/registro')}
-            >Crear usuario</button>
-          </li>
-        </ul>
-      </nav>
+      <Navbar
+        extraLinks={[
+          { to: '/registro', label: 'Crear usuario' },
+          { to: '/', label: 'Atrás' }
+        ]}
+        hideLinks={['login']}
+      />
       <main className="login-main">
         <div className="login-form-container">
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 24 }}>
@@ -72,7 +62,7 @@ export default function LoginAlumno({ onLogin }) {
           </div>
           <form onSubmit={handleSubmit} className="login-form">
             <div>
-              <label>dni</label>
+              <label>Documento</label>
               <input
                 type="text"
                 value={dni}
