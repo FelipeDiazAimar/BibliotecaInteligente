@@ -53,7 +53,8 @@
 }
 
 .libro-card-autor,
-.libro-card-editorial {
+.libro-card-editorial,
+.libro-card-anio {
   font-size: 0.98rem;
   color: #444;
 }

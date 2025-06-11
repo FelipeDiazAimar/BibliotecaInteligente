@@ -17,6 +17,7 @@ export default function LibroCard({ libro }) {
       <div className="libro-card-info">
         <div className="libro-card-titulo">{libro.titulo}</div>
         <div className="libro-card-autor">{libro.autor}</div>
+        <div className="libro-card-anio">{libro.anioPublicacion}</div>
         <div className="libro-card-editorial">{libro.editorial}</div>
       </div>
     </div>
