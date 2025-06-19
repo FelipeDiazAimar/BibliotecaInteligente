@@ -33,14 +33,14 @@ export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
           </div>
         </div>
         <div className="panel-links">
-          <a className="panel-link panel-link-turnero" href="#">
+          <Link className="panel-link panel-link-turnero" to="/turnos">
             <span className="panel-link-icon">🕒</span>
             Turnero Virtual
-          </a>
-          <a className="panel-link panel-link-catalogo" href="/catalogo">
+          </Link>
+          <Link className="panel-link panel-link-catalogo" to="/catalogo">
             <span className="panel-link-icon">📖</span>
             Catalogo Virtual
-          </a>
+          </Link>
           <Link className="panel-link panel-link-contacto" to="/contacto">
             <span className="panel-link-icon">📞</span>
             Contacto

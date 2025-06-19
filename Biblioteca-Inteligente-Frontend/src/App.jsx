@@ -9,9 +9,9 @@ import AsistenteIA from './components/AsistenteIA'
 import PanelUsuario from './pages/PanelUsuario'
 import VozIA from './pages/VozIA'
 import AdminPanel from './pages/AdminPanel'
-import RutasProtegidas from './components/RutasProtegidas'
 import Contacto from './pages/Contacto'
 import CatalogoPage from './pages/CatalogoPage'
+import Turno from './pages/Turnos/Turno.jsx'
 
 function App() {
   const [libros, setLibros] = useState([])
@@ -23,6 +23,14 @@ function App() {
       .then(data => setLibros(data))
       .catch(err => console.error(err))
   }, [])
+
+  // Componente para proteger rutas que requieren autenticación
+  function RequireAuth({ usuario, children, adminOnly = false }) {
+    if (!usuario) return <Navigate to="/login" replace />;
+    if (adminOnly && usuario.rol !== 'admin') return <Navigate to="/login" replace />;
+    if (!adminOnly && usuario.rol === 'admin') return <Navigate to="/admin" replace />;
+    return children;
+  }
 
   // Función para login (puedes mejorarla si quieres)
   async function handleLogin() {
@@ -78,10 +86,30 @@ function App() {
         <Route path="/registro" element={<RegistroUsuario />} />
         <Route path="/contacto" element={<Contacto />} /> {/* <-- Agrega esta línea */}
         <Route path="/catalogo" element={<CatalogoPage />} />
-        {/* Rutas protegidas */}
-        <Route path="/*" element={
-          <RutasProtegidas usuario={usuario} logout={logout} />
-        } />
+        <Route
+          path="/turnos"
+          element={
+            <RequireAuth usuario={usuario}>
+              <Turno usuario={usuario} logout={logout} />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/panel"
+          element={
+            <RequireAuth usuario={usuario}>
+              <PanelUsuario usuario={usuario} logout={logout} />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <RequireAuth usuario={usuario} adminOnly={true}>
+              <AdminPanel logout={logout} />
+            </RequireAuth>
+          }
+        />
         {/* Página de libros pública (opcional, puedes quitarla si no la usas) */}
         <Route path="/libros" element={
           <div>

@@ -1,0 +1,71 @@
+.turno-card {
+  background: linear-gradient(120deg, #f5faff 0%, #e3f2fd 100%);
+  border-radius: 18px;
+  box-shadow: 0 2px 16px 0 #b3c6e0aa, 0 1px 4px #90caf933;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: transform 0.15s, box-shadow 0.2s;
+  margin-bottom: 1.5rem;
+  border-left: 7px solid #bdbdbd;
+  border-top: 1.5px solid #e3eaf2;
+  border-bottom: 1.5px solid #e3eaf2;
+}
+.turno-card:hover {
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: 0 6px 32px #b3c6e044, 0 2px 8px #90caf933;
+}
+.turno-card-pendiente { border-left-color: #ffb300; }
+.turno-card-aceptado { border-left-color: #43a047; }
+.turno-card-cancelado { border-left-color: #e53935; }
+
+.turno-card-title {
+  font-size: 1.3rem;
+  color: #1565c0;
+  margin-bottom: 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.turno-card-info {
+  color: #444;
+  margin-bottom: 6px;
+  font-size: 1.08rem;
+}
+
+.turno-card-estado {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 1.08rem;
+}
+.turno-card-estado-pendiente { color: #ff9900; }
+.turno-card-estado-aceptado { color: #43a047; }
+.turno-card-estado-cancelado { color: #e53935; }
+
+.turno-card-observaciones {
+  color: #666;
+  font-style: italic;
+  margin-top: 8px;
+  font-size: 1.01rem;
+}
+
+.turno-card-cancelar {
+  margin-top: 16px;
+  background: linear-gradient(90deg, #a3cbff 60%, #cdedff 100%);
+  color: #252525;
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  align-self: flex-end;
+  opacity: 1;
+  transition: opacity 0.2s, background 0.2s;
+  box-shadow: 0 1px 4px #b3c6e022;
+}
+.turno-card-cancelar:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
