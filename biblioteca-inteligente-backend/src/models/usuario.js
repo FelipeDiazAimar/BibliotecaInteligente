@@ -1,5 +1,3 @@
-// Modelo que representa un usuario (estudiante, profesor o admin) en la base de datos.
-
 const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
@@ -18,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING, // Se guarda encriptada
     rol: {
       type: DataTypes.ENUM('usuario', 'admin'),
-      defaultValue: 'usuario'
-    },
+      allowNull: true, 
+      defaultValue: 'usuario'},
   }, {
     // Antes de guardar el usuario, encripta la contraseña
     hooks: {

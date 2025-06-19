@@ -8,10 +8,11 @@
     background-color: #f8f8f8; /* Light background color */
     font-family: 'Arial', sans-serif; /* Professional font */
     font-size: 1.25rem; /* Aumenta el tamaño base para toda la página de contacto */
+    margin-top: 8rem; /* Espacio superior ajustado */
 }
 
 .contact-container h1 {
-  margin-top: 7rem !important; /* Usa !important para asegurar prioridad */
+  margin-top: 8rem !important; /* Usa !important para asegurar prioridad */
   margin-bottom: 1.5rem;
   text-align: center;
   font-size: 2.2rem;

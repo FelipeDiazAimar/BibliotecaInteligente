@@ -51,6 +51,7 @@
   flex-direction: column;
   align-items: center;
   padding: 2rem 2.5rem;
+  margin-top: 7rem; /* Ajusta según el alto de tu navbar */
 }
 
 .admin-form {

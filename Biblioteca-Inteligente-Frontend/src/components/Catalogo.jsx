@@ -39,9 +39,8 @@ export default function Catalogo() {
     fetch('http://localhost:3000/api/libros')
       .then(res => res.json())
       .then(data => {
-        const disponibles = data.filter(l => l.disponible);
-        setLibros(disponibles);
-        setLibrosFiltrados(disponibles);
+        setLibros(data);
+        setLibrosFiltrados(data);
       });
   }, []);
 
@@ -161,25 +160,44 @@ export default function Catalogo() {
         }
       />
       <main className="catalogo-main">
-        <form
-          className="catalogo-busqueda-filtros"
-          onSubmit={handleBuscarLibro}
-          style={{ position: 'relative' }}
-        >
-          <input
-            className="catalogo-busqueda"
-            type="text"
-            placeholder="🔍 Buscar libro por título o autor..."
-            value={busqueda}
-            onChange={e => setBusqueda(e.target.value)}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            autoComplete="off"
-          />
+        <form className="catalogo-busqueda-filtros" onSubmit={handleBuscarLibro}>
+          <div className="catalogo-busqueda-wrapper">
+            <input
+              className="catalogo-busqueda"
+              type="text"
+              placeholder="🔍 Buscar libro por título o autor..."
+              value={busqueda}
+              onChange={e => setBusqueda(e.target.value)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              autoComplete="off"
+            />
+            {mostrarSugerencias && busquedasRecientes.length > 0 && (
+              <ul className="catalogo-busquedas-sugerencias">
+                {busquedasRecientes.map(b => (
+                  <li
+                    key={b.id}
+                    style={{
+                      padding: '0.7em 1em',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid #eee'
+                    }}
+                    onMouseDown={() => {
+                      setBusqueda(b.termino);
+                      setMostrarSugerencias(false);
+                      setTimeout(() => handleBuscarLibro(), 0);
+                    }}
+                  >
+                    {b.termino}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <button
             type="submit"
             className="catalogo-ai-btn"
-            style={{ marginLeft: 8, padding: '0.7em 1.2em', fontSize: '1rem' }}
+            style={{ marginLeft: '0.7rem', padding: '0.7em 1.2em', fontSize: '1rem' }}
           >
             Buscar
           </button>
@@ -203,44 +221,6 @@ export default function Catalogo() {
             <option value="anio-asc">Año (ascendente)</option>
             <option value="anio-desc">Año (descendente)</option>
           </select>
-          {mostrarSugerencias && busquedasRecientes.length > 0 && (
-            <ul
-              style={{
-                position: 'absolute',
-                top: '110%',
-                left: 0,
-                background: '#fff',
-                border: '1px solid #bbb',
-                borderRadius: 8,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-                width: '100%',
-                zIndex: 10,
-                listStyle: 'none',
-                padding: 0,
-                margin: 0,
-                maxHeight: 180,
-                overflowY: 'auto'
-              }}
-            >
-              {busquedasRecientes.map(b => (
-                <li
-                  key={b.id}
-                  style={{
-                    padding: '0.7em 1em',
-                    cursor: 'pointer',
-                    borderBottom: '1px solid #eee'
-                  }}
-                  onMouseDown={() => {
-                    setBusqueda(b.termino);
-                    setMostrarSugerencias(false);
-                    setTimeout(() => handleBuscarLibro(), 0);
-                  }}
-                >
-                  {b.termino}
-                </li>
-              ))}
-            </ul>
-          )}
         </form>
 
         <div className="catalogo-grid">

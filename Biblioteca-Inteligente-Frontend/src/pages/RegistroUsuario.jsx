@@ -23,7 +23,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
     dni: '',
     password: '',
     confirmar: '',
-    rol: 'estudiante'
+    rol: 'usuario' // Cambia a "usuario" por defecto
   });
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const [nextAdminName, setNextAdminName] = useState('admin1');

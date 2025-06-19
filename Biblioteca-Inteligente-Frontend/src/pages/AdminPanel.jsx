@@ -30,7 +30,7 @@ const initialUserForm = {
   nombre: '',
   email: '',
   dni: '',
-  rol: 'estudiante',
+  rol: 'usuario', // Cambia a "usuario" por defecto
   password: ''
 };
 
