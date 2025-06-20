@@ -1,0 +1,77 @@
+.paso2-container {
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(120deg, #f5faff 0%, #e3f2fd 100%);
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #b3c6e0aa, 0 1px 4px #90caf933;
+  padding: 2.2rem 1.5rem;
+}
+.paso2-row {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+.paso2-dni-input label {
+  font-weight: 600;
+  font-size: 1.15rem;
+  margin-bottom: 8px;
+  color: #1769aa;
+}
+.paso2-dni-input input {
+  font-size: 1.2rem;
+  padding: 0.5rem 1.2rem;
+  border: 1.5px solid #bbdefb;
+  border-radius: 8px;
+  outline: none;
+  margin-right: 4px;
+  width: 120px;
+  background: #fff;
+  box-shadow: 0 1px 4px #b3c6e022;
+}
+.paso2-dni-input button {
+  background: linear-gradient(90deg, #1976d2 60%, #2196f3 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 4px #b3c6e022;
+  transition: background 0.2s;
+}
+.paso2-dni-input button:hover {
+  background: linear-gradient(90deg, #2196f3 60%, #1976d2 100%);
+}
+.paso2-mensaje {
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin-bottom: 18px;
+}
+.paso2-mensaje.success { color: #43a047; }
+.paso2-mensaje.error { color: #e53935; }
+.paso2-solicitar-btn {
+  background: linear-gradient(90deg, #42a5f5 60%, #1976d2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 1.2rem 0;
+  width: 400px;
+  max-width: 100%;
+  font-size: 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #b3c6e055;
+  transition: background 0.2s;
+}
+.paso2-solicitar-btn:hover {
+  background: linear-gradient(90deg, #1976d2 60%, #42a5f5 100%);
+}
+.paso2-solicitar-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

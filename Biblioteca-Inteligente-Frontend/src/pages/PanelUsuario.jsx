@@ -41,21 +41,15 @@ export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
         <div style={{ color: "#888", fontSize: 16 }}>{usuario.email}</div>
         <div style={{ color: "#2196f3", fontWeight: 600, marginTop: 4 }}>Usuario</div>
         </div>
-      </div>
-
-      {/* Resumen rápido */}
-      <div className="panel-resumen">
-        <div className="panel-resumen-item">
-        <div className="panel-resumen-titulo">Accesos rápidos</div>
-        <div className="panel-links panel-links-row">
-          <Link className="panel-link panel-link-catalogo" to="/catalogo">
-          <span className="panel-link-icon">📖</span>
-          Catálogo
-          </Link>
-          <Link className="panel-link panel-link-turnero" to="/turnero">
-          <span className="panel-link-icon">🕒</span>
-          Turnero
-          </Link>
+        <div className="panel-links">
+          <a className="panel-link panel-link-turnero" href="#">
+            <span className="panel-link-icon">🕒</span>
+            Turnero Virtual
+          </a>
+          <a className="panel-link panel-link-catalogo" href="/catalogo">
+            <span className="panel-link-icon">📖</span>
+            Catalogo Virtual
+          </a>
           <Link className="panel-link panel-link-contacto" to="/contacto">
           <span className="panel-link-icon">📞</span>
           Contacto
