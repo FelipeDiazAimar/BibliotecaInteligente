@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Catalogo from '../components/Catalogo';
 
 export default function CatalogoPage() {

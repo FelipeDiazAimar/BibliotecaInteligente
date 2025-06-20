@@ -56,7 +56,7 @@ export default function LoginAlumno({ onLogin }) {
             <div className="login-title">
               BIBLIOTECA<br />INTELIGENTE
             </div>
-            <div className="login-utn">UTN</div>
+            <div className="login-"></div>
           </div>
           <form onSubmit={handleSubmit} className="login-form">
             <div>

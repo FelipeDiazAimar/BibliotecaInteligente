@@ -97,7 +97,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
         <div className="registro-header">
           <div className="registro-logo">
             <span className="registro-titulo">BIBLIOTECA<br />INTELIGENTE</span>
-            <span className="registro-utn">UTN <span role="img" aria-label="libro">📚</span></span>
+            <span className="registro-"> <span role="img" aria-label="libro">📚</span></span>
           </div>
         </div>
         <form className="registro-form" onSubmit={handleSubmit}>
