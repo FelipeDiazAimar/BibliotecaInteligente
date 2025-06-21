@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Paso1DatosBasicos from '../../components/Turnos/Paso1DatosBasicos';
 import Header from '../../components/Header';
-import vozImg from '../../assets/ondas-sonoras.png';
 import { useNavigate, Link } from 'react-router-dom';
 import TurnoCard from '../../components/Turnos/TurnoCard';
 import Invitaciones from '../../components/Turnos/Invitaciones';
@@ -126,24 +125,21 @@ export default function Turno({ usuario, logout }) {
   return (
     <div className="turno-main-bg">
       <Header
+        left={
+          <button
+            className="panel-back-btn"
+            onClick={() => window.history.back()}
+            aria-label="Atrás"
+          >
+            <svg width="28" height="28" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
+              <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        }
         right={
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
-            <Link
-              to="#"
-              className="panel-link"
-              onClick={e => {
-                e.preventDefault();
-                navigate(-1); // Esto sí te lleva atrás
-              }}
-            >
-              Atrás
-            </Link>
-            <Link to="/voz-ia" className="panel-link panel-link-ai">
-              <img src={vozImg} alt="Voz" width={22} height={22} style={{ marginRight: 6 }} />
-              Ask AI
-            </Link>
-            <Link className="panel-link" to="/catalogo">Catálogo</Link>
-            <Link className="panel-link" to="/contacto">Contacto</Link>
+            <Link to="/catalogo" className="panel-link">Catálogo</Link>
+            <Link to="/contacto" className="panel-link">Contacto</Link>
             <Link to="#" className="panel-link" onClick={handleLogout}>Cerrar sesión</Link>
           </div>
         }

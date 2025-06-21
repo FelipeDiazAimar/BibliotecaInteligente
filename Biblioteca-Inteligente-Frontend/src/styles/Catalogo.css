@@ -131,6 +131,8 @@
   top: 110%;
   left: 0;
   width: 100%;
+  max-width: 480px; /* Igual que el input de búsqueda */
+  min-width: 365px; /* Igual que el input de búsqueda */
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 12px;

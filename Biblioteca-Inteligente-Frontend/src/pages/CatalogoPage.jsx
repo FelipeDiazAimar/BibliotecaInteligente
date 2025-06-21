@@ -116,7 +116,6 @@ export default function Catalogo() {
       <Header
         right={
           <div className="catalogo-nav">
-            <Link to="/voz-ia" className="catalogo-link">Ask AI</Link>
             <Link to="/turnero" className="catalogo-link">Turnero</Link>
             <Link to="/contacto" className="catalogo-link">Contacto</Link>
             <Link to="/" className="catalogo-link">Atrás</Link>

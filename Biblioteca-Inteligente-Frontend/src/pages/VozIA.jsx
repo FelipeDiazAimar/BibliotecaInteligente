@@ -56,12 +56,7 @@ export default function VozIA() {
   return (
     <>
       <Header
-        left={
-          <div className="panel-logo">
-            <span>BIBLIOTECA<br />INTELIGENTE</span>
-            <span className="panel-"> <span role="img" aria-label="libro">📚</span></span>
-          </div>
-        }
+        hideVozIA
         right={
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' , marginRight: '80px'}}>
             <Link to="/catalogo" className="panel-link">Catalogo</Link>
@@ -117,10 +112,10 @@ export default function VozIA() {
             )}
             {historial.map((item, idx) => (
               <React.Fragment key={item.id || idx}>
-                <div style={{ margin: '0.5em 0 0.1em 0', color: '#222', fontWeight: 500 }}>
+                <div style={{ margin: '0.5em 0 0.1em 0', color: '#222', fontWeight: 500 ,  textAlign: 'center'}}>
                   Pregunta: {item.texto}
                 </div>
-                <div style={{ margin: '0 0 1.2em 1.2em', color: '#333' }}>
+                <div style={{ margin: '0 0 1.2em 1.2em', color: '#333' ,textAlign: 'center'}}>
                   Respuesta: {item.Respuesta?.texto || <span style={{ color: '#888' }}>Sin respuesta</span>}
                 </div>
               </React.Fragment>
