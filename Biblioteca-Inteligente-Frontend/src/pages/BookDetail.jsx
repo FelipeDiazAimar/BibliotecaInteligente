@@ -1,24 +1,39 @@
 // BookDetail.jsx
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
+import Loader from '../components/Loader';
 import '../styles/BookDetail.css';
 
 export default function BookDetail() {
   const { id } = useParams();
   const [libro, setLibro] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
+    setLoading(true);
     fetch(`http://localhost:3000/api/libros/${id}`)
       .then(res => res.json())
-      .then(data => setLibro(data));
+      .then(data => {
+        setLibro(data);
+        setLoading(false);
+      });
   }, [id]);
+
+  if (loading) return <Loader />;
 
   if (!libro) {
     return (
       <div className="bookdetail-bg">
-        <Header />
+        <Header
+          right={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
+              <Link to="/catalogo" className="panel-link">Catálogo</Link>
+              <Link to="/turnos" className="panel-link">Turnero</Link>
+            </div>
+          }
+        />
         <div className="bookdetail-loading">Cargando...</div>
       </div>
     );
@@ -26,7 +41,14 @@ export default function BookDetail() {
 
   return (
     <div className="bookdetail-bg">
-      <Header />
+      <Header
+        right={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
+            <Link to="/catalogo" className="panel-link">Catálogo</Link>
+            <Link to="/turnos" className="panel-link">Turnero</Link>
+          </div>
+        }
+      />
       <main className="bookdetail-main">
         <h1 className="bookdetail-title">Descripción: {libro.titulo}</h1>
         <div className="bookdetail-content">

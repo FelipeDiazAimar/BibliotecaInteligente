@@ -97,7 +97,7 @@ function TurnosList({ turnos, usuario, recargarTurnos, esInvitado, esAdmin }) {
   ));
 }
 
-export default function Turno({ usuario, logout }) {
+export default function Turno({ usuario }) {
   const [tab, setTab] = useState('ver');
   const navigate = useNavigate();
 
@@ -110,12 +110,9 @@ export default function Turno({ usuario, logout }) {
     }
   }, [usuario, navigate]);
 
-  const handleLogout = async (e) => {
-    e.preventDefault();
-    if (logout) {
-      await logout();
-      navigate('/login', { replace: true });
-    }
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   const noTurnos =
@@ -140,7 +137,14 @@ export default function Turno({ usuario, logout }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
             <Link to="/catalogo" className="panel-link">Catálogo</Link>
             <Link to="/contacto" className="panel-link">Contacto</Link>
-            <Link to="#" className="panel-link" onClick={handleLogout}>Cerrar sesión</Link>
+            <button
+              type="button"
+              className="panel-link"
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', font: 'inherit' }}
+              onClick={onLogout}
+            >
+              Cerrar sesión
+            </button>
           </div>
         }
       />
@@ -199,7 +203,7 @@ export default function Turno({ usuario, logout }) {
             )}
           </div>
         ) : tab === 'crear' ? (
-          <Paso1DatosBasicos usuario={usuario} logout={logout} onSolicitarExito={() => setTab('ver')} />
+          <Paso1DatosBasicos usuario={usuario} logout={onLogout} onSolicitarExito={() => setTab('ver')} />
         ) : (
           <Invitaciones usuario={usuario} />
         )}

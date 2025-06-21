@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import LibroCard from '../components/LibroCard';
 import Header from '../components/Header';
+import Loader from '../components/Loader'; // <-- Importa el Loader
 import { Link } from 'react-router-dom';
 import '../styles/Catalogo.css';
 
@@ -17,6 +18,7 @@ function soloLetras(str) {
 export default function Catalogo() {
   const [libros, setLibros] = useState([]);
   const [librosFiltrados, setLibrosFiltrados] = useState([]);
+  const [loading, setLoading] = useState(true); // <-- Estado de carga
   const [busqueda, setBusqueda] = useState('');
   const [filtro, setFiltro] = useState('');
   const [pagina, setPagina] = useState(1);
@@ -24,11 +26,13 @@ export default function Catalogo() {
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     fetch('http://localhost:3000/api/libros')
       .then(res => res.json())
       .then(data => {
         setLibros(data);
         setLibrosFiltrados(data);
+        setLoading(false);
       });
   }, []);
 
@@ -110,6 +114,8 @@ export default function Catalogo() {
   useEffect(() => {
     setPagina(1);
   }, [filtro]);
+
+  if (loading) return <Loader />;
 
   return (
     <>

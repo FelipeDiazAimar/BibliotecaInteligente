@@ -1,22 +1,35 @@
 import '../styles/PanelUsuario.css';
 import Header from '../components/Header';
 import vozImg from '../assets/ondas-sonoras.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
-export default function PanelUsuario({ usuario, onLogout }) {
+export default function PanelUsuario({ usuario }) {
+  const navigate = useNavigate();
   const [avisos] = useState([
     "Recuerda devolver tus libros antes de la fecha de vencimiento.",
     "Nuevo: ¡Turnero virtual para atención personalizada!",
     "Consulta el catálogo actualizado con nuevos títulos."
   ]);
 
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   return (
     <div className="panel-overlay">
       <Header
         right={
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
-            <Link to="#" className="panel-link" onClick={onLogout}>Cerrar sesión</Link>
+            <button
+              type="button"
+              className="panel-link"
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', font: 'inherit' }}
+              onClick={onLogout}
+            >
+              Cerrar sesión
+            </button>
           </div>
         }
       />

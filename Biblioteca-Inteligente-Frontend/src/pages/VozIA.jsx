@@ -10,7 +10,6 @@ export default function VozIA() {
   const formRef = useRef(null);
   const navigate = useNavigate();
 
-  const onAtras = () => navigate(-1);
   const onLogout = () => {
     localStorage.removeItem('token');
     navigate('/login');
@@ -57,12 +56,12 @@ export default function VozIA() {
     <>
       <Header
         hideVozIA
+        onLogout={onLogout}
         right={
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' , marginRight: '80px'}}>
             <Link to="/catalogo" className="panel-link">Catalogo</Link>
-            <Link to="/turnero" className="panel-link">Turnero</Link>
+            <Link to="/turnos" className="panel-link">Turnero</Link>
             <Link to="/contacto" className="panel-link">Contacto</Link>
-            <Link to="#" className="panel-link" onClick={onAtras}>Atrás</Link>
             <Link to="#" className="panel-link" onClick={onLogout}>Cerrar sesión</Link>
           </div>
         }
