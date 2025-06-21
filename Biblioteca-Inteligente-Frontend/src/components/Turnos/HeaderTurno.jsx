@@ -1,5 +1,6 @@
-import React from 'react';
-import '../styles/PanelUsuario.css';
+import React from "react";
+// Corrige la ruta al CSS:
+import "../../styles/PanelUsuario.css";
 
 export default function Header({ right }) {
   return (

@@ -1,0 +1,35 @@
+.panel-navbar {
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #fff;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem 1rem 2.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  min-height: 64px;
+}
+
+.panel-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  color: #222;
+  text-align: left;
+}
+
+.panel-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  margin-right: 80px;
+}
+
+.panel-libro-icon {
+  font-size: 2rem;
+  margin-left: 1.5rem;
+}

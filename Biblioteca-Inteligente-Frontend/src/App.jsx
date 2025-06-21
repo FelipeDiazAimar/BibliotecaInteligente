@@ -9,9 +9,9 @@ import AsistenteIA from './components/AsistenteIA'
 import PanelUsuario from './pages/PanelUsuario'
 import VozIA from './pages/VozIA'
 import AdminPanel from './pages/AdminPanel'
-import Contacto from './pages/Contacto'
+import ContactPage from './pages/Contacto'
 import CatalogoPage from './pages/CatalogoPage'
-import Turno from './pages/Turnos/Turno.jsx'
+import Turno from './pages/Turnos/Turno';
 
 function App() {
   const [libros, setLibros] = useState([])
@@ -41,7 +41,7 @@ function App() {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
-      setUsuario(data); // Esto debe ejecutarse correctamente
+      setUsuario(data); // data debe ser el usuario autenticado
     }
   }
 
@@ -71,7 +71,6 @@ function App() {
         .then(data => setUsuario(data))
         .catch(() => setUsuario(null));
     }
-    // Solo se ejecuta si usuario cambia a null
   }, [usuario]);
 
   return (
@@ -84,7 +83,7 @@ function App() {
           />
         } />
         <Route path="/registro" element={<RegistroUsuario />} />
-        <Route path="/contacto" element={<Contacto />} /> {/* <-- Agrega esta línea */}
+        <Route path="/contacto" element={<ContactPage usuario={usuario} />} />
         <Route path="/catalogo" element={<CatalogoPage />} />
         <Route
           path="/turnos"
@@ -109,6 +108,10 @@ function App() {
               <AdminPanel logout={logout} />
             </RequireAuth>
           }
+        />
+        <Route
+          path="/voz-ia"
+          element={<VozIA usuario={usuario} />}
         />
         {/* Página de libros pública (opcional, puedes quitarla si no la usas) */}
         <Route path="/libros" element={

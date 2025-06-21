@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Contacto.css';
 import emailjs from '@emailjs/browser';
 
-function ContactPage() {
+function ContactPage({ usuario }) {
   const [form, setForm] = useState({
     nombre: '',
     email: '',
@@ -14,8 +14,6 @@ function ContactPage() {
   const [status, setStatus] = useState({ type: '', msg: '' });
   const formRef = useRef();
   const navigate = useNavigate();
-
-  const onAtras = () => navigate(-1);
 
   const handleChange = e => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -45,6 +43,15 @@ function ContactPage() {
     }
   };
 
+  // Función para navegación segura
+  const goTo = (ruta) => {
+    if (usuario) {
+      navigate(ruta);
+    } else {
+      navigate('/login');
+    }
+  };
+
   return (
     <div>
       <Header
@@ -55,10 +62,10 @@ function ContactPage() {
         }
         right={
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
-            <Link to="/login" className="panel-link">Ask AI</Link>
-            <Link to="/login" className="panel-link">Catálogo</Link>
-            <Link to="/login" className="panel-link">Turnero</Link>
-            <Link to="#" className="panel-link" onClick={onAtras}>Atrás</Link>
+            <button type="button" className="panel-link" onClick={() => goTo('/catalogo')}>Catálogo</button>
+            <button type="button" className="panel-link" onClick={() => goTo('/turnos')}>Turnos</button>
+            <button type="button" className="panel-link" onClick={() => goTo('/contacto')}>Contacto</button>
+            <button type="button" className="panel-link" onClick={() => goTo('/voz-ia')}>Ask AI</button>
           </div>
         }
       />
