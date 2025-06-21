@@ -1,9 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/LibroCard.css';
 
 export default function LibroCard({ libro }) {
+  const navigate = useNavigate();
+
   return (
-    <div className="libro-card">
+    <div
+      className="libro-card"
+      onClick={() => navigate(`/libros/${libro.id}`)}
+      style={{ cursor: 'pointer' }}
+    >
       <div className="libro-card-img">
         {libro.portada ? (
           <img

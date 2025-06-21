@@ -12,6 +12,7 @@ import AdminPanel from './pages/AdminPanel'
 import ContactPage from './pages/Contacto'
 import CatalogoPage from './pages/CatalogoPage'
 import Turno from './pages/Turnos/Turno';
+import BookDetail from './pages/BookDetail'; // Asegúrate de que la ruta sea correcta
 
 function App() {
   const [libros, setLibros] = useState([])
@@ -159,6 +160,7 @@ function App() {
             </div>
           </div>
         } />
+        <Route path="/libros/:id" element={<BookDetail />} />
       </Routes>
     </BrowserRouter>
   )

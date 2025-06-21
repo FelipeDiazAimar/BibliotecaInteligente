@@ -314,6 +314,7 @@
   padding-bottom: 0.3em !important; /* Espacio extra debajo */
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
   margin-top: 40px;
+  text-shadow: none;
 }
 
 .catalogo-busqueda-filtros-minimal {
