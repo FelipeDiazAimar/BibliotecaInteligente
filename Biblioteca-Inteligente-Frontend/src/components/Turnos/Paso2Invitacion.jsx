@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import IntegrantesList from './IntegrantesList';
 import '../../styles/Turnos/Paso2Invitacion.css';
 
-function Paso2Invitacion({ creador = { nombre, dni, id }, datosTurno, onSolicitarExito }) {
+function Paso2Invitacion({ creador = { nombre: '', dni: '', id: '' }, datosTurno, onSolicitarExito }) {
   const [dni, setDni] = useState('');
   const [integrantes, setIntegrantes] = useState([creador]);
   const [mensaje, setMensaje] = useState('');
@@ -12,7 +11,7 @@ function Paso2Invitacion({ creador = { nombre, dni, id }, datosTurno, onSolicita
   const [enviado, setEnviado] = useState(false);
   const [salas, setSalas] = useState([]);
   const [salaId, setSalaId] = useState('');
-  const navigate = useNavigate();
+  // const navigate = useNavigate(); // Elimina esta línea si no usas navigate
 
   useEffect(() => {
     // Obtener todas las salas al montar el componente
@@ -47,7 +46,7 @@ function Paso2Invitacion({ creador = { nombre, dni, id }, datosTurno, onSolicita
       const usuario = await res.json();
       setIntegrantes([...integrantes, usuario]);
       setMensaje('');
-    } catch (err) {
+    } catch {
       setMensaje('Error al buscar el usuario.');
     }
     setBuscando(false);
@@ -117,7 +116,7 @@ function Paso2Invitacion({ creador = { nombre, dni, id }, datosTurno, onSolicita
           }, 1200);
         }
       }
-    } catch (err) {
+    } catch {
       setMensaje('No se pudo crear el turno.');
     }
     setEnviando(false);
@@ -137,6 +136,7 @@ function Paso2Invitacion({ creador = { nombre, dni, id }, datosTurno, onSolicita
               value={dni}
               onChange={e => setDni(e.target.value)}
               disabled={buscando}
+              style={{ color: 'black' }}
             />
             <button
               type="button"

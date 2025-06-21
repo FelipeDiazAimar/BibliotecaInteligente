@@ -55,11 +55,6 @@ function ContactPage({ usuario }) {
   return (
     <div>
       <Header
-        left={
-          <div style={{ fontWeight: 'bold', fontSize: '1.7rem', letterSpacing: 1 }}>
-            BIBLIOTECA<br />INTELIGENTE
-          </div>
-        }
         right={
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
             <button type="button" className="panel-link" onClick={() => goTo('/catalogo')}>Catálogo</button>

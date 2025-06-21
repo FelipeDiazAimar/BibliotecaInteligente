@@ -150,6 +150,7 @@ export default function Turno({ usuario, logout }) {
       />
       <div style={{ height: 110 }} />
       <div className="turno-content">
+        <div className="turno-titulo">Turnos</div>
         <div className="turno-tabs-row">
           <TabButton
             active={tab === 'ver'}

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Paso2Invitacion from './Paso2Invitacion';
 import '../../styles/Turnos/Paso1DatosBasicos.css';
 
-export default function TurnoFormVista ({ usuario, logout, onSolicitarExito }) {
+export default function TurnoFormVista ({ usuario, onSolicitarExito }) {
   const [form, setForm] = useState({
     area: '',
     tematica: '',
@@ -77,11 +77,11 @@ export default function TurnoFormVista ({ usuario, logout, onSolicitarExito }) {
               </svg>
             </button>
           </div>
-          <div style={{ color: '#e53935', fontWeight: 500, fontSize: '1rem', marginTop: 4, marginBottom: desplegado ? 12 : 0 }}>
-            Revisa que la información sea correcta<br />y esté actualizada.
+          <div style={{ color: '#e53935', fontWeight: 500, fontSize: '1rem', marginTop: 4, marginBottom: desplegado ? 12 : 0, textAlign: 'left' }}>
+            Revisa que la información sea correcta y esté actualizada.
           </div>
           {desplegado && usuario && (
-            <div style={{ fontSize: '1rem', color: '#222', marginTop: 8, lineHeight: 1.7 }}>
+            <div style={{ fontSize: '1rem', color: '#222', marginTop: 8, lineHeight: 1.7 , textAlign: 'left'}}>
               {usuario.nombres && <div><b>Nombre/s:</b> {usuario.nombres}</div>}
               {usuario.dni && <div><b>Nro. Documento:</b> {usuario.dni}</div>}
               {usuario.email && <div><b>Correo electrónico:</b> {usuario.email}</div>}

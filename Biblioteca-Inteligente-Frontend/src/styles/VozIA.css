@@ -6,14 +6,6 @@
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-.vozia-overlay {
-  min-height: 100vh;
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-
 .vozia-header {
   display: flex;
   justify-content: space-between;
@@ -101,9 +93,8 @@
   flex: 1;
   padding: 1.1em 1.2em;
   border-radius: 8px;
-  border: 1px solid #bbb;
   font-size: 1.1rem;
-  background: #f7f7f7;
+  background: rgba(248,250,252,0.7);
   color: #000000; /* Cambia el color del texto a negro */
   box-sizing: border-box;
   outline: none;
@@ -153,6 +144,7 @@
   font-size: 1rem;
   opacity: 0.85;
   letter-spacing: 0.02em;
+  margin-top: 150px;
 }
 
 .panel-link{

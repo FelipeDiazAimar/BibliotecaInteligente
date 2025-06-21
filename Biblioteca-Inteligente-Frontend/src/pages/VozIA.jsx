@@ -3,20 +3,19 @@ import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import '../styles/VozIA.css';
 
-export default function VozIA() { // Elimina onAtras
+export default function VozIA() {
   const [pregunta, setPregunta] = useState('');
   const [cargando, setCargando] = useState(false);
   const [historial, setHistorial] = useState([]);
   const formRef = useRef(null);
   const navigate = useNavigate();
-  // Handlers for navigation and logout
-    const onAtras = () => navigate(-1);
-    const onLogout = () => {
-      localStorage.removeItem('token');
-      navigate('/login');
-    };
 
-  // Cargar historial al montar
+  const onAtras = () => navigate(-1);
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -39,7 +38,6 @@ export default function VozIA() { // Elimina onAtras
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ prompt: pregunta })
       });
-      // Recargar historial después de preguntar
       fetch('http://localhost:3000/api/asistente/historial', {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -56,7 +54,7 @@ export default function VozIA() { // Elimina onAtras
   };
 
   return (
-    <div className="vozia-overlay">
+    <>
       <Header
         left={
           <div className="panel-logo">
@@ -71,18 +69,13 @@ export default function VozIA() { // Elimina onAtras
             <Link to="/contacto" className="panel-link">Contacto</Link>
             <Link to="#" className="panel-link" onClick={onAtras}>Atrás</Link>
             <Link to="#" className="panel-link" onClick={onLogout}>Cerrar sesión</Link>
-            <span className="panel-user-icon" title="Usuario">
-              <svg width="28" height="28" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
-              </svg>
-            </span>
           </div>
         }
       />
       <main className="vozia-main" style={{ width: '100%', maxWidth: 700, margin: '0 auto' }}>
         <div className="vozia-content">
           <div className="vozia-wave">
+            {/* ...SVG animado... */}
             <svg width="80" height="50" viewBox="0 0 80 50">
               <g>
                 <rect x="10" y="25" width="4" height="15" rx="2" fill="#3f51ff">
@@ -156,6 +149,6 @@ export default function VozIA() { // Elimina onAtras
       <footer className="vozia-footer">
         © 2025 Biblioteca Inteligente. Todos los derechos reservados.
       </footer>
-    </div>
+    </>
   );
 }
