@@ -14,12 +14,17 @@
 }
 
 .panel-logo {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
   letter-spacing: 1px;
   line-height: 1.1;
-  color: #222;
+  background: linear-gradient(90deg, #111 0%, #1769aa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
   text-align: left;
+  font-family: 'SF Pro', 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
 .panel-navbar-right {

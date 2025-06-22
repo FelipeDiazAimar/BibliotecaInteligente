@@ -204,7 +204,7 @@ export default function Catalogo() {
         </div>
       </main>
       <footer className="catalogo-footer">
-        © 2025 Biblioteca Inteligente. Todos los derechos reservados.
+        © 2025 BiblioTech. Todos los derechos reservados.
       </footer>
     </>
   );

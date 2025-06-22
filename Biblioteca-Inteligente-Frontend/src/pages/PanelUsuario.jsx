@@ -11,6 +11,7 @@ export default function PanelUsuario({ usuario }) {
     "Nuevo: ¡Turnero virtual para atención personalizada!",
     "Consulta el catálogo actualizado con nuevos títulos."
   ]);
+  const [expand, setExpand] = useState(false);
 
   const onLogout = () => {
     localStorage.removeItem('token');
@@ -34,8 +35,31 @@ export default function PanelUsuario({ usuario }) {
         }
       />
       <main className="panel-main panel-main-usuario">
-        {/* Tarjeta de usuario */}
-        <div className="panel-user-card panel-user-card-big">
+        {/* Mensaje de bienvenida */}
+        <div
+          style={{
+            marginBottom: "4.2rem",
+            fontSize: "2rem",
+            fontWeight: 800,
+            textAlign: "center",
+            letterSpacing: "0.03em",
+            background: "linear-gradient(90deg, #2196f3 10%, #a1c4fd 90%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textFillColor: "transparent"
+          }}
+        >
+          ¡Bienvenido/a, {usuario.nombre}!
+        </div>
+        {/* Tarjeta de usuario expandible */}
+        <div
+          className={`panel-user-card panel-user-card-big panel-user-card-expandable${expand ? ' expanded' : ''}`}
+          onMouseEnter={() => setExpand(true)}
+          onMouseLeave={() => setExpand(false)}
+          tabIndex={0}
+          style={{ transition: 'box-shadow 0.2s, background 0.2s' }}
+        >
           <div className="panel-user-avatar panel-user-avatar-big">
             <svg width="54" height="54" fill="none" stroke="#2196f3" strokeWidth="2" viewBox="0 0 24 24">
               <circle cx="12" cy="8" r="4"/>
@@ -46,6 +70,13 @@ export default function PanelUsuario({ usuario }) {
             <div className="panel-user-name panel-user-name-big">{usuario.nombre}</div>
             <div style={{ color: "#888", fontSize: 16 }}>{usuario.email}</div>
             <div style={{ color: "#2196f3", fontWeight: 600, marginTop: 4 }}>Usuario</div>
+            <div className="panel-user-details">
+              <div><b>DNI:</b> {usuario.dni}</div>
+              {/* Agrega aquí más datos si tienes, por ejemplo: */}
+              {usuario.telefono && <div><b>Teléfono:</b> {usuario.telefono}</div>}
+              {usuario.direccion && <div><b>Dirección:</b> {usuario.direccion}</div>}
+              {/* ...otros campos... */}
+            </div>
           </div>
         </div>
 

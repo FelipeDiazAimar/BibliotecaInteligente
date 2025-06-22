@@ -102,3 +102,4 @@ export default function BookDetail() {
     </div>
   );
 }
+// No hay footer aquí, así que no es necesario cambiar nada.

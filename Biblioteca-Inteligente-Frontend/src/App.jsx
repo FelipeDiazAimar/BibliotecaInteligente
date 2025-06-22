@@ -158,6 +158,9 @@ function App() {
                 ))}
               </ul>
             </div>
+            <footer className="catalogo-footer">
+              © 2025 BiblioTech. Todos los derechos reservados.
+            </footer>
           </div>
         } />
         <Route path="/libros/:id" element={<BookDetail />} />

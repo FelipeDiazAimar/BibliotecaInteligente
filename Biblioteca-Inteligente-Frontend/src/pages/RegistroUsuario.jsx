@@ -96,7 +96,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
       <div className="registro-main">
         <div className="registro-header">
           <div className="registro-logo">
-            <span className="registro-titulo">BIBLIOTECA<br />INTELIGENTE</span>
+            <span className="registro-titulo">BiblioTech</span>
             <span className="registro-"> <span role="img" aria-label="libro">📚</span></span>
           </div>
         </div>
@@ -166,7 +166,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
         </form>
       </div>
       <footer>
-        © 2025 Biblioteca Inteligente. Todos los derechos reservados.
+        © 2025 BiblioTech. Todos los derechos reservados.
       </footer>
     </div>
   );

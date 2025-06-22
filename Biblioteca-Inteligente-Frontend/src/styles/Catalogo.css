@@ -85,6 +85,8 @@
   background: var(--bg);
   border-radius: 32px;
   box-shadow: var(--shadow);
+    margin-bottom: 40px;
+
 }
 
 .catalogo-busqueda-filtros {
@@ -238,7 +240,8 @@
   font-size: 1rem;
   opacity: 0.85;
   letter-spacing: 0.02em;
-  border-top: 1px solid var(--border);
+  /* Quitar la línea blanca */
+  border-top: none;
   margin-top: 2rem;
 }
 

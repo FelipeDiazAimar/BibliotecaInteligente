@@ -10,7 +10,7 @@ body {
 
 .overlay {
   background: 
-    linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+    linear-gradient(rgba(0,0,0,0.22), rgba(0,0,0,0.22)),
       url('/fondo-biblioteca.png') no-repeat center center/cover;
   min-height: 100vh;
   width: 100%;           /* Cambia de 100vw a 100% */
@@ -59,14 +59,27 @@ main {
 }
 
 main h1 {
-  color: #fff;
-  font-size: 3.2rem;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Inter', sans-serif;
+  font-size: 5.2rem;
   font-weight: bold;
-  letter-spacing: 0.04em;
+  letter-spacing: -0.08em;
   margin: 0 0 0.5rem 0;
   text-align: center;
-  text-shadow: 2px 2px 8px #222;
+  background: none;
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  position: relative;
+  transition: filter 0.3s;
+  filter: none;
+  margin-bottom: 0px;
+  display: block;
+  width: auto;
+  left: unset;
+  transform: none;
+  position: relative;
+}
+main h1::after {
+  display: none;
 }
 
 .portada-main {
@@ -82,20 +95,53 @@ main h1 {
   text-align: center;
 }
 
-button {
-  background: #2196f3;
+.portada-acceder-btn {
+  background: linear-gradient(90deg, #2196f3 0%, #1769aa 100%);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 50px;
   padding: 0.9em 2.5em;
   font-size: 1.2rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  transition: background 0.2s;
+  box-shadow: 0 2px 16px 0 #2196f366, 0 1px 4px #1769aa33;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.18s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  animation: portada-acceder-float 2.5s ease-in-out infinite alternate;
+  font-family: 'Inter', sans-serif;
 }
-button:hover {
-  background: #1769aa;
+.portada-acceder-btn::before {
+  content: '';
+  position: absolute;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 60% 40%, #4eaaff55 0%, transparent 70%);
+  opacity: 0.7;
+  z-index: 0;
+  pointer-events: none;
+  animation: portada-acceder-glow 2.2s infinite alternate;
+}
+.portada-acceder-btn:hover {
+  background: linear-gradient(90deg, #1769aa 0%, #2196f3 100%);
+  box-shadow: 0 6px 32px #2196f399, 0 2px 8px #1769aa55;
+  transform: scale(1.06) rotate(-1deg);
+}
+.portada-acceder-btn:active {
+  transform: scale(0.97);
+}
+@keyframes portada-acceder-float {
+  0% { transform: translateY(0) scale(1);}
+  50% { transform: translateY(-6px) scale(1.04);}
+  100% { transform: translateY(0) scale(1);}
+}
+@keyframes portada-acceder-glow {
+  0% { opacity: 0.7; filter: blur(2px);}
+  50% { opacity: 1; filter: blur(6px);}
+  100% { opacity: 0.7; filter: blur(2px);}
 }
 
 footer {
@@ -105,4 +151,14 @@ footer {
   font-size: 1rem;
   opacity: 0.85;
   letter-spacing: 0.02em;
+  width: 100vw;
+  left: 0;
+  position: fixed;
+  bottom: 0;
+  background: transparent;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 48px;
 }

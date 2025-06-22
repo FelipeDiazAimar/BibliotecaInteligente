@@ -1,6 +1,6 @@
 .login-overlay {
   background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
-    url('/fondo-biblioteca.png') no-repeat center center/cover;
+    url('/fondo-biblioteca2.png') no-repeat center center/cover;
   min-height: 100vh;
   width: 100%;
   position: fixed;
@@ -9,6 +9,7 @@
   flex-direction: column;
   justify-content: space-between;
   z-index: 0;
+  filter: brightness(1,2);
 }
 
 .login-nav {
@@ -50,8 +51,8 @@
 }
 
 .login-form-container {
-  background: rgba(0,0,0,0.45);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.123);
+  border-radius: 50px;
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   min-width: 340px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.18);
@@ -75,6 +76,7 @@
   font-size: 22px;
   text-align: center;
   letter-spacing: 1px;
+  font-family: 'SF Pro', 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
 .login- {
@@ -102,9 +104,16 @@
   border: none;
   margin-top: 4px;
   font-size: 16px;
-  background: #fff;
-  color: #222;
+  background: rgba(0, 0, 0, 0.82);
+  color: #fff;
   box-sizing: border-box;
+  transition: background 0.2s, color 0.2s;
+  outline: none;
+}
+
+.login-form input:focus {
+  background: rgba(18, 18, 22, 0.92);
+  color: #fff;
 }
 
 .login-error {
@@ -121,7 +130,7 @@
   background: #2196f3;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 50px;
   padding: 0.9em 0;
   font-size: 1.1rem;
   font-weight: 600;
@@ -138,7 +147,7 @@
   background: #4caf50;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 50px;
   padding: 0.9em 0;
   font-size: 1.1rem;
   font-weight: 600;

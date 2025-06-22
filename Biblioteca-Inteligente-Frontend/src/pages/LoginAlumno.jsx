@@ -53,9 +53,17 @@ export default function LoginAlumno({ onLogin }) {
                 <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
               </svg>
             </div>
-            <div className="login-title">
-              BIBLIOTECA<br />INTELIGENTE
-            </div>
+              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2196f3" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 2 }}>
+                  <path d="m16 6 4 14"></path>
+                  <path d="M12 6v14"></path>
+                  <path d="M8 8v12"></path>
+                  <path d="M4 4v16"></path>
+                </svg>
+                <span className="login-title" style={{ fontSize: 22, fontWeight: 'bold', color: '#fff', letterSpacing: 1, fontFamily: "'SF Pro', 'Inter', 'Segoe UI', Arial, sans-serif" }}>
+                  BiblioTech
+                </span>
+              </span>
             <div className="login-"></div>
           </div>
           <form onSubmit={handleSubmit} className="login-form">
@@ -82,18 +90,23 @@ export default function LoginAlumno({ onLogin }) {
             <button type="submit" className="login-btn">
               Iniciar Sesión
             </button>
-            <button
-              type="button"
-              className="login-btn-secondary"
-              onClick={() => navigate('/registro')}
-            >
-              Crear usuario
-            </button>
+            {/* Mensaje de registro con SVG y sin subrayado */}
+            <div style={{ marginTop: 18, textAlign: 'center', color: '#fff', fontSize: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+              <span>
+                ¿Aún no tienes una cuenta?{' '}
+                <span
+                  style={{ color: '#4eaaff', cursor: 'pointer' }}
+                  onClick={() => navigate('/registro')}
+                >
+                  Regístrate
+                </span>
+              </span>
+            </div>
           </form>
         </div>
       </main>
       <footer className="login-footer">
-        © 2025 Biblioteca Inteligente. Todos los derechos reservados.
+        © 2025 BiblioTech. Todos los derechos reservados.
       </footer>
     </div>
   );
