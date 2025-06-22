@@ -19,6 +19,10 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/asistente', require('./routes/asistenteRoutes'));
 app.use('/api/usuarios', require('./routes/usuarioRoutes'));
 app.use('/api/busquedas', require('./routes/busquedaRoutes'));
+app.use('/api/turnos', require('./routes/Turnos/turnoRoutes'));
+app.use('/api/salas', require('./routes/Turnos/salaRoutes'));
+app.use('/api/invitados', require('./routes/Turnos/invitadoRoutes'));
+app.use('/api/usuario', require('./routes/Turnos/usuariosRoutes'));
 
 // Ruta de prueba para saber si el backend está funcionando
 app.get('/test', (req, res) => res.send('OK'));

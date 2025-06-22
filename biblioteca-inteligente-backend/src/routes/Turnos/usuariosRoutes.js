@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const usuarioController = require('../controllers/usuarioController');
+const usuarioController = require('../../controllers/Turnos/usuariosController');
 
 // Ruta para iniciar sesión de usuario
 router.post('/auth/login', usuarioController.login);

@@ -1,5 +1,5 @@
 import React from 'react';
-import '../styles/PanelUsuario.css';
+import '../../styles/PanelUsuario.css';
 
 export default function Header({ right }) {
   return (

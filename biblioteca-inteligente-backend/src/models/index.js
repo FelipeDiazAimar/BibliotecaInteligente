@@ -41,7 +41,11 @@ const modelDefiners = [
   require('./libro'),
   require('./busqueda'),
   require('./respuesta'),
-  require('./prompt')
+  require('./prompt'),
+  require('./Turnos/usuarios'),
+  require('./Turnos/turnos'),
+  require('./Turnos/salas'),
+  require('./Turnos/invitados_turno')
 ];
 
 // Define todos los modelos en sequelize

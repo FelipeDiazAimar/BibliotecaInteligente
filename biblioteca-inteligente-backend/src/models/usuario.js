@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'usuario'
     },
   }, {
+    tableName: 'Usuarios',
     // Antes de guardar el usuario, encripta la contraseña
     hooks: {
       beforeCreate: async (usuario) => {
