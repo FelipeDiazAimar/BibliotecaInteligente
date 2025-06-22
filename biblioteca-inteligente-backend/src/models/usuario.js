@@ -2,24 +2,34 @@ const bcrypt = require('bcrypt');
 
 module.exports = (sequelize, DataTypes) => {
   const Usuario = sequelize.define('Usuario', {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     dni: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(50), // igual que en la DB
       allowNull: false,
       unique: true
     },
-    nombre: DataTypes.STRING,
+    nombre: {
+      type: DataTypes.STRING(100)
+    },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(100),
       unique: true,
       validate: { isEmail: true }
     },
-    password: DataTypes.STRING, // Se guarda encriptada
+    password: {
+      type: DataTypes.STRING(255) // igual que en la DB
+    },
     rol: {
       type: DataTypes.ENUM('usuario', 'admin'),
-      allowNull: true, 
-      defaultValue: 'usuario'},
+      defaultValue: 'usuario'
+    }
   }, {
-    // Antes de guardar el usuario, encripta la contraseña
+    tableName: 'Usuarios',
+    timestamps: true,
     hooks: {
       beforeCreate: async (usuario) => {
         if (usuario.password) {

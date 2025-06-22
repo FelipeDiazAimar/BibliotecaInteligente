@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Paso1DatosBasicos from '../../components/Turnos/Paso1DatosBasicos';
-import Header from '../../components/Header';
+import Paso1DatosBasicos from '../components/Turnos/Paso1DatosBasicos';
+import Header from '../components/Header';
 import { useNavigate, Link } from 'react-router-dom';
-import TurnoCard from '../../components/Turnos/TurnoCard';
-import Invitaciones from '../../components/Turnos/Invitaciones';
-import '../../styles/Turnos/TurnoPage.css';
+import TurnoCard from '../components/Turnos/TurnoCard';
+import Invitaciones from '../components/Turnos/Invitaciones';
+import '../styles/Turnos/TurnoPage.css';
 
 function TabButton({ active, onClick, children, borderRadius }) {
   return (

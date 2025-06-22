@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Paso2Invitacion from './Paso2Invitacion';
 import '../../styles/Turnos/Paso1DatosBasicos.css';
 
@@ -14,6 +14,15 @@ export default function TurnoFormVista ({ usuario, onSolicitarExito }) {
 
   const [paso2, setPaso2] = useState(false);
   const [desplegado, setDesplegado] = useState(false);
+  const [salas, setSalas] = useState([]);
+
+  useEffect(() => {
+    // Trae las salas desde la API al montar el componente
+    fetch('http://localhost:3000/api/salas')
+      .then(res => res.json())
+      .then(data => setSalas(Array.isArray(data) ? data : []))
+      .catch(() => setSalas([]));
+  }, []);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -98,17 +107,12 @@ export default function TurnoFormVista ({ usuario, onSolicitarExito }) {
               required
               className="turno-form-select"
             >
-              <option value="">Area</option>
-              <option value="BIBLIOTECA - Uso Notebooks">BIBLIOTECA - Uso Notebooks</option>
-              <option value="BIBLIOTECA - Uso Salas">BIBLIOTECA - Uso Salas</option>
-              <option value="Espacio Progresar">Espacio Progresar</option>
-              <option value="Laboratorio Electrónica General - Sistema de Control (R2)">Laboratorio Electrónica General - Sistema de Control (R2)</option>
-              <option value="Laboratorio Electromecánica">Laboratorio Electromecánica</option>
-              <option value="Laboratorio Física">Laboratorio Física</option>
-              <option value="Laboratorio Fagdut">Laboratorio Fagdut</option>
-              <option value="Laboratorio Isilab">Laboratorio Isilab</option>
-              <option value="Laboratorio Química (Uso de Campana)">Laboratorio Química (Uso de Campana)</option>
-              <option value="Laboratorio Sistemas Embebidos - Comunicaciones (R1)">Laboratorio Sistemas Embebidos - Comunicaciones (R1)</option>
+              <option value="">Área</option>
+              {salas.map(sala => (
+                <option key={sala.id} value={sala.nombre}>
+                  {sala.nombre}
+                </option>
+              ))}
             </select>
             <input
               name="tematica"

@@ -8,6 +8,9 @@ router.post('/auth/login', usuarioController.login);
 // Ruta para ver todos los usuarios
 router.get('/', usuarioController.getAllUsuarios);
 
+//Ruta para buscar usuario por dni
+router.get('/dni/:dni', usuarioController.getUsuarioByDni);
+
 // Ruta para ver un usuario por su ID
 router.get('/:id', usuarioController.getUsuarioById);
 
