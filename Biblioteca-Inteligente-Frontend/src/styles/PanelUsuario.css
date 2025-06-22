@@ -11,6 +11,10 @@
   margin-bottom: 40px;
 }
 
+body[data-header-theme='dark'] .panel-overlay {
+  background: linear-gradient(135deg, #0a2342 0%, #000000 100%) !important;
+}
+
 .panel-navbar {
   width: 100vw;
   position: fixed;
@@ -345,7 +349,7 @@
 }
 
 .panel-footer {
-  color: #888;
+  color: #ffffff;
   text-align: center;
   padding: 1.2rem 0 0.7rem 0;
   font-size: 1rem;
@@ -366,7 +370,6 @@
 .panel-avisos {
   background: rgba(255,255,255,0.95);
   border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(33,150,243,0.06);
   padding: 1.5rem 2rem;
   max-width: 520px;
   margin: 0 auto 2.2rem auto;

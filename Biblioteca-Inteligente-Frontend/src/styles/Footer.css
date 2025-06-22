@@ -1,0 +1,73 @@
+.custom-footer {
+  width: 100vw;
+  background: transparent;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  padding: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.footer-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.7rem 2.5rem 0.7rem 2.5rem;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.footer-copy {
+  flex: 1;
+  color: #999999;
+  font-size: 1rem;
+  opacity: 0.85;
+  letter-spacing: 0.02em;
+  text-align: left;
+  user-select: none;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.footer-social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2.5px solid #111;
+  background: transparent;
+  transition: border-color 0.22s, box-shadow 0.22s, transform 0.18s, background 0.18s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-social-link svg {
+  display: block;
+  width: 26px;
+  height: 26px;
+  transition: transform 0.18s, filter 0.18s;
+}
+
+.footer-social-link:hover {
+  border-color: #2196f3;
+  background: rgba(33,150,243,0.08);
+  box-shadow: 0 4px 16px #2196f355;
+  transform: scale(1.13) rotate(-7deg);
+}
+
+.footer-social-link:hover svg {
+  filter: drop-shadow(0 0 8px #2196f3cc);
+  transform: scale(1.13) rotate(7deg);
+}

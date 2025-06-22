@@ -95,9 +95,50 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
       <Navbar extraLinks={[{ to: '/', label: 'Atrás' }]} hideLinks={['login']} />
       <div className="registro-main">
         <div className="registro-header">
-          <div className="registro-logo">
-            <span className="registro-titulo">BiblioTech</span>
-            <span className="registro-"> <span role="img" aria-label="libro">📚</span></span>
+          {/* Nuevo título con SVG y estilos similares a portada pero más pequeño */}
+          <div className="portada-logo-row" style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "1rem",
+            width: "100%",
+            maxWidth: 400,
+            margin: "0 auto 1.5rem auto"
+          }}>
+            <span style={{ display: "flex", alignItems: "center" }}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#2196f3"
+                strokeWidth="2.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ marginRight: 0, display: "block" }}
+              >
+                <path d="m16 6 4 14"></path>
+                <path d="M12 6v14"></path>
+                <path d="M8 8v12"></path>
+                <path d="M4 4v16"></path>
+              </svg>
+            </span>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+              <h1 style={{
+                margin: 0,
+                fontSize: "2.5rem",
+                display: "block",
+                textAlign: "left",
+                minWidth: 0,
+                lineHeight: 1.08,
+                color: "#fff",
+                fontWeight: "bold",
+                letterSpacing: "1px"
+              }}>
+                BiblioTech
+              </h1>
+            </div>
           </div>
         </div>
         <form className="registro-form" onSubmit={handleSubmit}>
@@ -159,7 +200,17 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
           <button type="submit" className="registro-btn">Registrarse</button>
           <div className="login-link" style={{ marginTop: 16 }}>
             ¿Ya tienes una cuenta?{' '}
-            <a href="#" onClick={e => { e.preventDefault(); onAtras(); }}>
+            <a
+              href="#"
+              onClick={e => {
+                e.preventDefault();
+                if (onAtras) {
+                  onAtras();
+                } else {
+                  navigate('/login');
+                }
+              }}
+            >
               Inicia sesión
             </a>
           </div>

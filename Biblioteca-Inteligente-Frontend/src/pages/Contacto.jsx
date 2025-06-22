@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Contacto.css';
 import emailjs from '@emailjs/browser';
@@ -156,18 +157,8 @@ function ContactPage({ usuario }) {
           <div>📍 Zeballos 1341, S2000BQA Rosario, Santa Fe</div>
           <div>☎️ (0341) 448-1871</div>
           <div>✉️ info@frro..edu.ar</div>
-          <div className="contact-socials contact-socials-bottom">
-            <a href="https://www.facebook.com/frro" target="_blank" rel="noopener noreferrer" className="contact-social-link" aria-label="Facebook ">
-              <span className="contact-icon contact-icon-fb" />
-            </a>
-            <a href="https://x.com/frro" target="_blank" rel="noopener noreferrer" className="contact-social-link" aria-label="X ">
-              <span className="contact-icon contact-icon-x" />
-            </a>
-            <a href="https://www.instagram.com/frro" target="_blank" rel="noopener noreferrer" className="contact-social-link" aria-label="Instagram ">
-              <span className="contact-icon contact-icon-ig" />
-            </a>
-          </div>
         </div>
+        <Footer />
       </div>
     </div>
   );

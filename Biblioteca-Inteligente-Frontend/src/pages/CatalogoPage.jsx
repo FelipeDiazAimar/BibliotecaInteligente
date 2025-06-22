@@ -122,7 +122,7 @@ export default function Catalogo() {
       <Header
         right={
           <div className="catalogo-nav">
-            <Link to="/turnero" className="catalogo-link">Turnero</Link>
+            <Link to="/turnos" className="catalogo-link">Turnero</Link>
             <Link to="/contacto" className="catalogo-link">Contacto</Link>
             <Link to="/" className="catalogo-link">Atrás</Link>
           </div>
@@ -191,16 +191,35 @@ export default function Catalogo() {
             <LibroCard key={libro.id} libro={libro} />
           ))}
         </div>
-        <div className="catalogo-paginacion">
-          <button disabled={pagina === 1} onClick={() => setPagina(pagina - 1)}>Anterior</button>
+        <div className="catalogo-paginacion" style={{ alignItems: 'center', display: 'flex' }}>
+          <button
+            disabled={pagina === 1}
+            onClick={() => setPagina(pagina - 1)}
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: 4 }}>
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+            Anterior
+          </button>
           {[...Array(totalPaginas)].map((_, i) => (
             <button
               key={i}
               className={pagina === i + 1 ? 'catalogo-pagina-activa' : ''}
               onClick={() => setPagina(i + 1)}
+              style={{ display: 'flex', alignItems: 'center', border: '#b9b9b9 2px solid', borderRadius: '50px' ,width: '50%'}}
             >{i + 1}</button>
           ))}
-          <button disabled={pagina === totalPaginas || totalPaginas === 0} onClick={() => setPagina(pagina + 1)}>Siguiente</button>
+          <button
+            disabled={pagina === totalPaginas || totalPaginas === 0}
+            onClick={() => setPagina(pagina + 1)}
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
+            Siguiente
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginLeft: 4 }}>
+              <path d="M9 6l6 6-6 6"/>
+            </svg>
+          </button>
         </div>
       </main>
       <footer className="catalogo-footer">

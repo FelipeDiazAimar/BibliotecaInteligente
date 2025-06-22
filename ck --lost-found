@@ -1,0 +1,21 @@
+[33m087f1ba[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{0}: checkout: moving from main to main
+[33m087f1ba[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{1}: reset: moving to 087f1ba
+[33m2e20896[m HEAD@{2}: reset: moving to HEAD~1
+[33me4c034a[m HEAD@{3}: reset: moving to HEAD~1
+[33mc7d5b01[m HEAD@{4}: reset: moving to HEAD~1
+[33m087f1ba[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{5}: reset: moving to HEAD~1
+[33mf40e164[m HEAD@{6}: reset: moving to HEAD~1
+[33mb9466b2[m HEAD@{7}: reset: moving to HEAD~1
+[33mbe697aa[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{8}: commit (merge): Merge branch 'main' of https://github.com/FelipeDiazAimar/BibliotecaInteligente
+[33mb9466b2[m HEAD@{9}: commit: QSY
+[33mf40e164[m HEAD@{10}: commit: NOSEQUEVAAPASAR
+[33m087f1ba[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{11}: reset: moving to HEAD~1
+[33m7a74d24[m HEAD@{12}: reset: moving to HEAD~1
+[33mfae62f8[m HEAD@{13}: reset: moving to HEAD~1
+[33ma4c48ef[m HEAD@{14}: commit: QSW
+[33mfae62f8[m HEAD@{15}: commit (merge): Merge branch 'main' of https://github.com/FelipeDiazAimar/BibliotecaInteligente
+[33m7a74d24[m HEAD@{16}: commit: Update Front y Darkmode
+[33m087f1ba[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m HEAD@{17}: commit: Front
+[33mc7d5b01[m HEAD@{18}: pull --tags origin main: Fast-forward
+[33mfa25476[m HEAD@{19}: pull --tags origin main: Fast-forward
+[33maa49fd2[m HEAD@{20}: clone: from https://github.com/FelipeDiazAimar/BibliotecaInteligente.git

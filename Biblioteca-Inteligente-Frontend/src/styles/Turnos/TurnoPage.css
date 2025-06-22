@@ -17,7 +17,6 @@
   margin: 0 auto;
   background: rgba(255,255,255,0.98);
   border-radius: 22px;
-  box-shadow: 0 6px 32px #b3c6e044, 0 1.5px 8px #90caf933;
   padding: 2.7rem 2.3rem 2.2rem 2.3rem;
   margin-top: 0;
   margin-bottom: 0;
@@ -27,6 +26,10 @@
   flex-direction: column;
   color: #222 !important;
   min-width: 800px;
+}
+
+body[data-header-theme='dark'] .turno-content {
+  background: linear-gradient(135deg, #0a2342 0%, #000000 100%) !important;
 }
 
 .turno-tabs-row {

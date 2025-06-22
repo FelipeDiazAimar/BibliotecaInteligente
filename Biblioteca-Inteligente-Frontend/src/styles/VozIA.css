@@ -150,3 +150,29 @@
 .panel-link{
   background: none;
 }
+
+/* Modo oscuro: texto blanco para preguntas y respuestas */
+body[data-header-theme='dark'] .vozia-pregunta,
+body[data-header-theme='dark'] .vozia-respuesta {
+  color: #fff !important;
+}
+
+/* Si usas otras clases para el texto, agrégalas aquí */
+body[data-header-theme='dark'] .vozia-historial .pregunta,
+body[data-header-theme='dark'] .vozia-historial .respuesta {
+  color: #fff !important;
+}
+body[data-header-theme='dark'] .asistenteia-historial-list,
+body[data-header-theme='dark'] .asistenteia-historial-item,
+body[data-header-theme='dark'] .asistenteia-historial-item *,
+body[data-header-theme='dark'] .asistenteia-historial-fecha {
+  background: transparent !important;
+  color: #fff !important;
+}
+body[data-header-theme='dark'] .asistenteia-historial-list {
+  background: #222 !important;
+  border-color: #444 !important;
+}
+body[data-header-theme='dark'] .asistenteia-historial-item {
+  border-bottom: 1px solid #444 !important;
+}
