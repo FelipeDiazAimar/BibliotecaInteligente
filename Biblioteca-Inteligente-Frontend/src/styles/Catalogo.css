@@ -80,6 +80,7 @@
   align-items: center;
   margin-top: 7.5rem;
   padding: 0 2vw;
+  padding-bottom: 90px; /* Ajusta según el alto real del footer */
   max-width: 1500px;
   width: 100%;
   background: var(--bg);
@@ -134,8 +135,7 @@
   top: 110%;
   left: 0;
   width: 100%;
-  max-width: 480px; /* Igual que el input de búsqueda */
-  min-width: 365px; /* Igual que el input de búsqueda */
+  max-width: 900px;
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -199,7 +199,7 @@
 
 .catalogo-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* 4 columnas */
   gap: 2.5rem;
   width: 100%;
   max-width: 1400px;
@@ -242,16 +242,30 @@
   box-shadow: 0 2px 8px rgba(37,99,235,0.13);
 }
 
+.catalogo-paginacion .catalogo-pagina-activa {
+  background: #e0e7ff;
+  color: #2563eb !important;
+  font-weight: 700;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #2563eb22;
+}
+
 .catalogo-footer {
-  color: var(--muted);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  background: transparent !important;
+  z-index: 100;
+  margin-top: 0;
+  pointer-events: auto;
+  box-shadow: none !important;
+  padding: 1.2rem 0 0.7rem 0;
   text-align: center;
-  padding: 1.5rem 0 1rem 0;
   font-size: 1rem;
-  opacity: 0.85;
+  opacity: 0.95;
   letter-spacing: 0.02em;
-  /* Quitar la línea blanca */
-  border-top: none;
-  margin-top: 2rem;
+  color: #888;
 }
 
 /* LibroCard minimalista (si quieres más coherencia visual) */
@@ -306,6 +320,11 @@
   font-size: 1.01rem;
   color: var(--text);
   margin-top: 0.3em;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra horizontalmente */
+  text-align: center;  /* Centra el texto */
 }
 
 /* Nuevos estilos agregados */
@@ -334,7 +353,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 20.7rem; /* Más espacio entre input y botones */
+  gap: 33px; /* Más espacio entre input y botones */
   width: 100%;
   max-width: 900px;
   background: var(--bg);

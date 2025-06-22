@@ -226,6 +226,16 @@ body[data-header-theme='dark'] .panel-overlay {
   white-space: nowrap;
 }
 
+body[data-header-theme='dark'] .panel-link {
+  background: rgba(255,255,255,0.97);
+  color: #222;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.13), 0 1.5px 8px rgba(33,150,243,0.09);
+}
+
+body[data-header-theme='dark'] .panel-link:hover {
+  background: #e3f2fd;
+}
+
 .panel-link-turnero { border-left: 6px solid #2196f3; }
 .panel-link-catalogo { border-left: 6px solid #4caf50; }
 .panel-link-contacto { border-left: 6px solid #ffd600; }

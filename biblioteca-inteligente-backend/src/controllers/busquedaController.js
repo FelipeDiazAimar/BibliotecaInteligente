@@ -24,6 +24,17 @@ exports.createBusqueda = async (req, res) => {
   try {
     const { termino, usuarioId } = req.body;
     const nuevaBusqueda = await Busqueda.create({ termino, usuarioId });
+
+    // Elimina las búsquedas antiguas, dejando solo las 3 más recientes
+    const busquedas = await Busqueda.findAll({
+      where: { usuarioId },
+      order: [['createdAt', 'DESC']]
+    });
+    if (busquedas.length > 3) {
+      const idsAEliminar = busquedas.slice(3).map(b => b.id);
+      await Busqueda.destroy({ where: { id: idsAEliminar } });
+    }
+
     res.status(201).json(nuevaBusqueda);
   } catch (error) {
     res.status(500).json({ error: error.message });

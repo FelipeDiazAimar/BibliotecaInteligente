@@ -8,7 +8,7 @@ import RegistroUsuario from './pages/RegistroUsuario'
 import AsistenteIA from './components/AsistenteIA'
 import PanelUsuario from './pages/PanelUsuario'
 import VozIA from './pages/VozIA'
-import AdminPanel from './pages/AdminPanel'
+import AdminPanel from './pages/AdminPanel';
 import ContactPage from './pages/Contacto'
 import CatalogoPage from './pages/CatalogoPage'
 import Turno from './pages/Turno';
@@ -106,7 +106,7 @@ function App() {
           path="/admin"
           element={
             <RequireAuth usuario={usuario} adminOnly={true}>
-              <AdminPanel logout={logout} />
+              <AdminPanel usuario={usuario} logout={logout} />
             </RequireAuth>
           }
         />
