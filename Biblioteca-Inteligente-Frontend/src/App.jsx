@@ -47,24 +47,16 @@ function App() {
   }
 
   async function logout() {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    await fetch('http://localhost:3000/api/auth/logout', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
     localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('rol');
     setUsuario(null);
   }
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
-    if (token && userId && !usuario) {
+    if (token && userId) {
       fetch(`http://localhost:3000/api/usuarios/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -72,7 +64,7 @@ function App() {
         .then(data => setUsuario(data))
         .catch(() => setUsuario(null));
     }
-  }, [usuario]);
+  }, []);
 
   return (
     <BrowserRouter>

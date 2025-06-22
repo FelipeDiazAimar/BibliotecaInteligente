@@ -24,6 +24,8 @@ export default function LoginAlumno({ onLogin }) {
         localStorage.setItem('userId', data.id);
         localStorage.setItem('rol', data.rol);
 
+        await onLogin(); // Esto actualiza el estado usuario en App
+
         // Redirige según el rol
         if (data.rol === 'admin') {
           navigate('/admin');
