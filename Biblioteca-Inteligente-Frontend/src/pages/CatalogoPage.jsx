@@ -5,14 +5,17 @@ import Loader from '../components/Loader'; // <-- Importa el Loader
 import { Link } from 'react-router-dom';
 import '../styles/Catalogo.css';
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 16;
 
-function soloLetras(str) {
+function normalizar(str) {
   return (str || '')
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-zA-Z]/g, '')
     .toLowerCase();
+}
+
+function soloLetras(str) {
+  return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase();
 }
 
 export default function Catalogo() {
@@ -54,27 +57,32 @@ export default function Catalogo() {
 
   const handleBuscarLibro = async (e) => {
     if (e) e.preventDefault();
-    const token = localStorage.getItem('token');
-    const userId = localStorage.getItem('userId');
-    const filtroBusqueda = busqueda.trim();
+    const filtroBusqueda = normalizar(busqueda.trim());
 
     if (filtroBusqueda) {
-      const terminoLimpio = soloLetras(filtroBusqueda);
-      const res = await fetch(`http://localhost:3000/api/libros/buscar?termino=${encodeURIComponent(terminoLimpio)}`);
-      if (res.ok) {
-        const data = await res.json();
-        const disponibles = data.filter(l => l.disponible);
-        setLibrosFiltrados(disponibles);
-        setPagina(1);
-      } else {
-        setLibrosFiltrados([]);
-      }
+      const palabras = filtroBusqueda.split(/\s+/);
+      const filtrados = libros.filter(libro => {
+        const texto = [
+          libro.titulo,
+          libro.subtitulo,
+          libro.autor,
+          libro.editorial,
+          libro.serie,
+          libro.isbn
+        ].map(normalizar).join(' ');
+        return palabras.every(palabra => texto.includes(palabra));
+      });
+      setLibrosFiltrados(filtrados);
+      setPagina(1);
     } else {
       setLibrosFiltrados(libros);
       setPagina(1);
     }
 
-    if (token && filtroBusqueda) {
+    // CORREGIDO: Definir token y userId aquí
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('userId');
+    if (token && filtroBusqueda && userId) {
       await fetch('http://localhost:3000/api/busquedas', {
         method: 'POST',
         headers: {
@@ -191,36 +199,7 @@ export default function Catalogo() {
             <LibroCard key={libro.id} libro={libro} />
           ))}
         </div>
-        <div className="catalogo-paginacion" style={{ alignItems: 'center', display: 'flex' }}>
-          <button
-            disabled={pagina === 1}
-            onClick={() => setPagina(pagina - 1)}
-            style={{ display: 'flex', alignItems: 'center' }}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginRight: 4 }}>
-              <path d="M15 18l-6-6 6-6"/>
-            </svg>
-            Anterior
-          </button>
-          {[...Array(totalPaginas)].map((_, i) => (
-            <button
-              key={i}
-              className={pagina === i + 1 ? 'catalogo-pagina-activa' : ''}
-              onClick={() => setPagina(i + 1)}
-              style={{ display: 'flex', alignItems: 'center', border: '#b9b9b9 2px solid', borderRadius: '50px' ,width: '50%'}}
-            >{i + 1}</button>
-          ))}
-          <button
-            disabled={pagina === totalPaginas || totalPaginas === 0}
-            onClick={() => setPagina(pagina + 1)}
-            style={{ display: 'flex', alignItems: 'center' }}
-          >
-            Siguiente
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle', marginLeft: 4 }}>
-              <path d="M9 6l6 6-6 6"/>
-            </svg>
-          </button>
-        </div>
+        <Pagination pagina={pagina} totalPaginas={totalPaginas} setPagina={setPagina} />
       </main>
       <footer className="catalogo-footer">
         © 2025 BiblioTech. Todos los derechos reservados.
@@ -228,10 +207,53 @@ export default function Catalogo() {
     </>
   );
 }
-// If you want to export CatalogoPage as default, use the following lines instead of the previous default export:
-// export default function CatalogoPage() {
-//   return <Catalogo />;
-// }
 
-// Or, if you want Catalogo as default:
-// export default Catalogo;
+function Pagination({ pagina, totalPaginas, setPagina }) {
+  if (totalPaginas <= 1) return null;
+
+  // Muestra máximo 5 números, con ... si hay muchas páginas
+  const getPages = () => {
+    const pages = [];
+    if (totalPaginas <= 5) {
+      for (let i = 1; i <= totalPaginas; i++) pages.push(i);
+    } else {
+      if (pagina <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPaginas);
+      } else if (pagina >= totalPaginas - 2) {
+        pages.push(1, '...', totalPaginas - 3, totalPaginas - 2, totalPaginas - 1, totalPaginas);
+      } else {
+        pages.push(1, '...', pagina - 1, pagina, pagina + 1, '...', totalPaginas);
+      }
+    }
+    return pages;
+  };
+
+  return (
+    <div className="catalogo-paginacion">
+      <button disabled={pagina === 1} onClick={() => setPagina(pagina - 1)}>
+        Anterior
+      </button>
+      {getPages().map((p, i) =>
+        p === '...' ? (
+          <span key={i} style={{ margin: '0 0.5rem', color: '#888' }}>…</span>
+        ) : (
+          <button
+            key={p}
+            className={pagina === p ? 'catalogo-pagina-activa' : ''}
+            style={{
+              fontWeight: pagina === p ? 700 : 500,
+              background: pagina === p ? '#e0e7ff' : 'none',
+              color: pagina === p ? '#2563eb' : undefined
+            }}
+            onClick={() => setPagina(p)}
+          >
+            {p}
+          </button>
+        )
+      )}
+      <button disabled={pagina === totalPaginas} onClick={() => setPagina(pagina + 1)}>
+        Siguiente
+      </button>
+    </div>
+  );
+}
