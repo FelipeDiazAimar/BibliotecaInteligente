@@ -112,7 +112,7 @@ function ContactPage({ usuario }) {
               background: '#2196f3',
               color: '#fff',
               border: 'none',
-              borderRadius: 8,
+              borderRadius: 50,
               padding: '0.9em 2.5em',
               fontSize: '1.1rem',
               fontWeight: 600,
