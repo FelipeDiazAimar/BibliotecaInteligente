@@ -177,7 +177,7 @@ nav a:hover, .nav-btn:hover {
   line-height: 1.1;
 }
 
-.registro-utn {
+.registro-  {
   font-size: 1.1rem;
   letter-spacing: 2px;
   margin-top: 0.5rem;
@@ -194,6 +194,7 @@ nav a:hover, .nav-btn:hover {
   flex-direction: column;
   align-items: center;
   gap: 18px;
+  margin-top: 50px;
 }
 
 .registro-avatar {

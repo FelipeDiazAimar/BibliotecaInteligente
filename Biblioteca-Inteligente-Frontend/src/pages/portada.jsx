@@ -10,7 +10,7 @@ export default function Portada() {
       <Navbar />
       <main className="portada-main">
         <h1>BIBLIOTECA<br />INTELIGENTE</h1>
-        <h2>UTN</h2>
+        <h2> </h2>
         <button onClick={() => navigate('/login')}>Acceder</button>
       </main>
       <footer>

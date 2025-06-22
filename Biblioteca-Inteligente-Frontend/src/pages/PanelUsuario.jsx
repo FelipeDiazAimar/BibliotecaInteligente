@@ -10,7 +10,7 @@ export default function PanelUsuario({ usuario, onAtras, onVozIA, onLogout }) {
         left={
           <div className="panel-logo">
             <span>BIBLIOTECA<br />INTELIGENTE</span>
-            <span className="panel-utn">UTN <span role="img" aria-label="libro">📚</span></span>
+            <span className="panel- "> <span role="img" aria-label="libro">📚</span></span>
           </div>
         }
         right={

@@ -28,7 +28,7 @@ function ContactPage() {
           <div style={{ fontWeight: 'bold', fontSize: '1.7rem', letterSpacing: 1 }}>
             BIBLIOTECA<br />INTELIGENTE
             <div style={{ fontSize: '1rem', letterSpacing: 2, marginTop: 2 }}>
-              UTN <span role="img" aria-label="libro">📚</span>
+              <span role="img" aria-label="libro">📚</span>
             </div>
           </div>
         }
@@ -91,32 +91,32 @@ function ContactPage() {
           <div className="contact-title">Datos de contacto</div>
           <div>📍 Zeballos 1341, S2000BQA Rosario, Santa Fe</div>
           <div>☎️ (0341) 448-1871</div>
-          <div>✉️ info@frro.utn.edu.ar</div>
+          <div>✉️ info@frro. .edu.ar</div>
         <div className="contact-socials contact-socials-bottom">
           <a
-            href="https://www.facebook.com/utnfrro"
+            href="https://www.facebook.com/ frro"
             target="_blank"
             rel="noopener noreferrer"
             className="contact-social-link"
-            aria-label="Facebook UTN"
+            aria-label="Facebook  "
           >
             <span className="contact-icon contact-icon-fb" />
           </a>
           <a
-            href="https://x.com/utnfrro"
+            href="https://x.com/ frro"
             target="_blank"
             rel="noopener noreferrer"
             className="contact-social-link"
-            aria-label="X UTN"
+            aria-label="X  "
           >
             <span className="contact-icon contact-icon-x" />
           </a>
           <a
-            href="https://www.instagram.com/utnfrro"
+            href="https://www.instagram.com/ frro"
             target="_blank"
             rel="noopener noreferrer"
             className="contact-social-link"
-            aria-label="Instagram UTN"
+            aria-label="Instagram  "
           >
             <span className="contact-icon contact-icon-ig" />
           </a>

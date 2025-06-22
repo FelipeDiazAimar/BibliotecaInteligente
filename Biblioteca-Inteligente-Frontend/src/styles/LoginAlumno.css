@@ -16,6 +16,8 @@
   padding: 2rem 7vw 0 0;
   display: flex;
   justify-content: flex-end;
+  position: fixed;   /* Asegura que el z-index funcione */
+  z-index: 10;          /* Más alto que el form */
 }
 
 .login-nav ul {
@@ -24,6 +26,7 @@
   gap: 2.5rem;
   margin: 0;
   padding: 0;
+  margin-right: 40px;
 }
 
 .login-nav a, .login-nav-btn {
@@ -47,6 +50,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: -100px;
+  margin-top: 0px;
 }
 
 .login-form-container {
@@ -55,6 +60,8 @@
   padding: 2.5rem 2.5rem 2rem 2.5rem;
   min-width: 340px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  position: relative;   /* O quita cualquier z-index aquí */
+  z-index: 1;
 }
 
 .login-avatar {
@@ -77,7 +84,7 @@
   letter-spacing: 1px;
 }
 
-.login-utn {
+.login-  {
   color: #fff;
   font-size: 15px;
   margin-top: 2px;

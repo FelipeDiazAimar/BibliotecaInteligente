@@ -351,7 +351,7 @@ const AdminPanel = ({ usuario }) => {
     <div className="admin-overlay">
       <nav className="admin-navbar">
         <div className="admin-logo">
-          BIBLIOTECA<br />INTELIGENTE <span style={{ fontSize: 18, color: "#2196f3", marginLeft: 8 }}>UTN 📚</span>
+          BIBLIOTECA<br />INTELIGENTE <span style={{ fontSize: 18, color: "#2196f3", marginLeft: 8 }}> 📚</span>
         </div>
         <div>
           <button className="admin-logout-btn" onClick={handleLogout}>Cerrar sesión</button>

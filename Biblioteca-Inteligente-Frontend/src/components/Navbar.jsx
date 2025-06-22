@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import '../styles/portada.css';
 
-export default function Navbar({ extraLinks = [], hideLinks = [] }) {
+export default function Navbar({ extraLinks = [], hideLinks = [], extraClass }) {
   return (
-    <nav>
+    <nav className={`login-nav ${extraClass || ''}`}>
       <ul>
         {!hideLinks.includes('acerca') && (
           <li><Link className="nav-link" to="/acerca">Acerca de</Link></li>

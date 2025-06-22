@@ -97,7 +97,7 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
         <div className="registro-header">
           <div className="registro-logo">
             <span className="registro-titulo">BIBLIOTECA<br />INTELIGENTE</span>
-            <span className="registro-utn">UTN <span role="img" aria-label="libro">📚</span></span>
+            <span className="registro- "> <span role="img" aria-label="libro">📚</span></span>
           </div>
         </div>
         <form className="registro-form" onSubmit={handleSubmit}>
@@ -159,9 +159,9 @@ function RegistroUsuario({ onRegistrado, onAtras }) {
           <button type="submit" className="registro-btn">Registrarse</button>
           <div className="login-link" style={{ marginTop: 16 }}>
             ¿Ya tienes una cuenta?{' '}
-            <a href="#" onClick={e => { e.preventDefault(); onAtras(); }}>
+            <Link to="/login">
               Inicia sesión
-            </a>
+            </Link>
           </div>
         </form>
       </div>
