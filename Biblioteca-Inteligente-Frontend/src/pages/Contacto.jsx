@@ -60,7 +60,6 @@ function ContactPage({ usuario }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
             <button type="button" className="panel-link" onClick={() => goTo('/catalogo')}>Catálogo</button>
             <button type="button" className="panel-link" onClick={() => goTo('/turnos')}>Turnos</button>
-            <button type="button" className="panel-link" onClick={() => goTo('/contacto')}>Contacto</button>
           </div>
         }
       />
