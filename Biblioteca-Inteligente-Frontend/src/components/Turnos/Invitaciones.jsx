@@ -4,17 +4,17 @@ export default function Invitaciones({ usuario }) {
   const [invitaciones, setInvitaciones] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const cargarInvitaciones = () => {
+  const cargarInvitaciones = React.useCallback(() => {
     setLoading(true);
     fetch(`http://localhost:3000/api/invitados/usuario/${usuario.id}/pendientes`)
       .then(res => res.json())
       .then(data => setInvitaciones(Array.isArray(data) ? data : []))
       .finally(() => setLoading(false));
-  };
+  }, [usuario.id]);
 
   useEffect(() => {
     if (usuario?.id) cargarInvitaciones();
-  }, [usuario]);
+  }, [cargarInvitaciones, usuario]);
 
   const responderInvitacion = async (idInvitado, estado) => {
     await fetch(`http://localhost:3000/api/invitados/${idInvitado}`, {
