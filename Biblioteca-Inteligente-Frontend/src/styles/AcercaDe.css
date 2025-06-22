@@ -26,6 +26,17 @@ body[data-header-theme="dark"] .acercade-main {
   color: #e3e8f7;
 }
 
+body[data-header-theme="dark"] .acercade-main,
+body[data-header-theme="dark"] .acercade-titulo,
+body[data-header-theme="dark"] .acercade-texto,
+body[data-header-theme="dark"] .acercade-section,
+body[data-header-theme="dark"] .acercade-section h2,
+body[data-header-theme="dark"] .acercade-section ul,
+body[data-header-theme="dark"] .acercade-section li,
+body[data-header-theme="dark"] .acercade-footer {
+  color: #fff !important;
+}
+
 .acercade-titulo {
   font-size: 2.3rem;
   font-weight: 800;

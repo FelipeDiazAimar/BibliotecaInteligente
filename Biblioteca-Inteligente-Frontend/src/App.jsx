@@ -13,6 +13,7 @@ import ContactPage from './pages/Contacto'
 import CatalogoPage from './pages/CatalogoPage'
 import Turno from './pages/Turno';
 import BookDetail from './pages/BookDetail'; // Asegúrate de que la ruta sea correcta
+import AcercaDe from './pages/AcercaDe';
 
 function App() {
   const [libros, setLibros] = useState([])
@@ -77,6 +78,7 @@ function App() {
         } />
         <Route path="/registro" element={<RegistroUsuario />} />
         <Route path="/contacto" element={<ContactPage usuario={usuario} />} />
+        <Route path="/acerca" element={<AcercaDe />} />
         <Route path="/catalogo" element={<CatalogoPage />} />
         <Route
           path="/turnos"
