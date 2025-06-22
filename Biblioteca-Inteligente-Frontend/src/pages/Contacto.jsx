@@ -53,12 +53,6 @@ function ContactPage({ usuario }) {
     }
   };
 
-  // Agrega la función de logout aquí
-  const onLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
-
   return (
     <div>
       <Header
@@ -66,16 +60,6 @@ function ContactPage({ usuario }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
             <button type="button" className="panel-link" onClick={() => goTo('/catalogo')}>Catálogo</button>
             <button type="button" className="panel-link" onClick={() => goTo('/turnos')}>Turnos</button>
-            <button type="button" className="panel-link" onClick={() => goTo('/contacto')}>Contacto</button>
-            <button type="button" className="panel-link" onClick={() => goTo('/voz-ia')}>Ask AI</button>
-            <button
-              type="button"
-              className="panel-link"
-              style={{ color: '#e53935', fontWeight: 600 }}
-              onClick={onLogout}
-            >
-              Cerrar sesión
-            </button>
           </div>
         }
       />
@@ -127,7 +111,7 @@ function ContactPage({ usuario }) {
               background: '#2196f3',
               color: '#fff',
               border: 'none',
-              borderRadius: 8,
+              borderRadius: 50,
               padding: '0.9em 2.5em',
               fontSize: '1.1rem',
               fontWeight: 600,

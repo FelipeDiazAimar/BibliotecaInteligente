@@ -132,7 +132,6 @@ export default function Catalogo() {
           <div className="catalogo-nav">
             <Link to="/turnos" className="catalogo-link">Turnero</Link>
             <Link to="/contacto" className="catalogo-link">Contacto</Link>
-            <Link to="/" className="catalogo-link">Atrás</Link>
           </div>
         }
       />
