@@ -19,17 +19,20 @@ export default function LoginAlumno({ onLogin }) {
         body: JSON.stringify({ dni, password })
       });
       const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || 'Error de autenticación');
-        return;
-      }
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('userId', data.id);
+      if (res.ok && data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.id);
+        localStorage.setItem('rol', data.rol);
 
-      // Llama a la función para actualizar el usuario en App.jsx
-      if (onLogin) await onLogin();
-      if (data.rol === 'admin') navigate('/admin');
-      else navigate('/panel');
+        // Redirige según el rol
+        if (data.rol === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/panel');
+        }
+      } else {
+        setError(data.error || 'Error de autenticación');
+      }
     } catch {
       setError('Error de red');
     }

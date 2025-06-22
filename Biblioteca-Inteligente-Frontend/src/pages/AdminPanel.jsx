@@ -34,7 +34,7 @@ const initialUserForm = {
   password: ''
 };
 
-const AdminPanel = ({ usuario }) => {
+const AdminPanel = ({ usuario, logout }) => {
   const [libros, setLibros] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
