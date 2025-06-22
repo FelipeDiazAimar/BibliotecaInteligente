@@ -41,7 +41,10 @@ const modelDefiners = [
   require('./libro'),
   require('./busqueda'),
   require('./respuesta'),
-  require('./prompt')
+  require('./prompt'),
+  require('./turnos'),
+  require('./salas'),
+  require('./invitados_turno')
 ];
 
 // Define todos los modelos en sequelize
@@ -49,7 +52,7 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize, Sequelize.DataTypes);
 }
 
-// Llama a associate en cada modelo si existe
+// Asegura que las asociaciones estén bien definidas
 Object.values(sequelize.models).forEach(model => {
   if (typeof model.associate === 'function') {
     model.associate(sequelize.models);
