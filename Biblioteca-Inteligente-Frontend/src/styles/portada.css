@@ -67,7 +67,6 @@ main h1 {
   text-align: center;
   background: none;
   color: #fff;
-  -webkit-text-fill-color: #fff;
   position: relative;
   transition: filter 0.3s;
   filter: none;
