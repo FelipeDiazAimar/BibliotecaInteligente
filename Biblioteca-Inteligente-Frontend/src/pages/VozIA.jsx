@@ -30,6 +30,16 @@ export default function VozIA() {
     e.preventDefault();
     if (!pregunta.trim()) return;
     setCargando(true);
+
+    // 1. Actualiza el historial localmente de inmediato (optimistic update)
+    setHistorial(prev => [
+      {
+        texto: pregunta,
+        Respuesta: { texto: "Procesando..." }
+      },
+      ...prev
+    ]);
+
     try {
       const token = localStorage.getItem('token');
       await fetch('http://localhost:3000/api/asistente/ask', {
@@ -37,6 +47,7 @@ export default function VozIA() {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ prompt: pregunta })
       });
+      // 2. Sincroniza el historial real cuando el backend responde
       fetch('http://localhost:3000/api/asistente/historial', {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -146,11 +157,28 @@ export default function VozIA() {
               style={{ color: "#222" }}
             />
             <button
-              className="vozia-btn"
+              className="vozia-btn-magic"
               type="submit"
               disabled={cargando || !pregunta.trim()}
+              aria-label="Enviar"
             >
-              {cargando ? 'Cargando...' : 'Enviar'}
+              <svg
+                width="44"
+                height="44"
+                viewBox="0 0 44 44"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="vozia-flecha"
+              >
+                <circle cx="22" cy="22" r="22" fill="#3f51ff" />
+                <path
+                  d="M16 11L32 22L16 33"
+                  stroke="#fff"
+                  strokeWidth="3.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </button>
           </form>
         </div>

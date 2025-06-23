@@ -99,6 +99,7 @@
   box-sizing: border-box;
   outline: none;
   min-width: 32vw;
+  margin-bottom: 40px;
 }
 
 /* Mantén el placeholder gris */
@@ -118,6 +119,7 @@
   cursor: pointer;
   opacity: 1;
   transition: background 0.2s, color 0.2s;
+  margin-bottom: 40px;
 }
 
 .vozia-btn:hover:enabled {
@@ -130,6 +132,42 @@
   color: #888;
   cursor: default;
   opacity: 0.7;
+}
+
+.vozia-btn-magic {
+  border: none;
+  background: linear-gradient(135deg, #000 0%, #0a1a40 100%);
+  padding: 0;
+  margin-left: 0.5em;
+  cursor: pointer;
+  outline: none;
+  border-radius: 50%;
+  transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(63,81,255,0.12);
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.vozia-btn-magic:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vozia-btn-magic .vozia-flecha {
+  display: block;
+  transition: transform 0.25s cubic-bezier(.4,2,.6,1), filter 0.18s;
+  filter: drop-shadow(0 0 6px #3f51ff88);
+}
+
+.vozia-btn-magic:hover .vozia-flecha,
+.vozia-btn-magic:focus .vozia-flecha {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 16px #3f51ffcc) brightness(1.2);
+}
+
+.vozia-btn-magic:active .vozia-flecha {
+  transform: scale(0.95);
+  filter: drop-shadow(0 0 24px #3f51ff) brightness(1.4);
 }
 
 .vozia-historial {
