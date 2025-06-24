@@ -455,7 +455,7 @@
 
 body[data-header-theme='dark'] .catalogo-main {
   background: linear-gradient(135deg, #0a2342 0%, #000000 100%) !important;
-  color: #f5f5f5 !important;
+  color: #000000 !important;
 }
 
 body[data-header-theme='dark'] .catalogo-paginacion button {
