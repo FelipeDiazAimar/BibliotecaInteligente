@@ -48,10 +48,34 @@ function App() {
   }
 
   async function logout() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        await fetch('http://localhost:3000/api/auth/logout', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } catch (e) {
+        // Puedes mostrar un mensaje de error si quieres
+      }
+    }
+
+    // Conserva solo las últimas 3 búsquedas en el historial del catálogo
+    const busquedas = JSON.parse(localStorage.getItem('busquedasCatalogo') || '[]');
+    const ultimas3 = busquedas.slice(-3);
+
+    // Borra solo los datos de sesión
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
-    localStorage.removeItem('rol');
-    setUsuario(null);
+    localStorage.removeItem('usuario');
+
+    // Borra el historial completo del catálogo y restaura solo las últimas 3 búsquedas
+    localStorage.removeItem('busquedasCatalogo');
+    if (ultimas3.length > 0) {
+      localStorage.setItem('busquedasCatalogo', JSON.stringify(ultimas3));
+    }
+
+    window.location.href = '/login';
   }
 
   useEffect(() => {
