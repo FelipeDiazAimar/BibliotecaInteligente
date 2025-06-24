@@ -115,3 +115,30 @@
   user-select: none;
   display: inline;
 }
+.panel-link-cs{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    height: 44px;
+    min-width: 120px;
+    padding: 0 1.2em;
+    background: linear-gradient(90deg, rgba(0, 0, 0) 5%, rgba(0,0,0) 95%) !important;
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.07);
+    cursor: pointer;
+    transition: box-shadow 0.18s, transform 0.18s;
+    font-weight: 600;
+    font-size: 1.08rem;
+    color: #fff !important;
+    gap: 0.7em;
+    text-decoration: none;
+    overflow: visible;
+}
+.panel-link-cs:hover {
+  box-shadow: 0 4px 16px rgba(243,33,33,0.18);
+  border: none;
+  outline: none;
+  transform: translateY(-2px) scale(1.07);
+  background: rgb(255, 0, 0, 0.55)  !important;
+
+}

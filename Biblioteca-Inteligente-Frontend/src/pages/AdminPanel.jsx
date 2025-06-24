@@ -347,6 +347,11 @@ const AdminPanel = ({ usuario, logout }) => {
     recargarBusquedasRecientes();
   };
 
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   return (
     <div className="admin-overlay">
       <nav className="admin-navbar">

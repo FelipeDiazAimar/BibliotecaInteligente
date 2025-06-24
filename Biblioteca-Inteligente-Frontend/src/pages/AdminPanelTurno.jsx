@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import TurnoCard from '../components/Turnos/TurnoCard';
 import '../styles/Turnos/TurnosBiblioteca.css';
@@ -15,6 +16,7 @@ export default function TurnosBiblioteca({ logout }) {
   const [filtroEstado, setFiltroEstado] = useState('');
   const [busqueda, setBusqueda] = useState('');
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     recargarTurnos();
@@ -27,6 +29,11 @@ export default function TurnosBiblioteca({ logout }) {
       .then(res => res.json())
       .then(data => setTurnos(Array.isArray(data) ? data : []))
       .finally(() => setLoading(false));
+  };
+
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   // Filtro y búsqueda
@@ -43,9 +50,10 @@ export default function TurnosBiblioteca({ logout }) {
   return (
     <div className="turnos-biblio-bg">
       <Header
+        onLogout={onLogout}
         right={
           <div className="turnos-biblio-header-right">
-            <button className="panel-link" onClick={logout}>Cerrar sesión</button>
+            <button className="panel-link-cs" onClick={logout}>Cerrar sesión</button>
           </div>
         }
       />

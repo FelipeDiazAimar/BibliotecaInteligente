@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import LibroCard from '../components/LibroCard';
 import Header from '../components/Header';
 import Loader from '../components/Loader'; // <-- Importa el Loader
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Catalogo.css';
 
 const PAGE_SIZE = 16;
@@ -27,6 +27,7 @@ export default function Catalogo() {
   const [pagina, setPagina] = useState(1);
   const [busquedasRecientes, setBusquedasRecientes] = useState([]);
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -123,11 +124,17 @@ export default function Catalogo() {
     setPagina(1);
   }, [filtro]);
 
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   if (loading) return <Loader />;
 
   return (
     <>
       <Header
+        onLogout={onLogout}
         right={
           <div className="catalogo-nav">
             <Link to="/turnos" className="catalogo-link">Turnero</Link>

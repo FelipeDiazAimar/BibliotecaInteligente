@@ -137,16 +137,9 @@ export default function Turno({ usuario }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
             <Link to="/catalogo" className="panel-link">Catálogo</Link>
             <Link to="/contacto" className="panel-link">Contacto</Link>
-            <button
-              type="button"
-              className="panel-link"
-              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', font: 'inherit' }}
-              onClick={onLogout}
-            >
-              Cerrar sesión
-            </button>
           </div>
         }
+        onLogout={onLogout}
       />
       <div style={{ height: 110 }} />
       <div className="turno-content">

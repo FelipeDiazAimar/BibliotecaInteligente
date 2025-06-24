@@ -211,19 +211,18 @@ body[data-header-theme='dark'] .panel-overlay {
 }
 
 .panel-link {
-  display: flex;
-  align-items: center;
-  gap: 0.8em;
-  padding: 1rem 1.2rem;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: 500;
+  color: var(--text);
   text-decoration: none;
-  background: #f7f7f7;
-  color: #222;
-  box-shadow: 0 2px 8px rgba(33,150,243,0.13), 0 1.5px 8px rgba(33,150,243,0.09);
-  transition: background 0.18s, color 0.18s;
-  white-space: nowrap;
+  font-size: 1.08rem;
+  font-weight: 500;
+  padding: 0.4em 1.1em;
+  border-radius: 8px;
+  transition: background var(--transition), color var(--transition);
+}
+
+.panel-link:hover {
+  background: var(--primary-light) !important;
+  color: var(--primary) !important;
 }
 
 body[data-header-theme='dark'] .panel-link {
@@ -435,4 +434,81 @@ body[data-header-theme='dark'] .panel-link:hover {
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
+}
+
+/* Animación base para todos los links de panel */
+.panel-link-ps {
+  position: relative;
+  overflow: hidden;
+  background: #f7f7f7;
+  z-index: 1;
+  transition: color 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: #f7f7f7;
+  color: #222;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.13), 0 1.5px 8px rgba(33,150,243,0.09);
+  transition: background 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+
+/* Turnero: azul */
+.panel-link-ps.panel-link-turnero {
+  border-left: 6px solid #2196f3;
+  background: linear-gradient(90deg, #2196f3 0%, #ffffff 0%) no-repeat;
+  background-size: 0% 100%;
+  background-position: left top;
+  transition: background-size 0.45s cubic-bezier(.4,0,.2,1), color 0.18s;
+}
+.panel-link-ps.panel-link-turnero:hover {
+  background-size: 100% 100%;
+  background-image: linear-gradient(90deg, #2196f3 0%, #ffffff 100%);
+  color: #fff;
+}
+
+/* Catálogo: verde */
+.panel-link-ps.panel-link-catalogo {
+  border-left: 6px solid #4caf50;
+  background: linear-gradient(90deg, #4caf50 0%, #f7f7f7 0%) no-repeat;
+  background-size: 0% 100%;
+  background-position: left top;
+  transition: background-size 0.45s cubic-bezier(.4,0,.2,1), color 0.18s;
+}
+.panel-link-ps.panel-link-catalogo:hover {
+  background-size: 100% 100%;
+  background-image: linear-gradient(90deg, #4caf50 0%, #f7f7f7 100%);
+  color: #fff;
+}
+
+/* Contacto: amarillo */
+.panel-link-ps.panel-link-contacto {
+  border-left: 6px solid #ffd600;
+  background: linear-gradient(90deg, #ffd600 0%, #f7f7f7 0%) no-repeat;
+  background-size: 0% 100%;
+  background-position: left top;
+  transition: background-size 0.45s cubic-bezier(.4,0,.2,1), color 0.18s;
+}
+.panel-link-ps.panel-link-contacto:hover {
+  background-size: 100% 100%;
+  background-image: linear-gradient(90deg, #ffd600 0%, #f7f7f7 100%);
+  color: #222;
+}
+
+/* Opcional: texto más visible en hover para azul y verde */
+.panel-link-ps.panel-link-turnero:hover,
+.panel-link-ps.panel-link-catalogo:hover {
+  color: #fff !important;
+}
+
+body[data-header-theme='dark'] .panel-link-ps,
+body[data-header-theme='dark'] .panel-link-ps.panel-link-turnero,
+body[data-header-theme='dark'] .panel-link-ps.panel-link-catalogo,
+body[data-header-theme='dark'] .panel-link-ps.panel-link-contacto {
+  color: #fff !important;
 }

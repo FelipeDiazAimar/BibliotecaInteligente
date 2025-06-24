@@ -20,20 +20,7 @@ export default function PanelUsuario({ usuario }) {
 
   return (
     <div className="panel-overlay">
-      <Header
-        right={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
-            <button
-              type="button"
-              className="panel-link"
-              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', font: 'inherit' }}
-              onClick={onLogout}
-            >
-              Cerrar sesión
-            </button>
-          </div>
-        }
-      />
+      <Header onLogout={onLogout} />
       <main className="panel-main panel-main-usuario">
         {/* Mensaje de bienvenida */}
         <div
@@ -82,15 +69,15 @@ export default function PanelUsuario({ usuario }) {
 
         {/* Links de navegación debajo de la tarjeta */}
         <div className="panel-links panel-links-usuario">
-          <Link className="panel-link panel-link-turnero" to="/turnos">
+          <Link className="panel-link-ps panel-link-turnero" to="/turnos">
             <span className="panel-link-icon">🕒</span>
             Turnero Virtual
           </Link>
-          <Link className="panel-link panel-link-catalogo" to="/catalogo">
+          <Link className="panel-link-ps panel-link-catalogo" to="/catalogo">
             <span className="panel-link-icon">📖</span>
             Catalogo Virtual
           </Link>
-          <Link className="panel-link panel-link-contacto" to="/contacto">
+          <Link className="panel-link-ps panel-link-contacto" to="/contacto">
             <span className="panel-link-icon">📞</span>
             Contacto
           </Link>

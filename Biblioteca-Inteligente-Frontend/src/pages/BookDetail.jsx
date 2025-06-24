@@ -21,12 +21,18 @@ export default function BookDetail() {
       });
   }, [id]);
 
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   if (loading) return <Loader />;
 
   if (!libro) {
     return (
       <div className="bookdetail-bg">
         <Header
+          onLogout={onLogout}
           right={
             <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
               <Link to="/catalogo" className="panel-link">Catálogo</Link>
@@ -42,6 +48,7 @@ export default function BookDetail() {
   return (
     <div className="bookdetail-bg">
       <Header
+        onLogout={onLogout}
         right={
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', marginRight: '80px' }}>
             <Link to="/catalogo" className="panel-link">Catálogo</Link>

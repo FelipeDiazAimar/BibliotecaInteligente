@@ -73,7 +73,6 @@ export default function VozIA() {
             <Link to="/catalogo" className="panel-link">Catalogo</Link>
             <Link to="/turnos" className="panel-link">Turnero</Link>
             <Link to="/contacto" className="panel-link">Contacto</Link>
-            <Link to="#" className="panel-link" onClick={onLogout}>Cerrar sesión</Link>
           </div>
         }
       />

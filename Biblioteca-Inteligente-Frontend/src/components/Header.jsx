@@ -1,18 +1,17 @@
 import vozImg from '../assets/ondas-sonoras.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Header.css';
 import { useState, useEffect } from 'react';
 
-export default function Header({ right, hideVozIA }) {
+export default function Header({ right, hideVozIA, onLogout }) {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem('header-theme') === 'dark'
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Solo afecta el body si el header está presente
     document.body.setAttribute('data-header-theme', darkMode ? 'dark' : 'light');
     localStorage.setItem('header-theme', darkMode ? 'dark' : 'light');
-    // Limpia el atributo al desmontar el header
     return () => {
       document.body.removeAttribute('data-header-theme');
     };
@@ -20,6 +19,17 @@ export default function Header({ right, hideVozIA }) {
 
   const toggleDarkMode = () => {
     setDarkMode((prev) => !prev);
+  };
+
+  // Mantiene los estilos del Link, pero controla el acceso
+  const handleAskAIClick = (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/voz-ia');
+    } else {
+      navigate('/login');
+    }
   };
 
   return (
@@ -51,12 +61,25 @@ export default function Header({ right, hideVozIA }) {
       <div className="panel-navbar-right" style={{ alignItems: 'center', display: 'flex', gap: '2.5rem', marginRight: '80px' }}>
         {/* Ask AI SIEMPRE PRIMERO */}
         {!hideVozIA && (
-          <Link to="/voz-ia" className="header-voz-btn" title="Ir a VozIA">
+          <Link
+            to="/voz-ia"
+            className="header-voz-btn"
+            title="Ir a VozIA"
+            onClick={handleAskAIClick}
+          >
             <img src={vozImg} alt="VozIA" className="header-voz-icon" />
             <span className="header-voz-text">Ask AI</span>
           </Link>
         )}
         {right}
+        {/* Botón de cerrar sesión */}
+        <button
+          type="button"
+          className="panel-link-cs"
+          onClick={onLogout}
+        >
+          Cerrar sesión
+        </button>
         {/* Botón de modo claro/oscuro */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {/* Luna */}
