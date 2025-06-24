@@ -2,12 +2,16 @@ import vozImg from '../assets/ondas-sonoras.png';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Header.css';
 import { useState, useEffect } from 'react';
+import { useUser } from '../context/UserContext';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function Header({ right, hideVozIA, onLogout }) {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem('header-theme') === 'dark'
   );
   const navigate = useNavigate();
+  const { usuario } = useUser();
 
   useEffect(() => {
     document.body.setAttribute('data-header-theme', darkMode ? 'dark' : 'light');
@@ -35,15 +39,14 @@ export default function Header({ right, hideVozIA, onLogout }) {
   return (
     <header className="panel-navbar">
       <div className="panel-navbar-left">
-        <button
-          className="panel-back-btn"
-          onClick={() => window.history.back()}
+        <IconButton
           aria-label="Atrás"
+          color="primary"
+          onClick={() => window.history.back()}
+          sx={{ marginRight: 1 }}
         >
-          <svg width="28" height="28" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
+          <ArrowBackIcon />
+        </IconButton>
         <div className="panel-logo" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <span>
             BiblioTech
@@ -133,13 +136,19 @@ export default function Header({ right, hideVozIA, onLogout }) {
             <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
           </svg>
         </div>
-        <Link to="/panel" title="Usuario">
+        <Link to="/panel" title="Usuario" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className="panel-user-icon">
             <svg width="28" height="28" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
               <circle cx="12" cy="8" r="4"/>
               <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
             </svg>
           </span>
+          {/* Mostrar nombre o email si el usuario está logueado */}
+          {usuario && (
+            <span style={{ fontWeight: 500, color: '#1769aa', fontSize: 15 }}>
+              {usuario.nombre || usuario.email}
+            </span>
+          )}
         </Link>
       </div>
     </header>

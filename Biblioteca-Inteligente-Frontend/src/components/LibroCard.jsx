@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import '../styles/LibroCard.css';
 
 export default function LibroCard({ libro }) {
   const navigate = useNavigate();
+  const { usuario, setUsuario } = useUser();
 
   return (
     <div

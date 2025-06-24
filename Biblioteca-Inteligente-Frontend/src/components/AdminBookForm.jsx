@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './AdminPage.css';
+import { useUser } from '../context/UserContext';
 
 const AdminPage = () => {
+  const { usuario, setUsuario } = useUser();
   const [books, setBooks] = useState([]);
   const [bookTitle, setBookTitle] = useState('');
   const [bookAuthor, setBookAuthor] = useState('');

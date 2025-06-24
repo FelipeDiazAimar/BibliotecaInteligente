@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useUser } from '../context/UserContext';
 
 export default function AsistenteIA() {
   const [pregunta, setPregunta] = useState('');
   const [respuesta, setRespuesta] = useState('');
   const [cargando, setCargando] = useState(false);
   const [historial, setHistorial] = useState([]);
+  const { usuario, setUsuario } = useUser();
 
   // Cargar historial al montar
   useEffect(() => {

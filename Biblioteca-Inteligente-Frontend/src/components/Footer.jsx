@@ -1,6 +1,9 @@
 import '../styles/Footer.css';
+import { useUser } from '../context/UserContext';
 
 export default function Footer() {
+  const { usuario, setUsuario } = useUser();
+
   return (
     <footer className="custom-footer">
       <div className="footer-content">

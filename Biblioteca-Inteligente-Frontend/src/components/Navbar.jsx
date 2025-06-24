@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import '../styles/portada.css';
 
 export default function Navbar({ extraLinks = [], hideLinks = [] }) {
+  const { usuario, setUsuario } = useUser();
+
   return (
     <nav>
       <ul>

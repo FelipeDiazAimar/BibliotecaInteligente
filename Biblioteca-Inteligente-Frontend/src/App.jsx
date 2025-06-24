@@ -14,10 +14,11 @@ import CatalogoPage from './pages/CatalogoPage'
 import Turno from './pages/Turno';
 import BookDetail from './pages/BookDetail'; // Asegúrate de que la ruta sea correcta
 import AcercaDe from './pages/AcercaDe';
+import { useUser } from './context/UserContext';
 
 function App() {
+  const { usuario, setUsuario } = useUser();
   const [libros, setLibros] = useState([])
-  const [usuario, setUsuario] = useState(null)
 
   useEffect(() => {
     fetch('http://localhost:3000/api/libros')
