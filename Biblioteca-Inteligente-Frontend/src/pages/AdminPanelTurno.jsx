@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import Header from '../components/Header';
 import TurnoCard from '../components/Turnos/TurnoCard';
@@ -19,12 +19,9 @@ export default function TurnosBiblioteca({ logout }) {
   const [filtroEstado, setFiltroEstado] = useState('');
   const [busqueda, setBusqueda] = useState('');
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const { setUsuario } = useUser();
 
   useEffect(() => {
     recargarTurnos();
-    // eslint-disable-next-line
   }, []);
 
   const recargarTurnos = () => {
@@ -35,11 +32,12 @@ export default function TurnosBiblioteca({ logout }) {
       .finally(() => setLoading(false));
   };
 
-  const onLogout = () => {
-    localStorage.removeItem('token');
-    setUsuario(null);
-    navigate('/login');
-  };
+  // Elimina esta función, ya que no se usa y causa el warning:
+  // const onLogout = () => {
+  //   localStorage.removeItem('token');
+  //   setUsuario(null);
+  //   navigate('/login');
+  // };
 
   // Filtro y búsqueda
   const turnosFiltrados = turnos.filter(t => {
@@ -102,6 +100,28 @@ export default function TurnosBiblioteca({ logout }) {
                   <b>DNI:</b> {turno.Usuario?.dni || '-'}
                   {turnoYaPaso(turno) && (
                     <span style={{ color: '#e53935', marginLeft: 8 }}>(Finalizado)</span>
+                  )}
+                  {/* Mostrar invitados si existen */}
+                  {Array.isArray(turno.InvitadosTurnos) && turno.InvitadosTurnos.length > 0 && (
+                    <div style={{ marginTop: 8 }}>
+                      <b>Invitados:</b>
+                      <ul style={{ margin: 0, paddingLeft: 18 }}>
+                        {turno.InvitadosTurnos.map((inv, idx) => (
+                          <li key={inv.Usuario?.id || idx}>
+                            {inv.Usuario?.nombre || inv.Usuario?.email || 'Invitado'}
+                            {inv.estado_invitacion && (
+                              <span style={{ color: '#888', marginLeft: 8, fontSize: '0.95em' }}>
+                                ({inv.estado_invitacion})
+                              </span>
+                            )}
+                            <br />
+                            <span style={{ fontSize: '0.95em', color: '#555' }}>
+                              DNI: {inv.Usuario?.dni || '-'}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
                 </div>
               </div>
