@@ -69,3 +69,13 @@ exports.deleteBusqueda = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.getBusquedaById = async (req, res) => {
+  try {
+    const busqueda = await Busqueda.findByPk(req.params.id);
+    if (!busqueda) return res.status(404).json({ error: 'Búsqueda no encontrada' });
+    res.json(busqueda);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

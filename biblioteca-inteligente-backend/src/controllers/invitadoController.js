@@ -94,3 +94,24 @@ exports.getTurnosAceptados = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener turnos aceptados' });
   }
 };
+
+// Obtener un invitado por su ID
+exports.getInvitadoById = async (req, res) => {
+  try {
+    const invitado = await InvitadosTurno.findByPk(req.params.id);
+    if (!invitado) return res.status(404).json({ error: 'Invitado no encontrado' });
+    res.json(invitado);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Obtener todos los invitados
+exports.getAllInvitados = async (req, res) => {
+  try {
+    const invitados = await InvitadosTurno.findAll();
+    res.json(invitados);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener todos los invitados' });
+  }
+};

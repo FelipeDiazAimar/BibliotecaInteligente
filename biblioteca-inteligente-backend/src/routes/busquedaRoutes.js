@@ -6,6 +6,9 @@ const { body } = require('express-validator');
 // GET /api/busquedas
 router.get('/', busquedaController.getBusquedas);
 
+// GET /api/busquedas/:id
+router.get('/:id', busquedaController.getBusquedaById);
+
 // POST /api/busquedas
 router.post(
   '/',

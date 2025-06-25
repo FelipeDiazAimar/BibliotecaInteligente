@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const invitadoController = require('../controllers/invitadoController');
 
+// Obtener todos los invitados
+router.get('/', invitadoController.getAllInvitados);
+
 // Obtener todos los invitados de un turno por id_turno
 router.get('/turno/:id_turno', invitadoController.getByTurno);
 
@@ -16,5 +19,8 @@ router.get('/usuario/:id_usuario/aceptados', invitadoController.getTurnosAceptad
 
 // Actualizar el estado de una invitación (aceptar/rechazar)
 router.put('/:id', invitadoController.updateEstadoInvitacion);
+
+// Obtener un invitado por su ID
+router.get('/:id', invitadoController.getInvitadoById);
 
 module.exports = router;
