@@ -37,6 +37,8 @@ const initialUserForm = {
   password: ''
 };
 
+const PAGE_SIZE = 16; // Puedes ajustar el tamaño de página
+
 const AdminPanel = ({ usuario, logout }) => {
   const [libros, setLibros] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -54,8 +56,9 @@ const AdminPanel = ({ usuario, logout }) => {
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [editandoBusqueda, setEditandoBusqueda] = useState(null);
   const [nuevoTerminoBusqueda, setNuevoTerminoBusqueda] = useState('');
-  const { setUsuario } = useUser();
-  const navigate = useNavigate();
+  const [pagina, setPagina] = useState(1);
+  useUser();
+  useNavigate();
 
   // Recarga libros después de agregar uno nuevo
   const recargarLibros = () => {
@@ -302,22 +305,6 @@ const AdminPanel = ({ usuario, logout }) => {
     setTimeout(() => setMensajeLibro(''), 2500);
   };
 
-  const handleLogout = async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      await fetch('http://localhost:3000/api/auth/logout', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      localStorage.removeItem('token');
-      localStorage.removeItem('userId');
-    }
-    setUsuario(null);
-    setBusqueda('');
-    setLibrosFiltrados(libros);
-    navigate('/login');
-  };
-
   // Eliminar búsqueda
   const handleEliminarBusqueda = async (id) => {
     const token = localStorage.getItem('token');
@@ -350,10 +337,13 @@ const AdminPanel = ({ usuario, logout }) => {
     recargarBusquedasRecientes();
   };
 
-  const onLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
+  // Libros ordenados y paginados
+  const totalPaginas = Math.ceil(librosFiltrados.length / PAGE_SIZE);
+  const librosPagina = librosFiltrados.slice((pagina - 1) * PAGE_SIZE, pagina * PAGE_SIZE);
+
+  useEffect(() => {
+    setPagina(1); // Reinicia a la página 1 cuando cambia la búsqueda o los libros
+  }, [librosFiltrados]);
 
   return (
     <>
@@ -529,42 +519,37 @@ const AdminPanel = ({ usuario, logout }) => {
             </ul>
           </div>
 
-          <ul className="book-list">
-            {librosFiltrados.map(libro => (
-              <li className="book-item" key={libro.id}>
-                <h3>{libro.titulo}</h3>
-                <p><strong>Subtítulo:</strong> {libro.subtitulo}</p>
-                <p><strong>Autor:</strong> {libro.autor}</p>
-                <p><strong>Editorial:</strong> {libro.editorial}</p>
-                <p><strong>Edición:</strong> {libro.edicion}</p>
-                <p><strong>Lugar:</strong> {libro.lugar}</p>
-                <p><strong>Año:</strong> {libro.anioPublicacion}</p>
-                <p><strong>Páginas:</strong> {libro.paginas}</p>
-                <p><strong>ISBN:</strong> {libro.isbn}</p>
-                <p><strong>Serie:</strong> {libro.serie}</p>
-                <p><strong>Fecha de Ingreso:</strong> {libro.fechaIngreso}</p>
-                <p><strong>Observaciones:</strong> {libro.observaciones}</p>
-                <p><strong>Idioma:</strong> {libro.idioma}</p>
-                <p><strong>Días Préstamo:</strong> {libro.diasPrestamo}</p>
-                <p><strong>Nro Inventario:</strong> {libro.nroInventario}</p>
-                <p><strong>Biblioteca:</strong> {libro.biblioteca}</p>
-                <p><strong>Signatura Topográfica:</strong> {libro.signaturaTopografica}</p>
-                <p><strong>Disponible:</strong> {libro.disponible ? 'Sí' : 'No'}</p>
-                {libro.portada && (
-                  <img
-                    src={`http://localhost:3000/api/libros/${libro.id}/portada`}
-                    alt="Portada"
-                    style={{maxWidth: '120px', maxHeight: '160px', borderRadius: 8, marginTop: 8}}
-                  />
-                )}
-                <div className="admin-libro-actions">
+          {/* Nuevo grid de libros */}
+          <div className="admin-catalogo-grid">
+            {librosPagina.map(libro => (
+              <div className="admin-libro-card" key={libro.id}>
+                <div className="admin-libro-card-img">
+                  {libro.portada ? (
+                    <img
+                      src={`http://localhost:3000/api/libros/${libro.id}/portada`}
+                      alt="Portada"
+                    />
+                  ) : (
+                    <span style={{color:'#aaa'}}>Sin portada</span>
+                  )}
+                </div>
+                <div className="admin-libro-card-titulo">{libro.titulo}</div>
+                <div className="admin-libro-card-autor">{libro.autor}</div>
+                <div className="admin-libro-card-editorial">{libro.editorial}</div>
+                <div className="admin-libro-card-anio">{libro.anioPublicacion}</div>
+                <div className="admin-libro-card-info">
+                  <div><strong>Disponible:</strong> {libro.disponible ? 'Sí' : 'No'}</div>
+                  <div><strong>Idioma:</strong> {libro.idioma}</div>
+                  <div><strong>Nro Inventario:</strong> {libro.nroInventario}</div>
+                </div>
+                <div className="admin-libro-actions" style={{marginTop: 12}}>
                   <button onClick={() => handleEditarLibro(libro)}>Editar</button>
                   <button onClick={() => handleEliminarLibro(libro.id)} className="eliminar">Eliminar</button>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
-
+          </div>
+          <Pagination pagina={pagina} totalPaginas={totalPaginas} setPagina={setPagina} />
           <AsistenteIA />
         </main>
         <Footer />
@@ -572,5 +557,55 @@ const AdminPanel = ({ usuario, logout }) => {
     </>
   );
 };
+
+// Componente de paginación (puedes copiarlo del catálogo)
+function Pagination({ pagina, totalPaginas, setPagina }) {
+  if (totalPaginas <= 1) return null;
+
+  const getPages = () => {
+    const pages = [];
+    if (totalPaginas <= 5) {
+      for (let i = 1; i <= totalPaginas; i++) pages.push(i);
+    } else {
+      if (pagina <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPaginas);
+      } else if (pagina >= totalPaginas - 2) {
+        pages.push(1, '...', totalPaginas - 3, totalPaginas - 2, totalPaginas - 1, totalPaginas);
+      } else {
+        pages.push(1, '...', pagina - 1, pagina, pagina + 1, '...', totalPaginas);
+      }
+    }
+    return pages;
+  };
+
+  return (
+    <div className="catalogo-paginacion">
+      <button disabled={pagina === 1} onClick={() => setPagina(pagina - 1)}>
+        Anterior
+      </button>
+      {getPages().map((p, i) =>
+        p === '...' ? (
+          <span key={i} style={{ margin: '0 0.5rem', color: '#888' }}>…</span>
+        ) : (
+          <button
+            key={p}
+            className={pagina === p ? 'catalogo-pagina-activa' : ''}
+            style={{
+              fontWeight: pagina === p ? 700 : 500,
+              background: pagina === p ? '#e0e7ff' : 'none',
+              color: pagina === p ? '#2563eb' : undefined
+            }}
+            onClick={() => setPagina(p)}
+          >
+            {p}
+          </button>
+        )
+      )}
+      <button disabled={pagina === totalPaginas} onClick={() => setPagina(pagina + 1)}>
+        Siguiente
+      </button>
+    </div>
+  );
+}
 
 export default AdminPanel;

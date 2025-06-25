@@ -297,6 +297,7 @@
   font-size: 1rem;
   background: #fff;
   color: #222;
+  min-width: 70%;
 }
 
 .admin-busqueda-btn {
