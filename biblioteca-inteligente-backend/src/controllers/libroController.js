@@ -76,8 +76,23 @@ exports.getPortada = async (req, res) => {
     if (!libro || !libro.portada) {
       return res.status(404).send('Portada no encontrada');
     }
-    res.set('Content-Type', 'image/jpeg'); // O image/png si sabes el tipo
-    res.send(libro.portada);
+
+    let portadaBuffer = libro.portada;
+    if (Buffer.isBuffer(portadaBuffer)) {
+      // Si es una URL hex (https://...), decodifica y redirige
+      const asString = portadaBuffer.toString('utf8');
+      if (/^https?:\/\//.test(asString)) {
+        return res.redirect(302, asString);
+      }
+      // Si no es una URL, asume que es una imagen binaria
+      res.set('Content-Type', 'image/jpeg');
+      return res.send(portadaBuffer);
+    } else if (typeof portadaBuffer === 'string' && portadaBuffer.startsWith('http')) {
+      // Si por alguna razón es string (no buffer), redirige igual
+      return res.redirect(302, portadaBuffer);
+    } else {
+      return res.status(404).send('Portada no válida');
+    }
   } catch (error) {
     res.status(500).send('Error al obtener la portada');
   }
