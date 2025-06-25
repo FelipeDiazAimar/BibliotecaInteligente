@@ -3,9 +3,11 @@ import Header from '../components/Header';
 import vozImg from '../assets/ondas-sonoras.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useUser } from '../context/UserContext';
 
 export default function PanelUsuario({ usuario }) {
   const navigate = useNavigate();
+  const { setUsuario } = useUser();
   const [avisos] = useState([
     "Recuerda devolver tus libros antes de la fecha de vencimiento.",
     "Nuevo: ¡Turnero virtual para atención personalizada!",
@@ -15,6 +17,7 @@ export default function PanelUsuario({ usuario }) {
 
   const onLogout = () => {
     localStorage.removeItem('token');
+    setUsuario(null);
     navigate('/login');
   };
 

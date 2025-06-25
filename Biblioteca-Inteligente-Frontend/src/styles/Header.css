@@ -142,3 +142,32 @@
   background: rgb(255, 0, 0, 0.55)  !important;
 
 }
+.panel-admin-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin: 0 1.5rem;
+}
+
+.panel-admin-tab-link {
+ color: var(--text);
+  text-decoration: none;
+  font-size: 1.08rem;
+  font-weight: 500;
+  padding: 0.4em 1.1em;
+  border-radius: 8px;
+  transition: background var(--transition), color var(--transition);
+}
+
+
+/* Modo oscuro */
+body.dark .panel-admin-tab-link {
+  background: linear-gradient(90deg, #11487c 10%, #1769aa 90%);
+  color: #fff !important;
+}
+body.dark .panel-admin-tab-link.active,
+body.dark .panel-admin-tab-link:hover {
+  background: linear-gradient(90deg, #1769aa 10%, #11487c 90%);
+  color: #fff !important;
+}

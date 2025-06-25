@@ -395,3 +395,183 @@
 .admin-libro-actions button.eliminar:hover {
   background: #b71c1c;
 }
+
+.admin-tabs {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  background: #e3e8f7;
+  border-radius: 16px;
+  padding: 6px 24px 6px 14px;
+  box-shadow: 0 1px 6px #1769aa22;
+  margin-bottom: 18px;
+}
+
+.admin-tab-link {
+  color: #1769aa;
+  background: #fff;
+  border-radius: 10px;
+  padding: 6px 22px;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1.5px solid #b3c6e0;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  font-size: 16px;
+  box-shadow: 0 1px 4px #1769aa11;
+  margin-right: 2px;
+}
+
+.admin-tab-link:hover,
+.admin-tab-link.active {
+  background: #dbeafe;
+  color: #11487c;
+  border-color: #2196f3;
+}
+
+/* --- ESTILOS DE VISUALIZACIÓN DE LIBROS COMO CATÁLOGO EN ADMIN --- */
+.admin-catalogo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1400px;
+  min-height: 350px;
+  margin-bottom: 2.5rem;
+}
+
+.admin-libro-card {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 20px;
+  box-shadow: 0 4px 18px rgba(30,41,59,0.10);
+  padding: 2.2rem 1.7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.18s, border-color 0.18s;
+  min-height: 340px;
+  max-width: 320px;
+}
+.admin-libro-card:hover {
+  box-shadow: 0 8px 32px rgba(30,41,59,0.13);
+  border-color: #e0e7ff;
+}
+.admin-libro-card-img {
+  width: 100%;
+  height: 210px;
+  background: #f3f4f6;
+  border-radius: 14px;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.admin-libro-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.admin-libro-card-titulo {
+  font-size: 1.13rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 0.2em;
+  letter-spacing: 0.01em;
+}
+.admin-libro-card-autor,
+.admin-libro-card-editorial,
+.admin-libro-card-anio {
+  font-size: 0.98rem;
+  color: #a0aec0;
+  margin-bottom: 0.1em;
+}
+.admin-libro-card-info {
+  font-size: 1.01rem;
+  color: #22223b;
+  margin-top: 0.3em;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* --- ESTILOS DE VISUALIZACIÓN DE TURNOS COMO CARDS MODERNAS EN ADMIN --- */
+.admin-turnos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 2.5rem auto;
+}
+
+.admin-turno-card {
+  background: linear-gradient(120deg, #f5faff 0%, #e3f2fd 100%);
+  border-radius: 18px;
+  box-shadow: 0 2px 16px 0 #b3c6e0aa, 0 1px 4px #90caf933;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: transform 0.15s, box-shadow 0.2s;
+  border-left: 7px solid #bdbdbd;
+  border-top: 1.5px solid #e3eaf2;
+  border-bottom: 1.5px solid #e3eaf2;
+  margin-bottom: 1.5rem;
+}
+.admin-turno-card:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 6px 32px #b3c6e044, 0 2px 8px #90caf933;
+}
+.admin-turno-card-pendiente { border-left-color: #ffb300; }
+.admin-turno-card-aceptado { border-left-color: #43a047; }
+.admin-turno-card-cancelado { border-left-color: #e53935; }
+
+.admin-turno-card-title {
+  font-size: 1.3rem;
+  color: #1565c0;
+  margin-bottom: 8px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.admin-turno-card-info {
+  color: #444;
+  margin-bottom: 6px;
+  font-size: 1.08rem;
+}
+.admin-turno-card-estado {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 1.08rem;
+}
+.admin-turno-card-estado-pendiente { color: #ff9900; }
+.admin-turno-card-estado-aceptado { color: #43a047; }
+.admin-turno-card-estado-cancelado { color: #e53935; }
+
+.admin-turno-card-observaciones {
+  color: #666;
+  font-style: italic;
+  margin-top: 8px;
+  font-size: 1.01rem;
+}
+
+@media (max-width: 1100px) {
+  .admin-catalogo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin-turnos-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .admin-catalogo-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+  .admin-turnos-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+}

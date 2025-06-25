@@ -9,6 +9,7 @@ import AsistenteIA from './components/AsistenteIA'
 import PanelUsuario from './pages/PanelUsuario'
 import VozIA from './pages/VozIA'
 import AdminPanel from './pages/AdminPanel';
+import AdminPanelTurno from './pages/AdminPanelTurno'; // Asegúrate de importar el componente
 import ContactPage from './pages/Contacto'
 import CatalogoPage from './pages/CatalogoPage'
 import Turno from './pages/Turno';
@@ -126,6 +127,14 @@ function App() {
           element={
             <RequireAuth usuario={usuario} adminOnly={true}>
               <AdminPanel usuario={usuario} logout={logout} />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin-turnos"
+          element={
+            <RequireAuth usuario={usuario} adminOnly={true}>
+              <AdminPanelTurno usuario={usuario} logout={logout} />
             </RequireAuth>
           }
         />

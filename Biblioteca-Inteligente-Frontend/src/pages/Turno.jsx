@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import TurnoCard from '../components/Turnos/TurnoCard';
 import Invitaciones from '../components/Turnos/Invitaciones';
 import '../styles/Turnos/TurnoPage.css';
+import { useUser } from '../context/UserContext';
 
 function TabButton({ active, onClick, children, borderRadius }) {
   return (
@@ -100,6 +101,7 @@ function TurnosList({ turnos, usuario, recargarTurnos, esInvitado, esAdmin }) {
 export default function Turno({ usuario }) {
   const [tab, setTab] = useState('ver');
   const navigate = useNavigate();
+  const { setUsuario } = useUser();
 
   // Un solo fetch para todos los turnos
   const { turnosCreados, turnosInvitado, loading, esAdmin } = useTurnosFull(usuario, tab);
@@ -112,6 +114,7 @@ export default function Turno({ usuario }) {
 
   const onLogout = () => {
     localStorage.removeItem('token');
+    setUsuario(null);
     navigate('/login');
   };
 

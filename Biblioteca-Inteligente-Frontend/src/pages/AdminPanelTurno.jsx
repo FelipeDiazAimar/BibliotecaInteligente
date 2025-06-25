@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 import Header from '../components/Header';
 import TurnoCard from '../components/Turnos/TurnoCard';
+import Footer from '../components/Footer';
 import '../styles/Turnos/TurnosBiblioteca.css';
 
 // Helper para saber si un turno ya pasó
@@ -12,11 +14,13 @@ function turnoYaPaso(turno) {
 }
 
 export default function TurnosBiblioteca({ logout }) {
+  const { usuario } = useUser();
   const [turnos, setTurnos] = useState([]);
   const [filtroEstado, setFiltroEstado] = useState('');
   const [busqueda, setBusqueda] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { setUsuario } = useUser();
 
   useEffect(() => {
     recargarTurnos();
@@ -33,6 +37,7 @@ export default function TurnosBiblioteca({ logout }) {
 
   const onLogout = () => {
     localStorage.removeItem('token');
+    setUsuario(null);
     navigate('/login');
   };
 
@@ -47,18 +52,15 @@ export default function TurnosBiblioteca({ logout }) {
     return coincideEstado && coincideBusqueda;
   });
 
+  if (!usuario) return <div>Cargando usuario...</div>;
+  if (loading) return <div className="turnos-biblio-msg">Cargando turnos...</div>;
+
   return (
-    <div className="turnos-biblio-bg">
-      <Header
-        onLogout={onLogout}
-        right={
-          <div className="turnos-biblio-header-right">
-            <button className="panel-link-cs" onClick={logout}>Cerrar sesión</button>
-          </div>
-        }
-      />
+    <>
+      <Header onLogout={logout} />
       <div style={{ height: 110 }} />
-      <div className="turnos-biblio-content">
+      <div className="turnos-biblio-bg">
+        {/* Elimino la barra de tabs secundaria para evitar duplicidad visual */}
         <div className="turnos-biblio-filtros">
           <input
             className="turnos-biblio-busqueda"
@@ -79,9 +81,7 @@ export default function TurnosBiblioteca({ logout }) {
           </select>
         </div>
         <div className="turnos-biblio-lista">
-          {loading ? (
-            <div className="turnos-biblio-msg">Cargando turnos...</div>
-          ) : turnosFiltrados.length === 0 ? (
+          {turnosFiltrados.length === 0 ? (
             <div className="turnos-biblio-msg">
               <span role="img" aria-label="info" style={{ fontSize: 32, display: 'block', marginBottom: 8 }}>📅</span>
               No hay turnos para mostrar.
@@ -109,9 +109,7 @@ export default function TurnosBiblioteca({ logout }) {
           )}
         </div>
       </div>
-      <footer className="panel-footer turnos-biblio-footer">
-        © 2025 Biblioteca Inteligente. Todos los derechos reservados.
-      </footer>
-    </div>
+      <Footer />
+    </>
   );
 }

@@ -3,6 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import '../styles/AdminPanel.css';
 import AsistenteIA from '../components/AsistenteIA';
 import LibroForm from '../components/LibroForm';
+import { useUser } from '../context/UserContext';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const initialLibroForm = {
   nroInventario: '',
@@ -51,6 +54,7 @@ const AdminPanel = ({ usuario, logout }) => {
   const [mostrarSugerencias, setMostrarSugerencias] = useState(false);
   const [editandoBusqueda, setEditandoBusqueda] = useState(null);
   const [nuevoTerminoBusqueda, setNuevoTerminoBusqueda] = useState('');
+  const { setUsuario } = useUser();
   const navigate = useNavigate();
 
   // Recarga libros después de agregar uno nuevo
@@ -308,10 +312,9 @@ const AdminPanel = ({ usuario, logout }) => {
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
     }
-    // Limpia el estado de búsqueda y libros filtrados
+    setUsuario(null);
     setBusqueda('');
-    setLibrosFiltrados(libros); // Muestra todos los libros
-    // Si tienes más estados a limpiar, hazlo aquí
+    setLibrosFiltrados(libros);
     navigate('/login');
   };
 
@@ -353,226 +356,220 @@ const AdminPanel = ({ usuario, logout }) => {
   };
 
   return (
-    <div className="admin-overlay">
-      <nav className="admin-navbar">
-        <div className="admin-logo">
-          BiblioTech <span style={{ fontSize: 18, color: "#2196f3", marginLeft: 8 }}> 📚</span>
-        </div>
-        <div>
-          <button className="admin-logout-btn" onClick={handleLogout}>Cerrar sesión</button>
-        </div>
-      </nav>
-      <main className="admin-main">
-        <div className="panel-user-card">
-          <div className="panel-user-avatar">
-            <svg width="38" height="38" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="4"/>
-              <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
-            </svg>
+    <>
+      <Header onLogout={logout} />
+      <div style={{ height: 110 }} />
+      <div className="admin-panel-container">
+        <main className="admin-main">
+          <div className="panel-user-card">
+            <div className="panel-user-avatar">
+              <svg width="38" height="38" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+              </svg>
+            </div>
+            <div>
+              <div className="panel-user-name">{usuario.nombre}</div>
+              <div style={{fontWeight: 700, color: "#2196f3"}}>Administrador</div>
+            </div>
           </div>
-          <div>
-            <div className="panel-user-name">{usuario.nombre}</div>
-            <div style={{fontWeight: 700, color: "#2196f3"}}>Administrador</div>
-          </div>
-        </div>
 
-        <button
-          className="admin-form-toggle"
-          onClick={() => setMostrarFormulario(f => !f)}
-        >
-          {mostrarFormulario ? 'Cerrar formulario' : 'Agregar libro'}
-        </button>
-
-        {mostrarFormulario && (
-          <div className="admin-form-container">
-            <form className="admin-libro-form" onSubmit={handleLibroSubmit} encType="multipart/form-data">
-              <input name="nroInventario" value={libroForm.nroInventario} onChange={handleLibroChange} placeholder="Nro Inventario" required />
-              <input name="biblioteca" value={libroForm.biblioteca} onChange={handleLibroChange} placeholder="Biblioteca" required />
-              <input name="signaturaTopografica" value={libroForm.signaturaTopografica} onChange={handleLibroChange} placeholder="Signatura Topográfica" required />
-              <input name="titulo" value={libroForm.titulo} onChange={handleLibroChange} placeholder="Título" required />
-              <input name="subtitulo" value={libroForm.subtitulo} onChange={handleLibroChange} placeholder="SubTítulo" />
-              <input name="autor" value={libroForm.autor} onChange={handleLibroChange} placeholder="Autores" required />
-              <input name="editorial" value={libroForm.editorial} onChange={handleLibroChange} placeholder="Editorial" />
-              <input name="edicion" value={libroForm.edicion} onChange={handleLibroChange} placeholder="Edición" />
-              <input name="lugar" value={libroForm.lugar} onChange={handleLibroChange} placeholder="Lugar" />
-              <input name="anioPublicacion" value={libroForm.anioPublicacion} onChange={handleLibroChange} placeholder="Año" type="number" />
-              <input name="paginas" value={libroForm.paginas} onChange={handleLibroChange} placeholder="Páginas" type="number" />
-              <input name="isbn" value={libroForm.isbn} onChange={handleLibroChange} placeholder="ISBN" />
-              <input name="serie" value={libroForm.serie} onChange={handleLibroChange} placeholder="Serie" />
-              <input name="fechaIngreso" value={libroForm.fechaIngreso} onChange={handleLibroChange} placeholder="Fecha de Ingreso" type="date" />
-              <input name="observaciones" value={libroForm.observaciones} onChange={handleLibroChange} placeholder="Observaciones" />
-              <input name="idioma" value={libroForm.idioma} onChange={handleLibroChange} placeholder="Idioma" required />
-              <input name="diasPrestamo" value={libroForm.diasPrestamo} onChange={handleLibroChange} placeholder="Días Préstamo" required />
-              <label>
-                Disponible
-                <input name="disponible" type="checkbox" checked={libroForm.disponible} onChange={handleLibroChange} />
-              </label>
-              <input
-                name="portada"
-                type="file"
-                accept="image/png, image/jpeg"
-                onChange={handleLibroChange}
-              />
-              <button type="submit" className="admin-libro-btn">
-                {editandoLibro ? 'Actualizar libro' : 'Agregar libro'}
-              </button>
-              {mensajeLibro && <div className="admin-libro-msg">{mensajeLibro}</div>}
-            </form>
-          </div>
-        )}
-
-        {/* Gestión de usuarios */}
-        <button
-          className="admin-form-toggle"
-          style={{ background: '#4caf50', marginBottom: 16 }}
-          onClick={() => setMostrarUsuarios(f => !f)}
-        >
-          {mostrarUsuarios ? 'Cerrar gestión de usuarios' : 'Gestión de usuarios'}
-        </button>
-
-        {mostrarUsuarios && (
-          <div className="admin-user-panel">
-            <h2 className="admin-section-title">Gestión de Usuarios</h2>
-            <form className="admin-user-form" onSubmit={handleUserSubmit}>
-              <input name="nombre" value={userForm.nombre} onChange={handleUserChange} placeholder="Nombre" required />
-              <input name="email" value={userForm.email} onChange={handleUserChange} placeholder="Email" type="email" required />
-              <input name="dni" value={userForm.dni} onChange={handleUserChange} placeholder="DNI" required />
-              <select name="rol" value={userForm.rol} onChange={handleUserChange} required>
-                <option value="usuario">Usuario</option>
-                <option value="admin">Admin</option>
-              </select>
-              <input name="password" value={userForm.password} onChange={handleUserChange} placeholder={editandoUsuario ? "Nueva contraseña (opcional)" : "Contraseña"} type="password" required={!editandoUsuario} />
-              <button type="submit" className="admin-user-btn">
-                {editandoUsuario ? 'Actualizar usuario' : 'Agregar usuario'}
-              </button>
-              {mensajeUsuario && <div className="admin-user-msg">{mensajeUsuario}</div>}
-            </form>
-            <ul className="admin-user-list">
-              {usuarios.map(u => (
-                <li key={u.id} className="admin-user-item">
-                  <div>
-                    <strong>{u.nombre}</strong> ({u.rol})<br />
-                    <span style={{fontSize: 13, color: '#555'}}>dni: {u.dni} | Email: {u.email}</span>
-                  </div>
-                  <div className="admin-user-actions">
-                    <button onClick={() => handleEditarUsuario(u)}>Editar</button>
-                    <button onClick={() => handleEliminarUsuario(u.id)} className="eliminar">Eliminar</button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <h2 className="admin-section-title">Lista de Libros</h2>
-
-        {/* Input de búsqueda de libros */}
-        <form className="admin-busqueda-form" onSubmit={handleBuscarLibro}>
-          <input
-            type="text"
-            placeholder="Buscar libro por título o autor..."
-            value={busqueda}
-            onChange={e => setBusqueda(e.target.value)}
-            className="admin-busqueda-input"
-            onFocus={() => setMostrarSugerencias(true)}
-            onBlur={() => setTimeout(() => setMostrarSugerencias(false), 200)}
-          />
-          <button type="submit" className="admin-busqueda-btn">Buscar</button>
           <button
-            type="button"
-            className="admin-busqueda-btn limpiar"
-            onClick={() => {
-              setBusqueda('');
-              setLibrosFiltrados(libros);
-            }}
+            className="admin-form-toggle"
+            onClick={() => setMostrarFormulario(f => !f)}
           >
-            Limpiar
+            {mostrarFormulario ? 'Cerrar formulario' : 'Agregar libro'}
           </button>
-          {mostrarSugerencias && busquedasRecientes.length > 0 && (
-            <ul className="busquedas-sugerencias">
-              {busquedasRecientes.map(b => (
-                <li key={b.id} onClick={() => setBusqueda(b.termino)}>
-                  {b.termino}
-                </li>
-              ))}
-            </ul>
-          )}
-        </form>
 
-        {/* Sección de Búsquedas Recientes */}
-        <div className="admin-busquedas-recientes">
-          <h3 className="admin-subtitle">Búsquedas Recientes</h3>
-          <ul className="admin-busquedas-list">
-            {busquedasRecientes.length === 0 ? (
-              <li className="admin-busqueda-item">No hay búsquedas recientes.</li>
-            ) : (
-              busquedasRecientes.map(b => (
-                <li className="admin-busqueda-item" key={b.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  {editandoBusqueda === b.id ? (
-                    <>
-                      <input
-                        value={nuevoTerminoBusqueda}
-                        onChange={e => setNuevoTerminoBusqueda(e.target.value)}
-                        style={{ marginRight: 8 }}
-                      />
-                      <button onClick={() => handleGuardarEdicionBusqueda(b.id)} className="admin-busqueda-btn">Guardar</button>
-                      <button onClick={() => setEditandoBusqueda(null)} className="admin-busqueda-btn limpiar">Cancelar</button>
-                    </>
-                  ) : (
-                    <>
-                      <span>{b.termino}</span>
-                      <button onClick={() => handleEditarBusqueda(b)} className="admin-busqueda-btn">Editar</button>
-                      <button onClick={() => handleEliminarBusqueda(b.id)} className="admin-busqueda-btn limpiar">Eliminar</button>
-                    </>
-                  )}
-                </li>
-              )))
-            }
-          </ul>
-        </div>
-
-        <ul className="book-list">
-          {librosFiltrados.map(libro => (
-            <li className="book-item" key={libro.id}>
-              <h3>{libro.titulo}</h3>
-              <p><strong>Subtítulo:</strong> {libro.subtitulo}</p>
-              <p><strong>Autor:</strong> {libro.autor}</p>
-              <p><strong>Editorial:</strong> {libro.editorial}</p>
-              <p><strong>Edición:</strong> {libro.edicion}</p>
-              <p><strong>Lugar:</strong> {libro.lugar}</p>
-              <p><strong>Año:</strong> {libro.anioPublicacion}</p>
-              <p><strong>Páginas:</strong> {libro.paginas}</p>
-              <p><strong>ISBN:</strong> {libro.isbn}</p>
-              <p><strong>Serie:</strong> {libro.serie}</p>
-              <p><strong>Fecha de Ingreso:</strong> {libro.fechaIngreso}</p>
-              <p><strong>Observaciones:</strong> {libro.observaciones}</p>
-              <p><strong>Idioma:</strong> {libro.idioma}</p>
-              <p><strong>Días Préstamo:</strong> {libro.diasPrestamo}</p>
-              <p><strong>Nro Inventario:</strong> {libro.nroInventario}</p>
-              <p><strong>Biblioteca:</strong> {libro.biblioteca}</p>
-              <p><strong>Signatura Topográfica:</strong> {libro.signaturaTopografica}</p>
-              <p><strong>Disponible:</strong> {libro.disponible ? 'Sí' : 'No'}</p>
-              {libro.portada && (
-                <img
-                  src={`http://localhost:3000/api/libros/${libro.id}/portada`}
-                  alt="Portada"
-                  style={{maxWidth: '120px', maxHeight: '160px', borderRadius: 8, marginTop: 8}}
+          {mostrarFormulario && (
+            <div className="admin-form-container">
+              <form className="admin-libro-form" onSubmit={handleLibroSubmit} encType="multipart/form-data">
+                <input name="nroInventario" value={libroForm.nroInventario} onChange={handleLibroChange} placeholder="Nro Inventario" required />
+                <input name="biblioteca" value={libroForm.biblioteca} onChange={handleLibroChange} placeholder="Biblioteca" required />
+                <input name="signaturaTopografica" value={libroForm.signaturaTopografica} onChange={handleLibroChange} placeholder="Signatura Topográfica" required />
+                <input name="titulo" value={libroForm.titulo} onChange={handleLibroChange} placeholder="Título" required />
+                <input name="subtitulo" value={libroForm.subtitulo} onChange={handleLibroChange} placeholder="SubTítulo" />
+                <input name="autor" value={libroForm.autor} onChange={handleLibroChange} placeholder="Autores" required />
+                <input name="editorial" value={libroForm.editorial} onChange={handleLibroChange} placeholder="Editorial" />
+                <input name="edicion" value={libroForm.edicion} onChange={handleLibroChange} placeholder="Edición" />
+                <input name="lugar" value={libroForm.lugar} onChange={handleLibroChange} placeholder="Lugar" />
+                <input name="anioPublicacion" value={libroForm.anioPublicacion} onChange={handleLibroChange} placeholder="Año" type="number" />
+                <input name="paginas" value={libroForm.paginas} onChange={handleLibroChange} placeholder="Páginas" type="number" />
+                <input name="isbn" value={libroForm.isbn} onChange={handleLibroChange} placeholder="ISBN" />
+                <input name="serie" value={libroForm.serie} onChange={handleLibroChange} placeholder="Serie" />
+                <input name="fechaIngreso" value={libroForm.fechaIngreso} onChange={handleLibroChange} placeholder="Fecha de Ingreso" type="date" />
+                <input name="observaciones" value={libroForm.observaciones} onChange={handleLibroChange} placeholder="Observaciones" />
+                <input name="idioma" value={libroForm.idioma} onChange={handleLibroChange} placeholder="Idioma" required />
+                <input name="diasPrestamo" value={libroForm.diasPrestamo} onChange={handleLibroChange} placeholder="Días Préstamo" required />
+                <label>
+                  Disponible
+                  <input name="disponible" type="checkbox" checked={libroForm.disponible} onChange={handleLibroChange} />
+                </label>
+                <input
+                  name="portada"
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  onChange={handleLibroChange}
                 />
-              )}
-              <div className="admin-libro-actions">
-                <button onClick={() => handleEditarLibro(libro)}>Editar</button>
-                <button onClick={() => handleEliminarLibro(libro.id)} className="eliminar">Eliminar</button>
-              </div>
-            </li>
-          ))}
-        </ul>
+                <button type="submit" className="admin-libro-btn">
+                  {editandoLibro ? 'Actualizar libro' : 'Agregar libro'}
+                </button>
+                {mensajeLibro && <div className="admin-libro-msg">{mensajeLibro}</div>}
+              </form>
+            </div>
+          )}
 
-        <AsistenteIA />
-      </main>
-      <footer className="admin-footer">
-        © 2025 BiblioTech. Todos los derechos reservados.
-      </footer>
-    </div>
+          {/* Gestión de usuarios */}
+          <button
+            className="admin-form-toggle"
+            style={{ background: '#4caf50', marginBottom: 16 }}
+            onClick={() => setMostrarUsuarios(f => !f)}
+          >
+            {mostrarUsuarios ? 'Cerrar gestión de usuarios' : 'Gestión de usuarios'}
+          </button>
+
+          {mostrarUsuarios && (
+            <div className="admin-user-panel">
+              <h2 className="admin-section-title">Gestión de Usuarios</h2>
+              <form className="admin-user-form" onSubmit={handleUserSubmit}>
+                <input name="nombre" value={userForm.nombre} onChange={handleUserChange} placeholder="Nombre" required />
+                <input name="email" value={userForm.email} onChange={handleUserChange} placeholder="Email" type="email" required />
+                <input name="dni" value={userForm.dni} onChange={handleUserChange} placeholder="DNI" required />
+                <select name="rol" value={userForm.rol} onChange={handleUserChange} required>
+                  <option value="usuario">Usuario</option>
+                  <option value="admin">Admin</option>
+                </select>
+                <input name="password" value={userForm.password} onChange={handleUserChange} placeholder={editandoUsuario ? "Nueva contraseña (opcional)" : "Contraseña"} type="password" required={!editandoUsuario} />
+                <button type="submit" className="admin-user-btn">
+                  {editandoUsuario ? 'Actualizar usuario' : 'Agregar usuario'}
+                </button>
+                {mensajeUsuario && <div className="admin-user-msg">{mensajeUsuario}</div>}
+              </form>
+              <ul className="admin-user-list">
+                {usuarios.map(u => (
+                  <li key={u.id} className="admin-user-item">
+                    <div>
+                      <strong>{u.nombre}</strong> ({u.rol})<br />
+                      <span style={{fontSize: 13, color: '#555'}}>dni: {u.dni} | Email: {u.email}</span>
+                    </div>
+                    <div className="admin-user-actions">
+                      <button onClick={() => handleEditarUsuario(u)}>Editar</button>
+                      <button onClick={() => handleEliminarUsuario(u.id)} className="eliminar">Eliminar</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <h2 className="admin-section-title">Lista de Libros</h2>
+
+          {/* Input de búsqueda de libros */}
+          <form className="admin-busqueda-form" onSubmit={handleBuscarLibro}>
+            <input
+              type="text"
+              placeholder="Buscar libro por título o autor..."
+              value={busqueda}
+              onChange={e => setBusqueda(e.target.value)}
+              className="admin-busqueda-input"
+              onFocus={() => setMostrarSugerencias(true)}
+              onBlur={() => setTimeout(() => setMostrarSugerencias(false), 200)}
+            />
+            <button type="submit" className="admin-busqueda-btn">Buscar</button>
+            <button
+              type="button"
+              className="admin-busqueda-btn limpiar"
+              onClick={() => {
+                setBusqueda('');
+                setLibrosFiltrados(libros);
+              }}
+            >
+              Limpiar
+            </button>
+            {mostrarSugerencias && busquedasRecientes.length > 0 && (
+              <ul className="busquedas-sugerencias">
+                {busquedasRecientes.map(b => (
+                  <li key={b.id} onClick={() => setBusqueda(b.termino)}>
+                    {b.termino}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </form>
+
+          {/* Sección de Búsquedas Recientes */}
+          <div className="admin-busquedas-recientes">
+            <h3 className="admin-subtitle">Búsquedas Recientes</h3>
+            <ul className="admin-busquedas-list">
+              {busquedasRecientes.length === 0 ? (
+                <li className="admin-busqueda-item">No hay búsquedas recientes.</li>
+              ) : (
+                busquedasRecientes.map(b => (
+                  <li className="admin-busqueda-item" key={b.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {editandoBusqueda === b.id ? (
+                      <>
+                        <input
+                          value={nuevoTerminoBusqueda}
+                          onChange={e => setNuevoTerminoBusqueda(e.target.value)}
+                          style={{ marginRight: 8 }}
+                        />
+                        <button onClick={() => handleGuardarEdicionBusqueda(b.id)} className="admin-busqueda-btn">Guardar</button>
+                        <button onClick={() => setEditandoBusqueda(null)} className="admin-busqueda-btn limpiar">Cancelar</button>
+                      </>
+                    ) : (
+                      <>
+                        <span>{b.termino}</span>
+                        <button onClick={() => handleEditarBusqueda(b)} className="admin-busqueda-btn">Editar</button>
+                        <button onClick={() => handleEliminarBusqueda(b.id)} className="admin-busqueda-btn limpiar">Eliminar</button>
+                      </>
+                    )}
+                  </li>
+                )))
+              }
+            </ul>
+          </div>
+
+          <ul className="book-list">
+            {librosFiltrados.map(libro => (
+              <li className="book-item" key={libro.id}>
+                <h3>{libro.titulo}</h3>
+                <p><strong>Subtítulo:</strong> {libro.subtitulo}</p>
+                <p><strong>Autor:</strong> {libro.autor}</p>
+                <p><strong>Editorial:</strong> {libro.editorial}</p>
+                <p><strong>Edición:</strong> {libro.edicion}</p>
+                <p><strong>Lugar:</strong> {libro.lugar}</p>
+                <p><strong>Año:</strong> {libro.anioPublicacion}</p>
+                <p><strong>Páginas:</strong> {libro.paginas}</p>
+                <p><strong>ISBN:</strong> {libro.isbn}</p>
+                <p><strong>Serie:</strong> {libro.serie}</p>
+                <p><strong>Fecha de Ingreso:</strong> {libro.fechaIngreso}</p>
+                <p><strong>Observaciones:</strong> {libro.observaciones}</p>
+                <p><strong>Idioma:</strong> {libro.idioma}</p>
+                <p><strong>Días Préstamo:</strong> {libro.diasPrestamo}</p>
+                <p><strong>Nro Inventario:</strong> {libro.nroInventario}</p>
+                <p><strong>Biblioteca:</strong> {libro.biblioteca}</p>
+                <p><strong>Signatura Topográfica:</strong> {libro.signaturaTopografica}</p>
+                <p><strong>Disponible:</strong> {libro.disponible ? 'Sí' : 'No'}</p>
+                {libro.portada && (
+                  <img
+                    src={`http://localhost:3000/api/libros/${libro.id}/portada`}
+                    alt="Portada"
+                    style={{maxWidth: '120px', maxHeight: '160px', borderRadius: 8, marginTop: 8}}
+                  />
+                )}
+                <div className="admin-libro-actions">
+                  <button onClick={() => handleEditarLibro(libro)}>Editar</button>
+                  <button onClick={() => handleEliminarLibro(libro.id)} className="eliminar">Eliminar</button>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <AsistenteIA />
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 };
 

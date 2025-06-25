@@ -1,17 +1,19 @@
 import vozImg from '../assets/ondas-sonoras.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../styles/Header.css';
 import { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AdminTabs from './AdminTabs';
 
 export default function Header({ right, hideVozIA, onLogout }) {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem('header-theme') === 'dark'
   );
   const navigate = useNavigate();
-  const { usuario } = useUser();
+  const location = useLocation();
+  const { usuario, setUsuario } = useUser();
 
   useEffect(() => {
     document.body.setAttribute('data-header-theme', darkMode ? 'dark' : 'light');
@@ -25,6 +27,11 @@ export default function Header({ right, hideVozIA, onLogout }) {
     setDarkMode((prev) => !prev);
   };
 
+  const handleLogout = () => {
+    setUsuario(null);
+    if (onLogout) onLogout();
+  };
+
   // Mantiene los estilos del Link, pero controla el acceso
   const handleAskAIClick = (e) => {
     e.preventDefault();
@@ -35,6 +42,9 @@ export default function Header({ right, hideVozIA, onLogout }) {
       navigate('/login');
     }
   };
+
+  // Detecta si está en panel admin
+  const isAdminPanel = location.pathname.startsWith('/admin');
 
   return (
     <header className="panel-navbar">
@@ -47,7 +57,7 @@ export default function Header({ right, hideVozIA, onLogout }) {
         >
           <ArrowBackIcon />
         </IconButton>
-        <div className="panel-logo" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className="panel-logo" style={{ display: 'flex', alignItems: 'center', gap: 10 }} onClick={() => navigate('/')}>
           <span>
             BiblioTech
           </span>
@@ -62,8 +72,8 @@ export default function Header({ right, hideVozIA, onLogout }) {
         </div>
       </div>
       <div className="panel-navbar-right" style={{ alignItems: 'center', display: 'flex', gap: '2.5rem', marginRight: '80px' }}>
-        {/* Ask AI SIEMPRE PRIMERO */}
-        {!hideVozIA && (
+        {/* SOLO muestra Ask AI si NO está en panel admin */}
+        {!hideVozIA && !isAdminPanel && (
           <Link
             to="/voz-ia"
             className="header-voz-btn"
@@ -75,14 +85,18 @@ export default function Header({ right, hideVozIA, onLogout }) {
           </Link>
         )}
         {right}
+        {/* Tabs de administración solo para admin */}
+        {usuario && usuario.rol === 'admin' && <AdminTabs />}
         {/* Botón de cerrar sesión */}
-        <button
-          type="button"
-          className="panel-link-cs"
-          onClick={onLogout}
-        >
-          Cerrar sesión
-        </button>
+        {usuario && (
+          <button
+            type="button"
+            className="panel-link-cs"
+            onClick={handleLogout}
+          >
+            Cerrar sesión
+          </button>
+        )}
         {/* Botón de modo claro/oscuro */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {/* Luna */}
