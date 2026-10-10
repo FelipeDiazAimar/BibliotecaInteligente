@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Paso1DatosBasicos from '../components/Turnos/Paso1DatosBasicos';
 import Header from '../components/Header';
+import HeaderTurno from '../components/Turnos/HeaderTurno';
 import { useNavigate, Link } from 'react-router-dom';
 import TurnoCard from '../components/Turnos/TurnoCard';
 import Invitaciones from '../components/Turnos/Invitaciones';
 import '../styles/Turnos/TurnoPage.css';
 import { useUser } from '../context/UserContext';
+import { DEMO_MODE, DEMO_USER, demoDelay } from '../lib/demo.js';
+import {
+  getTurnosDemo,
+  normalizarTurno,
+  invitacionPerteneceA,
+} from '../data/demoTurnos';
 
 function TabButton({ active, onClick, children, borderRadius }) {
   return (
@@ -28,6 +35,14 @@ function turnoYaPaso(turno) {
   return fechaHoraFin < new Date();
 }
 
+async function fetchTurnosApi() {
+  // Solo un fetch, trae todos los turnos con invitados y salas
+  const res = await fetch(`http://localhost:3000/api/turnos/full/all`);
+  if (!res.ok) throw new Error('No se pudieron cargar los turnos');
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
 // Hook para obtener y clasificar todos los turnos en uno solo fetch
 function useTurnosFull(usuario, tab) {
   const [turnosCreados, setTurnosCreados] = useState([]);
@@ -40,20 +55,33 @@ function useTurnosFull(usuario, tab) {
     if (!usuario) return;
     setLoading(true);
 
-    // Solo un fetch, trae todos los turnos con invitados y salas
-    const todos = await fetch(`http://localhost:3000/api/turnos/full/all`)
-      .then(res => res.json())
-      .then(data => Array.isArray(data) ? data : [])
-      .catch(() => []);
+    let todos = [];
+    if (DEMO_MODE) {
+      await demoDelay(300);
+      todos = getTurnosDemo();
+    } else {
+      try {
+        todos = await fetchTurnosApi();
+      } catch {
+        // Fallback demo si el backend no responde
+        todos = getTurnosDemo();
+      }
+    }
+
+    const lista = todos.map(normalizarTurno);
 
     // Turnos creados por el usuario
-    const creados = todos.filter(turno => turno.id_usuario === usuario.id);
+    const creados = lista.filter(turno =>
+      turno.id_usuario != null &&
+      usuario.id != null &&
+      String(turno.id_usuario) === String(usuario.id)
+    );
 
     // Turnos donde el usuario es invitado y aceptó
-    const invitado = todos.filter(turno =>
+    const invitado = lista.filter(turno =>
       Array.isArray(turno.InvitadosTurnos) &&
       turno.InvitadosTurnos.some(
-        inv => inv.Usuario && inv.Usuario.id === usuario.id && inv.estado_invitacion === 'aceptado'
+        inv => invitacionPerteneceA(inv, usuario) && inv.estado_invitacion === 'aceptado'
       )
     );
 
@@ -68,19 +96,20 @@ function useTurnosFull(usuario, tab) {
     }
   }, [tab, usuario, cargarTurnos]);
 
-  return { turnosCreados, turnosInvitado, loading, esAdmin };
+  return { turnosCreados, turnosInvitado, loading, recargarTurnos: cargarTurnos, esAdmin };
 }
 
 function TurnosList({ turnos, usuario, recargarTurnos, esInvitado, esAdmin }) {
+  const lista = Array.isArray(turnos) ? turnos : [];
   // Solo muestra turnos futuros para usuarios normales, admin ve todos
   const mostrarTurno = t =>
     esAdmin ||
-    (!esInvitado && usuario && t.id_usuario === usuario.id && !turnoYaPaso(t)) ||
+    (!esInvitado && usuario && t.id_usuario != null && String(t.id_usuario) === String(usuario.id) && !turnoYaPaso(t)) ||
     (esInvitado && !turnoYaPaso(t));
 
-  return turnos.filter(mostrarTurno).map(turno => (
+  return lista.filter(mostrarTurno).map((turno, idx) => (
     <div
-      key={(esInvitado ? 'invitado-' : 'creador-') + turno.id}
+      key={(esInvitado ? 'invitado-' : 'creador-') + (turno.id ?? idx)}
       className="turno-card-wrapper"
     >
       <TurnoCard
@@ -90,7 +119,7 @@ function TurnosList({ turnos, usuario, recargarTurnos, esInvitado, esAdmin }) {
         esInvitado={esInvitado}
         puedeEditar={
           esAdmin ||
-          (!esInvitado && usuario && turno.id_usuario === usuario.id && !turnoYaPaso(turno))
+          (!esInvitado && usuario && turno.id_usuario != null && String(turno.id_usuario) === String(usuario.id) && !turnoYaPaso(turno))
         }
         esAdmin={esAdmin}
       />
@@ -103,17 +132,22 @@ export default function Turno({ usuario }) {
   const navigate = useNavigate();
   const { setUsuario } = useUser();
 
+  // En demo se trabaja con el usuario demo aunque no haya sesión iniciada
+  const usuarioEfectivo = usuario || (DEMO_MODE ? DEMO_USER : null);
+
   // Un solo fetch para todos los turnos
-  const { turnosCreados, turnosInvitado, loading, esAdmin } = useTurnosFull(usuario, tab);
+  const { turnosCreados, turnosInvitado, loading, recargarTurnos, esAdmin } = useTurnosFull(usuarioEfectivo, tab);
 
   useEffect(() => {
-    if (!usuario) {
+    if (!usuarioEfectivo) {
       navigate('/login', { replace: true });
     }
-  }, [usuario, navigate]);
+  }, [usuarioEfectivo, navigate]);
 
   const onLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('biblio_demo_session');
+    try { localStorage.setItem('biblio_demo_closed', '1'); } catch {}
     setUsuario(null);
     navigate('/login');
   };
@@ -131,7 +165,7 @@ export default function Turno({ usuario }) {
             onClick={() => window.history.back()}
             aria-label="Atrás"
           >
-            <svg width="28" height="28" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
+            <svg className="turno-back-icon" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
@@ -146,7 +180,10 @@ export default function Turno({ usuario }) {
       />
       <div style={{ height: 110 }} />
       <div className="turno-content">
-        <div className="turno-titulo">Turnos</div>
+        <HeaderTurno
+          titulo="Turnos"
+          subtitulo="Reservá salas, invitá por email y gestioná tus turnos."
+        />
         <div className="turno-tabs-row">
           <TabButton
             active={tab === 'ver'}
@@ -176,22 +213,26 @@ export default function Turno({ usuario }) {
               <div className="turno-empty-msg">Cargando turnos...</div>
             ) : noTurnos ? (
               <div className="turno-empty-msg">
-                <span role="img" aria-label="info" style={{ fontSize: 32, display: 'block', marginBottom: 8 }}>📅</span>
-                No hay turnos para mostrar.
+                <span role="img" aria-label="sin turnos" style={{ fontSize: 32, display: 'block', marginBottom: 8 }}>📅</span>
+                <p style={{ margin: 0, fontWeight: 600 }}>No tenés turnos todavía.</p>
+                <p className="turno-empty-sub">Reservá una sala en minutos e invitá a quien quieras por email.</p>
+                <button type="button" className="turno-empty-cta" onClick={() => setTab('crear')}>
+                  Reservar un turno
+                </button>
               </div>
             ) : (
               <div className="turno-cards-list">
                 <TurnosList
                   turnos={turnosCreados}
-                  usuario={usuario}
-                  recargarTurnos={() => {}}
+                  usuario={usuarioEfectivo}
+                  recargarTurnos={recargarTurnos}
                   esInvitado={false}
                   esAdmin={esAdmin}
                 />
                 <TurnosList
                   turnos={turnosInvitado}
-                  usuario={usuario}
-                  recargarTurnos={() => {}}
+                  usuario={usuarioEfectivo}
+                  recargarTurnos={recargarTurnos}
                   esInvitado={true}
                   esAdmin={esAdmin}
                 />
@@ -199,9 +240,9 @@ export default function Turno({ usuario }) {
             )}
           </div>
         ) : tab === 'crear' ? (
-          <Paso1DatosBasicos usuario={usuario} logout={onLogout} onSolicitarExito={() => setTab('ver')} />
+          <Paso1DatosBasicos usuario={usuarioEfectivo} logout={onLogout} onSolicitarExito={() => setTab('ver')} />
         ) : (
-          <Invitaciones usuario={usuario} />
+          <Invitaciones usuario={usuarioEfectivo} />
         )}
       </div>
       <footer className="panel-footer">

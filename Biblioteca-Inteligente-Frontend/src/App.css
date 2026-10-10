@@ -1,8 +1,10 @@
+/* Shell de la app: ocupa todo el ancho; las páginas gestionan su propio layout. */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
 .logo {
@@ -39,4 +41,96 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* ============================================================
+   R2-7 — Scrollbars propias premium (global, solo aditivo).
+   Verificación #root vs src/index.css (solo lectura):
+   - index.css `#root { width: 100%; min-height: 100vh; }`
+   - App.css `#root` agrega margin/padding/text-align, NO pisa
+     width/min-height. Sin choque: no se toca lo existente.
+   - index.css fija `:root { color-scheme: light }`; aquí se amplía
+     a `light dark` porque hay variante oscura real bajo
+     body[data-header-theme='dark']. App.css carga después de
+     index.css (main.jsx → index.css, App.jsx → App.css), así que
+     estas reglas suman en cascada sin reescribir nada previo.
+   - Solo pseudo-elementos de scrollbar + scroll-behavior:
+     sin cambios de box-model, sin afectar layouts.
+   ============================================================ */
+
+/* Suaviza el scroll de anclas y del botón ScrollTop. */
+html {
+  scroll-behavior: smooth;
+  /* Firefox: barra fina global (se hereda por elemento scrolleable). */
+  scrollbar-width: thin;
+  scrollbar-color: #2563eb transparent;
+}
+
+/* color-scheme acorde al tema con/sin variante oscura. */
+:root {
+  color-scheme: light dark;
+}
+
+/* --- WebKit/Chromium/Edge: barra propia de 12px --- */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 999px;
+  /* "Padding" visual sin tocar box-model: el borde transparente
+     deja ver el track y adelgaza el thumb. */
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  min-height: 48px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #60a5fa 0%, #1e40af 100%);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #1d4ed8 0%, #1e3a8a 100%);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* --- Variante oscura: body[data-header-theme='dark'] --- */
+body[data-header-theme='dark'] {
+  color-scheme: dark;
+}
+
+body[data-header-theme='dark'] {
+  scrollbar-color: #60a5fa rgba(255, 255, 255, 0.06);
+}
+
+body[data-header-theme='dark'] ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+body[data-header-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+  background-clip: padding-box;
+}
+
+body[data-header-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #93c5fd 0%, #1d4ed8 100%);
+  background-clip: padding-box;
+}
+
+/* Accesibilidad: respeta reduced-motion (scroll instantáneo). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

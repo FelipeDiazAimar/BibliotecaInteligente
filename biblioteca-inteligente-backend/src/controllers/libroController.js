@@ -1,6 +1,8 @@
 // Este archivo tiene las funciones que se usan para manejar los pedidos relacionados con libros.
 
 const { Libro } = require('../models');
+const { isDemoMode } = require('../config/demo');
+const { isDbConnectionError, sendDbUnavailable, sendDbOrInternal } = require('../middlewares/apiError');
 
 // Trae todos los libros de la base de datos y los devuelve como lista
 exports.getAll = async (req, res) => {
@@ -8,7 +10,13 @@ exports.getAll = async (req, res) => {
     const libros = await Libro.findAll(); // Busca todos los libros
     res.json(libros); // Devuelve la lista de libros
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    // En demo sin DB, devuelve los libros de ejemplo para que el catálogo funcione.
+    if (isDemoMode() && isDbConnectionError(error)) {
+      console.error(`${'[demo]'} sin DB: devolviendo libros de ejemplo:`, error.message);
+      const { DEMO_BOOKS } = require('../config/demo');
+      return res.json(DEMO_BOOKS);
+    }
+    return sendDbOrInternal(res, error, 'Error al obtener libros');
   }
 };
 
@@ -21,7 +29,13 @@ exports.getById = async (req, res) => {
     }
     res.json(libro); // Devuelve el libro encontrado
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (isDemoMode() && isDbConnectionError(error)) {
+      const { DEMO_BOOKS } = require('../config/demo');
+      const demo = DEMO_BOOKS.find((l) => String(l.id) === String(req.params.id));
+      if (demo) return res.json(demo);
+      return res.status(404).json({ error: 'Libro no encontrado' });
+    }
+    return sendDbOrInternal(res, error, 'Error al obtener el libro');
   }
 };
 
@@ -35,6 +49,7 @@ exports.create = async (req, res) => {
     const libro = await Libro.create(data);
     res.status(201).json(libro);
   } catch (error) {
+    if (isDbConnectionError(error)) return sendDbUnavailable(res, error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -53,6 +68,7 @@ exports.update = async (req, res) => {
     await libro.update(req.body);
     res.json({ mensaje: 'Libro actualizado correctamente' });
   } catch (error) {
+    if (isDbConnectionError(error)) return sendDbUnavailable(res, error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -66,6 +82,7 @@ exports.delete = async (req, res) => {
     }
     res.status(204).end(); // Si todo salió bien, responde sin contenido
   } catch (error) {
+    if (isDbConnectionError(error)) return sendDbUnavailable(res, error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -94,6 +111,7 @@ exports.getPortada = async (req, res) => {
       return res.status(404).send('Portada no válida');
     }
   } catch (error) {
+    if (isDbConnectionError(error)) return res.status(503).send('Base de datos no disponible');
     res.status(500).send('Error al obtener la portada');
   }
 };

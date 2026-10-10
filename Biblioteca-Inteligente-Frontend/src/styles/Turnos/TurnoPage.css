@@ -12,8 +12,8 @@
 }
 
 .turno-content {
-  max-width: 100%;
-  width: 100%;
+  max-width: 1100px;
+  width: calc(100% - 2rem);
   margin: 0 auto;
   background: rgba(255,255,255,0.98);
   border-radius: 22px;
@@ -25,11 +25,14 @@
   display: flex;
   flex-direction: column;
   color: #222 !important;
-  min-width: 800px;
 }
 
-body[data-header-theme='dark'] .turno-content {
+body[data-header-theme='dark'] .turno-content,
+html[data-theme='dark'] .turno-content {
   background: linear-gradient(135deg, #0a2342 0%, #000000 100%) !important;
+  color: #f5f5f5 !important;
+  border: 1px solid #1e3a5f;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5), 0 1.5px 8px rgba(0, 0, 0, 0.4);
 }
 
 .turno-tabs-row {
@@ -94,9 +97,12 @@ body[data-header-theme='dark'] .turno-content {
 
 .turno-card-wrapper {
   flex: 1 1 340px;
-  min-width: 340px;
+  min-width: min(340px, 100%);
   max-width: 420px;
   display: flex;
+}
+.turno-card-wrapper > * {
+  width: 100%;
 }
 
 .turno-footer {
@@ -132,4 +138,420 @@ body[data-header-theme='dark'] .turno-content {
   -webkit-text-fill-color: transparent;
   color: transparent;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Encabezado del módulo (HeaderTurno) */
+.turno-header-modulo {
+  text-align: center;
+  margin-bottom: 1.6rem;
+}
+.turno-header-modulo .turno-titulo {
+  margin-bottom: 0.4rem;
+}
+.turno-subtitulo {
+  color: #607d8b;
+  font-size: 1.08rem;
+  margin: 0;
+}
+.turno-header-extra {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+/* Indicador de pasos del wizard de reserva */
+.turno-wizard {
+  width: 100%;
+}
+.wizard-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.6rem;
+  flex-wrap: wrap;
+}
+.wizard-step {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #90a4ae;
+  background: #f1f5f9;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+}
+.wizard-step.active {
+  color: #1565c0;
+  background: #e3f2fd;
+  border-color: #90caf9;
+}
+.wizard-step.done {
+  color: #2e7d32;
+  background: #e8f5e9;
+  border-color: #a5d6a7;
+}
+.wizard-step-sep {
+  color: #b0bec5;
+  font-weight: 700;
+}
+
+/* Estado vacío amable + CTA */
+.turno-empty-sub {
+  color: #78909c;
+  font-size: 1rem;
+  margin: 0.6rem 0 1.2rem 0;
+}
+.turno-empty-cta {
+  background: linear-gradient(90deg, #2196f3 60%, #1976d2 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.8rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #b3c6e055;
+  transition: background 0.2s;
+}
+.turno-empty-cta:hover {
+  background: linear-gradient(90deg, #1976d2 60%, #2196f3 100%);
+}
+
+/* Invitaciones recibidas */
+.invitaciones-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+.invitacion-card {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #b3c6e022;
+  padding: 1.5rem 2rem;
+  flex-wrap: wrap;
+}
+.invitacion-quien {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.invitacion-avatar {
+  font-size: 38px;
+  color: #888;
+}
+.invitacion-nombre {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.invitacion-tematica {
+  font-size: 1rem;
+  color: #222;
+}
+.invitacion-detalle {
+  font-size: 0.98rem;
+  color: #444;
+}
+.invitacion-accion {
+  flex: 2;
+  min-width: 260px;
+}
+.invitacion-texto {
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.invitacion-botones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.invitacion-aceptar {
+  background: #e8f5e9;
+  color: #388e3c;
+  border: 1.5px solid #43a047;
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+.invitacion-aceptar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.invitacion-rechazar {
+  background: #ffebee;
+  color: #e53935;
+  border: 1.5px solid #e57373;
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+.invitacion-rechazar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive del módulo Turnos */
+@media (max-width: 900px) {
+  .turno-content {
+    width: calc(100% - 1rem);
+    padding: 1.6rem 1.1rem;
+  }
+  .turno-titulo {
+    font-size: 1.9rem;
+  }
+  .turno-cards-list {
+    gap: 1.2rem;
+  }
+  .turno-card-wrapper {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+  .invitacion-card {
+    gap: 1.2rem;
+    padding: 1.2rem;
+  }
+}
+@media (max-width: 640px) {
+  .turno-tabs-row {
+    overflow-x: auto;
+  }
+  .turno-tab-btn {
+    font-size: 1rem;
+    padding: 0.9rem 0.4rem;
+    white-space: nowrap;
+  }
+  .wizard-step {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.8rem;
+  }
+}
+
+/* ============================================================
+   R2-6 · Modo oscuro del módulo Turnos (solo presentación)
+   Convención: body[data-header-theme='dark'] + espejo html[data-theme='dark'].
+   No cambia lógica: solo colores, bordes, fondos y color-scheme.
+   ============================================================ */
+
+/* Superficie general: el body ya aporta el gradiente oscuro global */
+body[data-header-theme='dark'] .turno-main-bg,
+html[data-theme='dark'] .turno-main-bg {
+  background: transparent;
+  color-scheme: dark;
+}
+
+body[data-header-theme='dark'] .turno-list-container,
+html[data-theme='dark'] .turno-list-container,
+body[data-header-theme='dark'] .turno-cards-list,
+html[data-theme='dark'] .turno-cards-list {
+  color: #f5f5f5 !important;
+}
+
+/* Encabezado del módulo */
+body[data-header-theme='dark'] .turno-subtitulo,
+html[data-theme='dark'] .turno-subtitulo {
+  color: #b0bec5 !important;
+}
+body[data-header-theme='dark'] .turno-titulo,
+html[data-theme='dark'] .turno-titulo {
+  background: linear-gradient(90deg, #90caf9 10%, #e3f2fd 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Tabs Ver / Crear / Invitaciones */
+body[data-header-theme='dark'] .turno-tabs-row,
+html[data-theme='dark'] .turno-tabs-row {
+  border-bottom-color: #1e3a5f;
+}
+body[data-header-theme='dark'] .turno-tab-btn,
+html[data-theme='dark'] .turno-tab-btn {
+  color: #9fb3c8;
+  border-bottom-color: #1e3a5f;
+}
+body[data-header-theme='dark'] .turno-tab-btn:hover,
+html[data-theme='dark'] .turno-tab-btn:hover {
+  color: #e3f2fd;
+  background: rgba(144, 202, 249, 0.08);
+}
+body[data-header-theme='dark'] .turno-tab-btn.active,
+html[data-theme='dark'] .turno-tab-btn.active {
+  color: #90caf9;
+  background: linear-gradient(90deg, rgba(21, 101, 192, 0.55) 0%, rgba(13, 42, 82, 0.55) 100%);
+  border-bottom-color: #90caf9;
+}
+body[data-header-theme='dark'] .turno-tab-btn:focus-visible,
+html[data-theme='dark'] .turno-tab-btn:focus-visible {
+  outline: 2px solid #90caf9;
+  outline-offset: 2px;
+}
+
+/* Botón atrás del Header dentro de turnos */
+body[data-header-theme='dark'] .turno-main-bg .panel-back-btn,
+html[data-theme='dark'] .turno-main-bg .panel-back-btn {
+  color: #e3f2fd;
+}
+body[data-header-theme='dark'] .turno-main-bg .panel-back-btn svg,
+html[data-theme='dark'] .turno-main-bg .panel-back-btn svg {
+  stroke: currentColor;
+}
+
+/* Vacío / cargando: contraste AA sobre fondo oscuro */
+body[data-header-theme='dark'] .turno-empty-msg,
+html[data-theme='dark'] .turno-empty-msg {
+  background: linear-gradient(90deg, rgba(21, 101, 192, 0.28) 0%, rgba(10, 35, 66, 0.6) 100%) !important;
+  color: #f5f5f5 !important;
+  border: 1px solid #1e3a5f;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+}
+body[data-header-theme='dark'] .turno-empty-sub,
+html[data-theme='dark'] .turno-empty-sub {
+  color: #b0bec5 !important;
+}
+body[data-header-theme='dark'] .turno-empty-cta,
+html[data-theme='dark'] .turno-empty-cta {
+  background: linear-gradient(90deg, #42a5f5 0%, #1565c0 100%);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+body[data-header-theme='dark'] .turno-empty-cta:hover,
+html[data-theme='dark'] .turno-empty-cta:hover {
+  background: linear-gradient(90deg, #90caf9 0%, #1976d2 100%);
+  color: #06121f;
+}
+
+/* Stepper del wizard: premium y legible en ambos modos */
+body[data-header-theme='dark'] .wizard-step,
+html[data-theme='dark'] .wizard-step {
+  color: #9fb3c8;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: #1e3a5f;
+}
+body[data-header-theme='dark'] .wizard-step.active,
+html[data-theme='dark'] .wizard-step.active {
+  color: #06121f;
+  background: linear-gradient(90deg, #90caf9 0%, #e3f2fd 100%);
+  border-color: #90caf9;
+  box-shadow: 0 0 0 3px rgba(144, 202, 249, 0.22);
+}
+body[data-header-theme='dark'] .wizard-step.done,
+html[data-theme='dark'] .wizard-step.done {
+  color: #a5d6a7;
+  background: rgba(46, 125, 50, 0.22);
+  border-color: #2e7d32;
+}
+body[data-header-theme='dark'] .wizard-step-sep,
+html[data-theme='dark'] .wizard-step-sep {
+  color: #546e7a;
+}
+
+/* Invitaciones recibidas */
+body[data-header-theme='dark'] .invitacion-card,
+html[data-theme='dark'] .invitacion-card {
+  background: linear-gradient(120deg, #10294d 0%, #0a1a33 100%);
+  border: 1px solid #1e3a5f;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  color: #f5f5f5;
+}
+body[data-header-theme='dark'] .invitacion-avatar,
+html[data-theme='dark'] .invitacion-avatar {
+  color: #90caf9;
+}
+body[data-header-theme='dark'] .invitacion-nombre,
+html[data-theme='dark'] .invitacion-nombre {
+  color: #f5f5f5;
+}
+body[data-header-theme='dark'] .invitacion-tematica,
+html[data-theme='dark'] .invitacion-tematica {
+  color: #e3f2fd;
+}
+body[data-header-theme='dark'] .invitacion-detalle,
+html[data-theme='dark'] .invitacion-detalle {
+  color: #b0bec5;
+}
+body[data-header-theme='dark'] .invitacion-texto,
+html[data-theme='dark'] .invitacion-texto {
+  color: #e3f2fd;
+}
+body[data-header-theme='dark'] .invitacion-aceptar,
+html[data-theme='dark'] .invitacion-aceptar {
+  background: rgba(46, 125, 50, 0.22);
+  color: #a5d6a7;
+  border-color: #2e7d32;
+}
+body[data-header-theme='dark'] .invitacion-aceptar:hover:not(:disabled),
+html[data-theme='dark'] .invitacion-aceptar:hover:not(:disabled) {
+  background: #2e7d32;
+  color: #fff;
+}
+body[data-header-theme='dark'] .invitacion-rechazar,
+html[data-theme='dark'] .invitacion-rechazar {
+  background: rgba(229, 57, 53, 0.16);
+  color: #ef9a9a;
+  border-color: #6f1d1d;
+}
+body[data-header-theme='dark'] .invitacion-rechazar:hover:not(:disabled),
+html[data-theme='dark'] .invitacion-rechazar:hover:not(:disabled) {
+  background: #c62828;
+  color: #fff;
+}
+
+/* Footer dentro del módulo */
+body[data-header-theme='dark'] .turno-main-bg .panel-footer,
+html[data-theme='dark'] .turno-main-bg .panel-footer {
+  background: linear-gradient(90deg, #0a1a33 0%, #10294d 100%);
+  color: #b0bec5;
+  border-top: 1px solid #1e3a5f;
+}
+
+/* Clases presentacionales movidas desde JSX (evitan inline hardcodeado) */
+.turno-card-tematica {
+  font-size: 1.08rem;
+  color: #1976d2;
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: -2px;
+}
+body[data-header-theme='dark'] .turno-card-tematica,
+html[data-theme='dark'] .turno-card-tematica {
+  color: #90caf9;
+}
+.turno-card-invitado-tag {
+  color: #1976d2;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+body[data-header-theme='dark'] .turno-card-invitado-tag,
+html[data-theme='dark'] .turno-card-invitado-tag {
+  color: #90caf9;
+}
+.turno-back-icon {
+  stroke: currentColor;
+}
+.turno-main-bg .panel-back-btn {
+  color: #222;
+}
+body[data-header-theme='dark'] .turno-main-bg .panel-back-btn,
+html[data-theme='dark'] .turno-main-bg .panel-back-btn {
+  color: #e3f2fd;
+}
+
+/* El dark no rompe mobile: conserva el responsive existente */
+@media (max-width: 640px) {
+  body[data-header-theme='dark'] .turno-content,
+  html[data-theme='dark'] .turno-content {
+    border-left: none;
+    border-right: none;
+  }
 }

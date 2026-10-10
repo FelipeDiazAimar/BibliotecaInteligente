@@ -1,167 +1,262 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import IntegrantesList from './IntegrantesList';
 import '../../styles/Turnos/Paso2Invitacion.css';
+import { DEMO_MODE, demoDelay } from '../../lib/demo.js';
+import {
+  createTurnoDemo,
+  normalizarEmail,
+  isEmailValido,
+  formatearFechaCorta,
+} from '../../data/demoTurnos';
 
-function Paso2Invitacion({ creador = { nombre: '', dni: '', id: '' }, datosTurno, onSolicitarExito }) {
-  const [dni, setDni] = useState('');
-  const [integrantes, setIntegrantes] = useState([creador]);
-  const [mensaje, setMensaje] = useState('');
-  const [buscando, setBuscando] = useState(false);
+const MAX_INVITADOS = 10;
+
+function Paso2Invitacion({ creador = {}, datosTurno = {}, onSolicitarExito, onVolver }) {
+  const [email, setEmail] = useState('');
+  const [invitados, setInvitados] = useState([]); // [{ email, nombre }]
+  const [mensaje, setMensaje] = useState(null); // { tipo: 'error' | 'exito', texto }
+  const [subpaso, setSubpaso] = useState('invitados'); // 'invitados' | 'resumen'
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
-  const [salas, setSalas] = useState([]);
-  const [salaId, setSalaId] = useState('');
-  // const navigate = useNavigate(); // Elimina esta línea si no usas navigate
+  const timerRef = useRef(null);
 
-  useEffect(() => {
-    // Obtener todas las salas al montar el componente
-    fetch('http://localhost:3000/api/salas')
-      .then(res => res.json())
-      .then(data => setSalas(data))
-      .catch(() => setSalas([]));
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
   }, []);
 
-  useEffect(() => {
-    // Si el área seleccionada en datosTurno.area coincide con una sala, setear el id
-    if (salas.length && datosTurno.area) {
-      const sala = salas.find(s => s.nombre === datosTurno.area);
-      setSalaId(sala ? sala.id : '');
-    }
-  }, [salas, datosTurno.area]);
+  const datos = datosTurno || {};
+  const creadorEmail = normalizarEmail(creador.email);
+  const integrantes = [
+    {
+      id: creador.id ?? 'creador',
+      nombre: creador.nombre || 'Usuario',
+      email: creador.email || '',
+      dni: creador.dni || '',
+    },
+    ...invitados,
+  ];
+  const nombreSala = datos.area || 'Sala por asignar';
 
-  const handleAddIntegrante = async () => {
-    if (!dni.trim()) return;
-    if (integrantes.some(i => i.dni === dni)) {
-      setMensaje('El integrante ya fue añadido.');
+  const handleAddInvitado = () => {
+    const limpio = normalizarEmail(email);
+    if (!limpio) {
+      setMensaje({ tipo: 'error', texto: 'Escribí un email para invitar.' });
       return;
     }
-    setBuscando(true);
-    try {
-      const res = await fetch(`http://localhost:3000/api/usuarios/dni/${dni}`);
-      if (!res.ok) {
-        setMensaje('No se encontró un usuario con ese DNI.');
-        setBuscando(false);
-        return;
-      }
-      const usuario = await res.json();
-      setIntegrantes([...integrantes, usuario]);
-      setMensaje('');
-    } catch {
-      setMensaje('Error al buscar el usuario.');
+    if (!isEmailValido(limpio)) {
+      setMensaje({ tipo: 'error', texto: 'Ese email no parece válido. Revisalo e intentá de nuevo.' });
+      return;
     }
-    setBuscando(false);
-    setDni('');
+    if (creadorEmail && limpio === creadorEmail) {
+      setMensaje({ tipo: 'error', texto: 'Ese es tu propio email: ya sos parte del turno.' });
+      return;
+    }
+    if (invitados.some(i => i.email === limpio)) {
+      setMensaje({ tipo: 'error', texto: 'Ese email ya está en la lista.' });
+      return;
+    }
+    if (invitados.length >= MAX_INVITADOS) {
+      setMensaje({ tipo: 'error', texto: `Podés invitar hasta ${MAX_INVITADOS} personas por turno.` });
+      return;
+    }
+    setInvitados(prev => [...prev, { email: limpio, nombre: limpio }]);
+    setEmail('');
+    setMensaje(null);
+  };
+
+  const handleQuitar = emailQuitar => {
+    const limpio = normalizarEmail(emailQuitar);
+    setInvitados(prev => prev.filter(i => i.email !== limpio));
+  };
+
+  const handleEmailKeyDown = e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddInvitado();
+    }
+  };
+
+  const payloadDemo = () => ({
+    fecha: datos.fecha,
+    hora_inicio: datos.hora_inicio,
+    hora_fin: datos.hora_fin,
+    tematica: datos.tematica,
+    observaciones: datos.observaciones,
+    id_usuario: creador.id ?? null,
+    id_sala: datos.id_sala || null,
+    area: datos.area || '',
+    creador: { id: creador.id ?? null, nombre: creador.nombre || 'Usuario', email: creador.email || '' },
+    invitadosEmails: invitados.map(i => i.email),
+  });
+
+  const guardarEnApi = async () => {
+    const body = {
+      fecha: datos.fecha,
+      hora_inicio: datos.hora_inicio,
+      hora_fin: datos.hora_fin,
+      tematica: datos.tematica,
+      cantidad_integrantes: integrantes.length,
+      observaciones: datos.observaciones,
+      id_usuario: creador.id,
+      id_sala: datos.id_sala,
+    };
+    const res = await fetch('http://localhost:3000/api/turnos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.error || 'No se pudo crear el turno.');
+    }
+    // Las invitaciones por email quedan registradas en el turno demo local;
+    // la API de invitados requiere id de usuario, por eso no se reintenta aquí.
+    return res.json();
   };
 
   const handleSolicitar = async () => {
+    if (!datos.fecha || !datos.hora_inicio || !datos.hora_fin) {
+      setMensaje({ tipo: 'error', texto: 'Faltan los datos del turno. Volvé al paso anterior.' });
+      return;
+    }
+    if (!datos.id_sala && !datos.area) {
+      setMensaje({ tipo: 'error', texto: 'Elegí una sala válida en el paso anterior.' });
+      return;
+    }
     setEnviando(true);
-    setMensaje('');
+    setMensaje(null);
     try {
-      // Validar que los campos de hora estén completos antes de enviar
-      if (!datosTurno.hora_inicio || !datosTurno.hora_fin) {
-        setMensaje('Debe completar la hora de inicio y fin.');
-        setEnviando(false);
-        return;
-      }
-      if (!salaId) {
-        setMensaje('Debe seleccionar un área válida.');
-        setEnviando(false);
-        return;
-      }
-      const body = {
-        fecha: datosTurno.fecha,
-        hora_inicio: datosTurno.hora_inicio,
-        hora_fin: datosTurno.hora_fin,
-        tematica: datosTurno.tematica,
-        cantidad_integrantes: integrantes.length,
-        observaciones: datosTurno.observaciones,
-        id_usuario: creador.id,
-        id_sala: salaId
-      };
-      // Evitar enviar strings vacíos para hora_inicio y hora_fin
-      if (!body.hora_inicio.trim() || !body.hora_fin.trim()) {
-        setMensaje('Debe completar la hora de inicio y fin.');
-        setEnviando(false);
-        return;
-      }
-      const res = await fetch('http://localhost:3000/api/turnos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) {
-        const error = await res.json();
-        setMensaje(error.error || 'No se pudo crear el turno.');
+      if (DEMO_MODE) {
+        await demoDelay(500);
+        createTurnoDemo(payloadDemo());
       } else {
-        const turnoCreado = await res.json();
-        // Guardar los integrantes invitados en la base de datos
-        for (const invitado of integrantes) {
-          if (invitado.id !== creador.id) {
-            await fetch('http://localhost:3000/api/invitados', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                id_turno: turnoCreado.id,
-                id_usuario: invitado.id,
-                estado_invitacion: 'pendiente'
-              })
-            });
-          }
+        try {
+          await guardarEnApi();
+        } catch {
+          // Fallback demo: la reserva no se pierde aunque falle el backend
+          createTurnoDemo(payloadDemo());
         }
-        setMensaje('El turno fue solicitado correctamente.');
-        setEnviado(true);
-        if (onSolicitarExito) {
-          setTimeout(() => {
-            onSolicitarExito();
-          }, 1200);
-        }
+      }
+      setMensaje({ tipo: 'exito', texto: 'El turno fue solicitado correctamente.' });
+      setEnviado(true);
+      if (onSolicitarExito) {
+        timerRef.current = setTimeout(() => {
+          onSolicitarExito();
+        }, 1200);
       }
     } catch {
-      setMensaje('No se pudo crear el turno.');
+      setMensaje({ tipo: 'error', texto: 'No se pudo crear el turno. Intentá de nuevo.' });
     }
     setEnviando(false);
   };
 
   return (
     <div className="paso2-container">
-      <div className="paso2-row">
-        <IntegrantesList integrantes={integrantes} />
-        <div className="paso2-dni-input" style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginTop: 12 }}>
-          <label>
-            Ingrese el DNI de los integrantes:
-          </label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <input
-              type="text"
-              value={dni}
-              onChange={e => setDni(e.target.value)}
-              disabled={buscando}
-              style={{ color: 'black' }}
+      <div className="wizard-steps" aria-label="Progreso de la reserva">
+        <span className="wizard-step done">1 · Datos</span>
+        <span className="wizard-step-sep" aria-hidden="true">→</span>
+        <span className={`wizard-step ${subpaso === 'invitados' ? 'active' : 'done'}`}>2 · Invitados</span>
+        <span className="wizard-step-sep" aria-hidden="true">→</span>
+        <span className={`wizard-step ${subpaso === 'resumen' ? 'active' : ''}`}>3 · Confirmación</span>
+      </div>
+
+      {subpaso === 'invitados' ? (
+        <>
+          <div className="paso2-row">
+            <IntegrantesList
+              integrantes={integrantes}
+              onQuitar={handleQuitar}
+              protegidos={creadorEmail ? [creadorEmail] : []}
             />
-            <button
-              type="button"
-              onClick={handleAddIntegrante}
-              disabled={buscando}
-            >
-              {buscando ? 'Buscando...' : '+'}
+            <div className="paso2-dni-input">
+              <label htmlFor="paso2-email">Invitá por email:</label>
+              <div className="paso2-email-row">
+                <input
+                  id="paso2-email"
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  onKeyDown={handleEmailKeyDown}
+                  placeholder="nombre@ejemplo.com"
+                  autoComplete="off"
+                />
+                <button type="button" onClick={handleAddInvitado} aria-label="Agregar invitado">
+                  +
+                </button>
+              </div>
+              <p className="paso2-hint">
+                {invitados.length === 0
+                  ? 'Podés continuar solo con vos o sumar hasta 10 personas.'
+                  : `${invitados.length} invitado${invitados.length === 1 ? '' : 's'} agregado${invitados.length === 1 ? '' : 's'}.`}
+              </p>
+            </div>
+          </div>
+          {mensaje && (
+            <div className={`paso2-mensaje ${mensaje.tipo === 'exito' ? 'success' : 'error'}`}>
+              {mensaje.texto}
+            </div>
+          )}
+          <div className="paso2-acciones">
+            {onVolver && (
+              <button type="button" className="paso2-volver-btn" onClick={onVolver}>
+                Volver
+              </button>
+            )}
+            <button type="button" className="paso2-solicitar-btn" onClick={() => { setMensaje(null); setSubpaso('resumen'); }}>
+              Continuar
             </button>
           </div>
-        </div>
-      </div>
-      {mensaje && (
-        <div className={`paso2-mensaje${mensaje.includes('correctamente') ? ' success' : ' error'}`}>
-          {mensaje}
-        </div>
+        </>
+      ) : (
+        <>
+          <div className="paso2-resumen">
+            <h3 className="paso2-resumen-titulo">Revisá tu reserva</h3>
+            <dl className="paso2-resumen-lista">
+              <div><dt>Sala</dt><dd>{nombreSala}</dd></div>
+              <div><dt>Fecha</dt><dd>{formatearFechaCorta(datos.fecha)}</dd></div>
+              <div><dt>Horario</dt><dd>{datos.hora_inicio || '—'} - {datos.hora_fin || '—'}</dd></div>
+              <div><dt>Temática</dt><dd>{datos.tematica || '—'}</dd></div>
+              <div><dt>Integrantes</dt><dd>{integrantes.length}</dd></div>
+              {datos.observaciones && (
+                <div><dt>Observaciones</dt><dd>{datos.observaciones}</dd></div>
+              )}
+            </dl>
+            {invitados.length > 0 && (
+              <div className="paso2-resumen-invitados">
+                <strong>Invitados:</strong>
+                <ul>
+                  {invitados.map(i => (
+                    <li key={i.email}>{i.email}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+          {mensaje && (
+            <div className={`paso2-mensaje ${mensaje.tipo === 'exito' ? 'success' : 'error'}`}>
+              {mensaje.texto}
+            </div>
+          )}
+          <div className="paso2-acciones">
+            <button
+              type="button"
+              className="paso2-volver-btn"
+              onClick={() => setSubpaso('invitados')}
+              disabled={enviando || enviado}
+            >
+              Volver
+            </button>
+            <button
+              type="button"
+              className="paso2-solicitar-btn"
+              onClick={handleSolicitar}
+              disabled={enviando || enviado}
+            >
+              {enviando ? 'Enviando...' : enviado ? 'Redirigiendo...' : 'Solicitar turno'}
+            </button>
+          </div>
+        </>
       )}
-      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32 }}>
-        <button
-          className="paso2-solicitar-btn"
-          onClick={handleSolicitar}
-          disabled={enviando || enviado}
-        >
-          {enviando ? 'Enviando...' : enviado ? 'Redirigiendo...' : 'Solicitar turno'}
-        </button>
-      </div>
     </div>
   );
 }

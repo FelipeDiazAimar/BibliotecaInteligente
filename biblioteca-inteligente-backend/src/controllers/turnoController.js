@@ -1,4 +1,5 @@
 const { Turno, InvitadosTurno, Usuario, Sala } = require('../models');
+const { isDbConnectionError, sendDbUnavailable, sendDbOrInternal } = require('../middlewares/apiError');
 
 // Obtener todos los turnos (solo datos básicos, sin joins)
 exports.getAllTurnos = async (req, res) => {
@@ -6,8 +7,7 @@ exports.getAllTurnos = async (req, res) => {
     const turnos = await Turno.findAll();
     res.json(turnos);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener turnos' });
+    return sendDbOrInternal(res, error, 'Error al obtener turnos');
   }
 };
 
@@ -37,8 +37,7 @@ exports.getTurnoById = async (req, res) => {
 
     res.json(turnosConIntegrantes);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener turnos del usuario' });
+    return sendDbOrInternal(res, error, 'Error al obtener turnos del usuario');
   }
 };
 
@@ -51,7 +50,8 @@ exports.deleteTurno = async (req, res) => {
     await turno.destroy();
     res.json({ mensaje: 'Turno eliminado correctamente' });
   } catch (error) {
-    console.error(error);
+    if (isDbConnectionError(error)) return sendDbUnavailable(res, error);
+    console.error(error.message);
     res.status(400).json({ error: error.message });
   }
 };
@@ -75,7 +75,8 @@ exports.createTurno = async (req, res) => {
 
     res.status(201).json(nuevoTurno);
   } catch (error) {
-    console.error('Error al crear turno:', error);
+    if (isDbConnectionError(error)) return sendDbUnavailable(res, error);
+    console.error('Error al crear turno:', error.message);
     res.status(400).json({ error: error.message });
   }
 };
@@ -108,8 +109,7 @@ exports.getAllTurnosFull = async (req, res) => {
     });
     res.json(turnos);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener turnos completos' });
+    return sendDbOrInternal(res, error, 'Error al obtener turnos completos');
   }
 };
 
@@ -133,6 +133,7 @@ exports.updateTurno = async (req, res) => {
     console.log('Mensaje:', req.body);
     res.json({ mensaje: 'Turno actualizado correctamente', turno });
   } catch (error) {
+    if (isDbConnectionError(error)) return sendDbUnavailable(res, error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -153,6 +154,6 @@ exports.getTurnoConSala = async (req, res) => {
     }
     res.json(turno);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener turno con sala' });
+    return sendDbOrInternal(res, error, 'Error al obtener turno con sala');
   }
 };

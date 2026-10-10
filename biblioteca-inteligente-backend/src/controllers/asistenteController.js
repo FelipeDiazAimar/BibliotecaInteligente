@@ -1,8 +1,41 @@
 const axios = require('axios');
 const { Libro, Prompt, Respuesta } = require('../models');
-const { jsonrepair } = require('jsonrepair');
+const { isDemoMode, DEMO_TAG, DEMO_BOOKS } = require('../config/demo');
+const { sendDbOrInternal } = require('../middlewares/apiError');
+
+// Stub determinístico del asistente para DEMO_MODE (sin llamar a OpenRouter).
+function demoAnswer(prompt) {
+  const disponibles = DEMO_BOOKS.filter((l) => l.disponible).length;
+  return (
+    `${DEMO_TAG} respuesta de demostración (sin IA externa). ` +
+    `Recibí tu pregunta: "${prompt || '(vacía)'}". ` +
+    `En la biblioteca demo hay ${DEMO_BOOKS.length} libros de ejemplo (${disponibles} disponibles). ` +
+    `Configurá OPENROUTER_KEY y DEMO_MODE=false para usar el asistente real.`
+  );
+}
 
 exports.ask = async (req, res) => {
+  // Modo demo: responde el stub sin llamar a OpenRouter. Intenta guardar el
+  // historial, pero si no hay DB lo omite sin fallar.
+  if (isDemoMode()) {
+    const respuestaFinal = demoAnswer(req.body && req.body.prompt);
+    try {
+      const usuarioId = (req.usuario && req.usuario.id) || 1;
+      const promptGuardado = await Prompt.create({
+        texto: (req.body && req.body.prompt) || '',
+        usuarioId
+      });
+      await Respuesta.create({
+        texto: respuestaFinal,
+        promptId: promptGuardado.id,
+        usuarioId
+      });
+    } catch (e) {
+      console.error(`${DEMO_TAG} sin DB: historial del asistente no guardado:`, e.message);
+    }
+    return res.json({ respuesta: respuestaFinal, demo: true });
+  }
+
   try {
     // 1. Traer todos los libros
     const libros = await Libro.findAll({
@@ -44,7 +77,7 @@ exports.ask = async (req, res) => {
       );
       respuestaFinal = openrouterResponse.data.choices[0].message.content;
     } catch (error) {
-      console.error('Error consultando OpenRouter:', error);
+      console.error('Error consultando OpenRouter:', error.message);
       respuestaFinal = "Error consultando OpenRouter.";
     }
 
@@ -62,14 +95,13 @@ exports.ask = async (req, res) => {
         usuarioId
       });
     } catch (e) {
-      console.error('Error guardando historial de asistente:', e);
+      console.error('Error guardando historial de asistente:', e.message);
     }
 
     // Devuelve la respuesta de OpenRouter directamente
     res.json({ respuesta: respuestaFinal });
   } catch (error) {
-    console.error('Error en /api/asistente/ask:', error);
-    res.status(500).json({ error: error.message });
+    return sendDbOrInternal(res, error, 'Error en el asistente');
   }
 };
 
@@ -84,7 +116,6 @@ exports.historial = async (req, res) => {
     });
     res.json(prompts);
   } catch (error) {
-    console.error('Error en /api/asistente/historial:', error);
-    res.status(500).json({ error: error.message });
+    return sendDbOrInternal(res, error, 'Error al obtener el historial');
   }
 };

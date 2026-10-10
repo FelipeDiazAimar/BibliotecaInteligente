@@ -39,9 +39,10 @@
   margin-bottom: 6px;
   font-size: 1.08rem;
 }
-.turno-card-estado-pendiente { color: #ff9900; }
-.turno-card-estado-aceptado { color: #43a047; }
-.turno-card-estado-cancelado { color: #e53935; }
+/* Contraste AA en modo claro: tonos más oscuros que el naranja/verde/rojo original */
+.turno-card-estado-pendiente { color: #8a5a00; }
+.turno-card-estado-aceptado { color: #2e7d32; }
+.turno-card-estado-cancelado { color: #c62828; }
 
 .turno-card-observaciones {
   color: #666;
@@ -68,4 +69,275 @@
 .turno-card-cancelar:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* Acciones de la tarjeta */
+.turno-card-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.turno-card-actions .turno-card-cancelar {
+  margin-top: 8px;
+  align-self: auto;
+}
+.turno-card-editar {
+  background: linear-gradient(90deg, #ffd600 60%, #fffde7 100%);
+  color: #222;
+}
+.turno-card-guardar {
+  background: #43a047;
+  color: #fff;
+}
+.turno-card-volver {
+  background: #bbb;
+  color: #222;
+}
+
+/* Lista de invitados dentro de la tarjeta */
+.turno-card-invitados {
+  margin-top: 8px;
+}
+.turno-card-invitados ul {
+  margin: 4px 0 0 0;
+  padding-left: 18px;
+}
+.turno-card-invitado-estado {
+  color: #888;
+  margin-left: 8px;
+  font-size: 0.95em;
+}
+
+/* Formulario de edición dentro de la tarjeta */
+.turno-edit-form {
+  margin-top: 12px;
+  width: 100%;
+  background: #f8fafc;
+  border: 1.5px solid #e3eaf2;
+  border-radius: 12px;
+  padding: 1rem;
+}
+.turno-edit-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.turno-edit-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: #37474f;
+  min-width: 130px;
+  flex: 1;
+}
+.turno-edit-campo input,
+.turno-edit-campo select {
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1.5px solid #bbdefb;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #222;
+}
+.turno-edit-form textarea {
+  width: 100%;
+  margin-top: 8px;
+  min-height: 56px;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  border: 1.5px solid #bbdefb;
+  font-size: 0.95rem;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.turno-edit-error {
+  color: #e53935;
+  margin-top: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.turno-edit-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.turno-edit-actions .turno-card-cancelar {
+  margin-top: 0;
+  align-self: auto;
+}
+
+@media (max-width: 640px) {
+  .turno-card {
+    padding: 1.4rem 1rem;
+  }
+  .turno-card-actions .turno-card-cancelar {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+/* ============================================================
+   R2-6 · Dark mode tarjetas + edición (solo presentación)
+   ============================================================ */
+body[data-header-theme='dark'] .turno-card,
+html[data-theme='dark'] .turno-card {
+  background: linear-gradient(120deg, #10294d 0%, #0a1a33 100%);
+  border-left-color: #546e7a;
+  border-top-color: #1e3a5f;
+  border-bottom-color: #1e3a5f;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+  color: #f5f5f5;
+}
+body[data-header-theme='dark'] .turno-card:hover,
+html[data-theme='dark'] .turno-card:hover {
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(144, 202, 249, 0.15);
+}
+body[data-header-theme='dark'] .turno-card-pendiente,
+html[data-theme='dark'] .turno-card-pendiente { border-left-color: #ffb300; }
+body[data-header-theme='dark'] .turno-card-aceptado,
+html[data-theme='dark'] .turno-card-aceptado { border-left-color: #66bb6a; }
+body[data-header-theme='dark'] .turno-card-cancelado,
+html[data-theme='dark'] .turno-card-cancelado { border-left-color: #ef5350; }
+
+body[data-header-theme='dark'] .turno-card-title,
+html[data-theme='dark'] .turno-card-title {
+  color: #90caf9;
+}
+body[data-header-theme='dark'] .turno-card-info,
+html[data-theme='dark'] .turno-card-info {
+  color: #e3f2fd;
+}
+body[data-header-theme='dark'] .turno-card-info strong,
+html[data-theme='dark'] .turno-card-info strong {
+  color: #f5f5f5;
+}
+
+/* Badges de estado: pastilla visible en ambos modos, AA */
+.turno-card-estado {
+  display: inline-block;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  border: 1.5px solid currentColor;
+  background: rgba(0, 0, 0, 0.03);
+}
+body[data-header-theme='dark'] .turno-card-estado,
+html[data-theme='dark'] .turno-card-estado {
+  background: rgba(255, 255, 255, 0.07);
+}
+body[data-header-theme='dark'] .turno-card-estado-pendiente,
+html[data-theme='dark'] .turno-card-estado-pendiente {
+  color: #ffcc80;
+  border-color: #8a5a00;
+  background: rgba(255, 179, 0, 0.14);
+}
+body[data-header-theme='dark'] .turno-card-estado-aceptado,
+html[data-theme='dark'] .turno-card-estado-aceptado {
+  color: #a5d6a7;
+  border-color: #2e7d32;
+  background: rgba(46, 125, 50, 0.22);
+}
+body[data-header-theme='dark'] .turno-card-estado-cancelado,
+html[data-theme='dark'] .turno-card-estado-cancelado {
+  color: #ef9a9a;
+  border-color: #6f1d1d;
+  background: rgba(229, 57, 53, 0.18);
+}
+
+body[data-header-theme='dark'] .turno-card-observaciones,
+html[data-theme='dark'] .turno-card-observaciones {
+  color: #b0bec5;
+}
+body[data-header-theme='dark'] .turno-card-invitado-estado,
+html[data-theme='dark'] .turno-card-invitado-estado {
+  color: #9fb3c8;
+}
+body[data-header-theme='dark'] .turno-card-invitados ul,
+html[data-theme='dark'] .turno-card-invitados ul {
+  color: #cfd8e3;
+}
+
+/* Acciones */
+body[data-header-theme='dark'] .turno-card-cancelar,
+html[data-theme='dark'] .turno-card-cancelar {
+  background: linear-gradient(90deg, #1e3a5f 0%, #2b4f7e 100%);
+  color: #f5f5f5;
+  border: 1px solid #35507a;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+body[data-header-theme='dark'] .turno-card-cancelar:hover:not(:disabled),
+html[data-theme='dark'] .turno-card-cancelar:hover:not(:disabled) {
+  background: linear-gradient(90deg, #2b4f7e 0%, #3d6aa8 100%);
+}
+body[data-header-theme='dark'] .turno-card-editar,
+html[data-theme='dark'] .turno-card-editar {
+  background: linear-gradient(90deg, #8a6d00 0%, #b8960a 100%);
+  color: #fff;
+  border: 1px solid #c9a227;
+}
+body[data-header-theme='dark'] .turno-card-guardar,
+html[data-theme='dark'] .turno-card-guardar {
+  background: #2e7d32;
+  color: #fff;
+  border: 1px solid #43a047;
+}
+body[data-header-theme='dark'] .turno-card-volver,
+html[data-theme='dark'] .turno-card-volver {
+  background: #37474f;
+  color: #eceff1;
+  border: 1px solid #546e7a;
+}
+body[data-header-theme='dark'] .turno-card-cancelar:focus-visible,
+html[data-theme='dark'] .turno-card-cancelar:focus-visible {
+  outline: 2px solid #90caf9;
+  outline-offset: 2px;
+}
+
+/* Form de edición (modal inline dentro de la tarjeta) */
+body[data-header-theme='dark'] .turno-edit-form,
+html[data-theme='dark'] .turno-edit-form {
+  background: #0b1d36;
+  border-color: #1e3a5f;
+  color: #f5f5f5;
+  color-scheme: dark;
+}
+body[data-header-theme='dark'] .turno-edit-campo,
+html[data-theme='dark'] .turno-edit-campo {
+  color: #cfd8e3;
+}
+body[data-header-theme='dark'] .turno-edit-campo input,
+html[data-theme='dark'] .turno-edit-campo input,
+body[data-header-theme='dark'] .turno-edit-campo select,
+html[data-theme='dark'] .turno-edit-campo select,
+body[data-header-theme='dark'] .turno-edit-form textarea,
+html[data-theme='dark'] .turno-edit-form textarea {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: #1e3a5f;
+  color: #f5f5f5;
+  color-scheme: dark;
+}
+body[data-header-theme='dark'] .turno-edit-campo input::placeholder,
+html[data-theme='dark'] .turno-edit-campo input::placeholder,
+body[data-header-theme='dark'] .turno-edit-form textarea::placeholder,
+html[data-theme='dark'] .turno-edit-form textarea::placeholder {
+  color: #8fa3b8;
+  opacity: 1;
+}
+body[data-header-theme='dark'] .turno-edit-campo input:focus,
+html[data-theme='dark'] .turno-edit-campo input:focus,
+body[data-header-theme='dark'] .turno-edit-campo select:focus,
+html[data-theme='dark'] .turno-edit-campo select:focus,
+body[data-header-theme='dark'] .turno-edit-form textarea:focus,
+html[data-theme='dark'] .turno-edit-form textarea:focus {
+  outline: 2px solid #90caf9;
+  outline-offset: 1px;
+  border-color: #90caf9;
+}
+body[data-header-theme='dark'] .turno-edit-error,
+html[data-theme='dark'] .turno-edit-error {
+  color: #ef9a9a;
 }

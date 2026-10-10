@@ -1,42 +1,71 @@
 import vozImg from '../assets/ondas-sonoras.png';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import '../styles/Header.css';
 import { useState, useEffect } from 'react';
 import { useUser } from '../context/UserContext';
-import IconButton from '@mui/material/IconButton';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { DEMO_MODE, DEMO_USER } from '../lib/demo.js';
 import AdminTabs from './AdminTabs';
+import ThemeToggle from './ThemeToggle';
 
-export default function Header({ right, hideVozIA, onLogout }) {
-  const [darkMode, setDarkMode] = useState(
-    () => localStorage.getItem('header-theme') === 'dark'
-  );
+// Tabla única de rutas reales (según las <Route> de App.jsx).
+const PUBLIC_LINKS = [
+  { key: 'inicio', to: '/', label: 'Inicio', end: true },
+  { key: 'catalogo', to: '/catalogo', label: 'Catálogo' },
+  { key: 'voz', to: '/voz-ia', label: 'Asistente IA' },
+  { key: 'acerca', to: '/acerca', label: 'Acerca de' },
+  { key: 'contacto', to: '/contacto', label: 'Contacto' },
+];
+const USER_LINKS = [
+  { key: 'turnos', to: '/turnos', label: 'Turnos' },
+  { key: 'panel', to: '/panel', label: 'Mi panel' },
+];
+const ADMIN_LINKS = [
+  { key: 'admin', to: '/admin', label: 'Admin' },
+  { key: 'admin-turnos', to: '/admin-turnos', label: 'Turnos admin' },
+];
+
+export default function Header({
+  hideVozIA,
+  hideLinks = [],
+  hideLoginLink = false,
+  onLogout,
+}) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { usuario, setUsuario } = useUser();
 
+  // Cierra el menú mobile al cambiar de ruta.
   useEffect(() => {
-    document.body.setAttribute('data-header-theme', darkMode ? 'dark' : 'light');
-    localStorage.setItem('header-theme', darkMode ? 'dark' : 'light');
-    return () => {
-      document.body.removeAttribute('data-header-theme');
-    };
-  }, [darkMode]);
+    setMenuOpen(false);
+  }, [location.pathname]);
 
-  const toggleDarkMode = () => {
-    setDarkMode((prev) => !prev);
-  };
+  // Sesión efectiva: usuario real del contexto o, en modo demo, DEMO_USER
+  // (contrato de sesión R3: si el demo fue cerrado explícitamente vía
+  // logout, 'biblio_demo_closed'='1' suprime el DEMO_USER).
+  const demoMode = DEMO_MODE === true;
+  const demoCerrado = typeof localStorage !== 'undefined' && localStorage.getItem('biblio_demo_closed') === '1';
+  const sessionUser = usuario ?? (demoMode && !demoCerrado ? DEMO_USER : null);
+  const isAdmin = sessionUser?.rol === 'admin';
+  const displayName = sessionUser?.nombre || sessionUser?.email || '';
 
   const handleLogout = () => {
     setUsuario(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('biblio_demo_session');
+    localStorage.setItem('biblio_demo_closed', '1');
     if (onLogout) onLogout();
+    navigate('/login');
   };
 
   // Mantiene los estilos del Link, pero controla el acceso
   const handleAskAIClick = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    if (token) {
+    if (token || demoMode) {
       navigate('/voz-ia');
     } else {
       navigate('/login');
@@ -46,125 +75,179 @@ export default function Header({ right, hideVozIA, onLogout }) {
   // Detecta si está en panel admin
   const isAdminPanel = location.pathname.startsWith('/admin');
 
-  return (
-    <header className="panel-navbar">
-      <div className="panel-navbar-left">
-        <IconButton
-          aria-label="Atrás"
-          color="primary"
-          onClick={() => window.history.back()}
-          sx={{ marginRight: 1 }}
+  const isHidden = (key) => hideLinks.includes(key);
+
+  const navLinks = [
+    ...PUBLIC_LINKS.filter((l) => !isHidden(l.key)),
+    ...(sessionUser && !isAdmin
+      ? USER_LINKS.filter((l) => !isHidden(l.key))
+      : []),
+    ...(isAdmin ? ADMIN_LINKS.filter((l) => !isHidden(l.key)) : []),
+  ];
+
+  const showLoginLink =
+    !sessionUser && !hideLoginLink && !isHidden('login');
+
+  const enlacesNav = navLinks.map((link) => (
+    <NavLink
+      key={link.key}
+      to={link.to}
+      end={link.end}
+      className={({ isActive }) =>
+        `bi-nav-link${isActive ? ' bi-nav-link--active' : ''}`
+      }
+    >
+      {link.label}
+    </NavLink>
+  ));
+
+  const bloqueAcciones = (
+    <>
+      {/* SOLO muestra Ask AI si NO está en panel admin */}
+      {!hideVozIA && !isAdminPanel && (
+        <Link
+          to="/voz-ia"
+          className="header-voz-btn"
+          title="Ir al asistente IA"
+          aria-label="Ir al asistente IA"
+          onClick={handleAskAIClick}
         >
-          <ArrowBackIcon />
-        </IconButton>
-        <div className="panel-logo" style={{ display: 'flex', alignItems: 'center', gap: 10 }} onClick={() => navigate('/')}>
-          <span>
-            BiblioTech
-          </span>
-          <span style={{ display: 'flex', alignItems: 'center' }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2196f3" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m16 6 4 14"></path>
-              <path d="M12 6v14"></path>
-              <path d="M8 8v12"></path>
-              <path d="M4 4v16"></path>
+          <img src={vozImg} alt="" aria-hidden="true" className="header-voz-icon" />
+          <span className="header-voz-text">Ask AI</span>
+        </Link>
+      )}
+      {/* Tabs de administración solo para admin */}
+      {isAdmin && <AdminTabs />}
+      {/* Sesión: chip único con avatar + logout, o link a login */}
+      {sessionUser ? (
+        <span className="bi-session">
+          <Link to="/panel" className="bi-user-chip" title={displayName}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
             </svg>
-          </span>
-        </div>
-      </div>
-      <div className="panel-navbar-right" style={{ alignItems: 'center', display: 'flex', gap: '2.5rem', marginRight: '80px' }}>
-        {/* SOLO muestra Ask AI si NO está en panel admin */}
-        {!hideVozIA && !isAdminPanel && (
-          <Link
-            to="/voz-ia"
-            className="header-voz-btn"
-            title="Ir a VozIA"
-            onClick={handleAskAIClick}
-          >
-            <img src={vozImg} alt="VozIA" className="header-voz-icon" />
-            <span className="header-voz-text">Ask AI</span>
+            <span className="bi-user-name">{displayName}</span>
           </Link>
-        )}
-        {right}
-        {/* Tabs de administración solo para admin */}
-        {usuario && usuario.rol === 'admin' && <AdminTabs />}
-        {/* Botón de cerrar sesión */}
-        {usuario && (
           <button
             type="button"
             className="panel-link-cs"
             onClick={handleLogout}
+            title="Cerrar sesión"
           >
-            Cerrar sesión
+            Salir
           </button>
-        )}
-        {/* Botón de modo claro/oscuro */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {/* Luna */}
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#11487c" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
-          </svg>
-          <button
-            aria-label="Cambiar modo claro/oscuro"
-            onClick={toggleDarkMode}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '6px 10px',
-              borderRadius: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              boxShadow: '0 1px 6px #1769aa22',
-              transition: 'background 0.2s'
-            }}
-          >
-            <div
-              style={{
-                width: 36,
-                height: 18,
-                borderRadius: 12,
-                background: darkMode
-                  ? 'linear-gradient(90deg, #11487c 60%, #2196f3 100%)'
-                  : 'linear-gradient(90deg, #e3e8f7 0%, #b3c6e0 100%)',
-                position: 'relative',
-                transition: 'background 0.2s'
-              }}
-            >
-              <div
-                style={{
-                  width: 16,
-                  height: 16,
-                  borderRadius: '50%',
-                  background: darkMode ? '#fff' : '#11487c',
-                  position: 'absolute',
-                  top: 1,
-                  left: darkMode ? 18 : 2,
-                  transition: 'left 0.22s cubic-bezier(.4,0,.2,1), background 0.22s'
-                }}
-              />
-            </div>
-          </button>
-          {/* Sol */}
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#11487c" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="5"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </span>
+      ) : (
+        showLoginLink && (
+          <Link to="/login" className="bi-login-link">
+            Iniciar sesión
+          </Link>
+        )
+      )}
+      {/* Toggle claro/oscuro autocontenido (dueño: R2-2 / ThemeToggle.jsx).
+          Lee/escribe localStorage 'header-theme' y setea
+          document.documentElement.dataset.theme + body[data-header-theme]. */}
+      <ThemeToggle />
+    </>
+  );
+
+  // Cierra con Escape.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const alTeclado = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', alTeclado);
+    return () => window.removeEventListener('keydown', alTeclado);
+  }, [menuOpen]);
+
+  return (
+    <header className="panel-navbar">
+      <div className="panel-navbar-left">
+        <div
+          className="panel-logo"
+          onClick={() => navigate('/')}
+          title="Ir al inicio"
+        >
+          <span>BiblioTech</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2196f3" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m16 6 4 14"></path>
+            <path d="M12 6v14"></path>
+            <path d="M8 8v12"></path>
+            <path d="M4 4v16"></path>
           </svg>
         </div>
-        <Link to="/panel" title="Usuario" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span className="panel-user-icon">
-            <svg width="28" height="28" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="4"/>
-              <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
-            </svg>
+        {demoMode && (
+          <span className="bi-demo-chip" title="Sitio en modo demostración">
+            Demo
           </span>
-          {/* Mostrar nombre o email si el usuario está logueado */}
-          {usuario && (
-            <span style={{ fontWeight: 500, color: '#1769aa', fontSize: 15 }}>
-              {usuario.nombre || usuario.email}
-            </span>
-          )}
-        </Link>
+        )}
       </div>
+
+      <button
+        type="button"
+        className="bi-hamburger"
+        aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen((open) => !open)}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+          {menuOpen ? (
+            <path d="M6 6l12 12M18 6L6 18" />
+          ) : (
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          )}
+        </svg>
+      </button>
+
+      <nav
+        className="bi-nav"
+        aria-label="Navegación principal"
+      >
+        {enlacesNav}
+      </nav>
+
+      <div className="panel-navbar-right">
+        {bloqueAcciones}
+      </div>
+
+      {/* Sidebar mobile: portal al body porque el blur del header rompe
+          el posicionamiento fixed de sus descendientes. Solo vive bajo 1120px. */}
+      {createPortal(
+        <>
+          <div
+            className={`bi-drawer-backdrop${menuOpen ? ' is-open' : ''}`}
+            aria-hidden={!menuOpen}
+            onClick={() => setMenuOpen(false)}
+          />
+          <aside
+            className={`bi-drawer${menuOpen ? ' is-open' : ''}`}
+            aria-label="Menú"
+            aria-hidden={!menuOpen}
+          >
+            <div className="bi-drawer-head">
+              <span className="bi-drawer-logo">BiblioTech</span>
+              <button
+                type="button"
+                className="bi-drawer-close"
+                aria-label="Cerrar menú"
+                onClick={() => setMenuOpen(false)}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </button>
+            </div>
+            <nav className="bi-drawer-nav" aria-label="Navegación principal">
+              {enlacesNav}
+            </nav>
+            <div className="bi-drawer-foot">
+              {bloqueAcciones}
+            </div>
+          </aside>
+        </>,
+        document.body
+      )}
     </header>
   );
 }

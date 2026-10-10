@@ -1,173 +1,786 @@
-.panel-navbar {
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: #fff;
-  z-index: 10;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2.5rem 1rem 2.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  min-height: 64px;
+/* Header premium de una sola fila (claro + oscuro).
+   Si src/index.css define estos mismos tokens, los suyos prevalecen
+   en cascada; aquí solo hay respaldo. */
+
+/* NOTA DE ALCANCE (R2-1): este archivo solo estila el header.
+   - El toggle de tema es dueño de R2-2 (ThemeToggle.jsx, autocontenido:
+     lee/escribe localStorage 'header-theme' y setea
+     document.documentElement[data-theme] + body[data-header-theme]).
+     Aquí solo hay estilos BASE de respaldo para `.bi-theme-toggle`
+     por si ese componente reutiliza la clase; sus estilos propios
+     tienen prioridad si los trae.
+   - Todos los selectores van prefijados con `.panel-navbar` para que
+     los `nav` / `nav a` globales de portada.css y los
+     `.registro-overlay nav*` de RegistroUsuario.css NO nos pisen
+     (nuestra especificidad 0,2,0+ siempre gana a sus 0,0,1/0,0,2).
+   - El modo oscuro se activa con CUALQUIERA de estas marcas
+     (contrato de ThemeToggle + compat legacy):
+       body[data-header-theme='dark'] | html[data-theme='dark'] | body.dark
+*/
+:root {
+  --bi-primary: #2196f3;
+  --bi-primary-dark: #1769aa;
+  --bi-ink: #11487c;
+  --bi-header-bg: rgba(255, 255, 255, 0.9);
+  --bi-header-bg-solid: #ffffff;
+  --bi-header-dark-bg: #0a192f;
+  --bi-header-dark-surface: #10233f;
+  --bi-header-dark-ink: #e8f1fb;
+  --bi-header-dark-muted: #b9cde4;
+  --bi-header-dark-accent: #7cc4ff;
+  --bi-shadow: 0 2px 12px rgba(17, 72, 124, 0.12);
+  --bi-shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.45);
+  --bi-radius: 10px;
+  --bi-transition: 0.2s ease;
 }
 
-.panel-logo {
-  font-size: 2rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-  line-height: 1.1;
-  background: linear-gradient(90deg, #111 0%, #1769aa 100%);
+/* ===== Barra: sticky + blur, una sola fila, sin superposiciones ===== */
+.panel-navbar {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  left: 0;
+  background: var(--bi-header-bg, rgba(255, 255, 255, 0.9));
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 1.25rem;
+  box-shadow: var(--bi-shadow, 0 2px 12px rgba(17, 72, 124, 0.12));
+  border-bottom: 1px solid rgba(17, 72, 124, 0.08);
+  min-height: 60px;
+  max-height: 76px;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  overflow: visible;
+}
+
+/* Oscuro: fondo SÓLIDO navy, texto claro. Nada translúcido que deje
+   ver el contenido por detrás ni pills blancas gigantes. */
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar {
+  background: var(--bi-header-dark-bg, #0a192f);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  box-shadow: var(--bi-shadow-dark, 0 4px 20px rgba(0, 0, 0, 0.45));
+  color: var(--bi-header-dark-ink, #e8f1fb);
+}
+
+/* ===== Logo con gradiente legible en AMBOS modos ===== */
+.panel-navbar .panel-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  background: linear-gradient(90deg, #0f172a 0%, #1769aa 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  text-align: left;
   font-family: 'SF Pro', 'Inter', 'Segoe UI', Arial, sans-serif;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.panel-navbar-right {
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .panel-logo {
+  background: linear-gradient(90deg, #ffffff 0%, #7cc4ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Chip "Demo" visible cuando DEMO_MODE está activo */
+.panel-navbar .bi-demo-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15em 0.6em;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(90deg, var(--bi-primary-dark, #1769aa), var(--bi-primary, #2196f3));
+  user-select: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ===== Nav principal: resetea los `nav` globales de portada.css ===== */
+.panel-navbar nav.bi-nav,
+.panel-navbar .bi-nav {
+  display: flex;
+  width: auto;
+  min-width: 0;
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 0;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.15rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+  position: static;
+}
+
+.panel-navbar .bi-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.panel-navbar .bi-nav .bi-nav-link {
+  color: var(--bi-ink, #11487c);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 0.4em 0.7em;
+  border-radius: 8px;
+  transition: background var(--bi-transition, 0.2s ease), color var(--bi-transition, 0.2s ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.panel-navbar .bi-nav .bi-nav-link:hover {
+  background: rgba(33, 150, 243, 0.12);
+  color: var(--bi-primary-dark, #1769aa);
+}
+
+.panel-navbar .bi-nav .bi-nav-link--active {
+  background: linear-gradient(90deg, rgba(33, 150, 243, 0.16), rgba(161, 196, 253, 0.16));
+  color: var(--bi-primary-dark, #1769aa);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 var(--bi-primary, #2196f3);
+}
+
+/* Nav en oscuro: links claros, hover/active con contraste real */
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-nav .bi-nav-link {
+  color: var(--bi-header-dark-muted, #b9cde4);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-nav .bi-nav-link:hover {
+  color: #fff;
+  background: rgba(124, 196, 255, 0.16);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-nav .bi-nav-link--active {
+  color: #fff;
+  background: rgba(33, 150, 243, 0.28);
+  box-shadow: inset 0 -2px 0 var(--bi-header-dark-accent, #7cc4ff);
+}
+
+/* Extras que Navbar reenvía (compat con extraLinks) */
+.panel-navbar .bi-navbar-extras {
   display: flex;
   align-items: center;
-  gap: 2.5rem;
-  margin-right: 80px;
+  gap: 0.25rem;
 }
 
-.panel-libro-icon {
-  font-size: 2rem;
-  margin-left: 1.5rem;
+/* Botón hamburguesa: solo visible bajo el breakpoint */
+.panel-navbar .bi-hamburger {
+  display: none;
+  background: none;
+  background-color: transparent;
+  border: 1px solid rgba(17, 72, 124, 0.2);
+  border-radius: 10px;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  color: var(--bi-ink, #11487c);
+  line-height: 0;
+  flex-shrink: 0;
 }
 
-.panel-navbar-left {
+/* Sidebar mobile: no existe en desktop (solo vive bajo 1120px) */
+.bi-drawer,
+.bi-drawer-backdrop {
+  display: none;
+}
+
+.panel-navbar .bi-hamburger:hover {
+  background: rgba(33, 150, 243, 0.1);
+  border-color: var(--bi-primary, #2196f3);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-hamburger {
+  color: var(--bi-header-dark-ink, #e8f1fb);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-hamburger:hover {
+  background: rgba(124, 196, 255, 0.14);
+  border-color: var(--bi-header-dark-accent, #7cc4ff);
+}
+
+/* ===== Grupo derecho: pills compactas, misma altura, sin overlap ===== */
+.panel-navbar .panel-navbar-right {
   display: flex;
   align-items: center;
-  gap: 1.2rem; /* Espacio entre flecha y título */
+  gap: 0.5rem;
+  margin-right: 0;
+  margin-left: auto;
+  flex-shrink: 0;
+  position: static;
 }
 
-.panel-back-btn {
+.panel-navbar .panel-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+/* Sesión: un solo chip con avatar + nombre, más salir compacto */
+.panel-navbar .bi-session {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.panel-navbar .bi-user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  max-width: 160px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--bi-primary-dark, #1769aa);
+  background: rgba(33, 150, 243, 0.1);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.35em 0.8em;
+  height: 34px;
+  box-sizing: border-box;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.panel-navbar .bi-user-chip:hover {
+  background: rgba(33, 150, 243, 0.2);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-user-chip {
+  color: var(--bi-header-dark-ink, #e8f1fb);
+  background: rgba(124, 196, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-user-chip:hover {
+  background: rgba(124, 196, 255, 0.24);
+}
+
+.panel-navbar .bi-user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel-navbar .bi-login-link {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--bi-primary-dark, #1769aa);
+  text-decoration: none;
+  padding: 0.4em 0.9em;
+  height: 34px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  border: 1.5px solid var(--bi-primary, #2196f3);
+  transition: background var(--bi-transition, 0.2s ease), color var(--bi-transition, 0.2s ease);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.panel-navbar .bi-login-link:hover {
+  background: var(--bi-primary, #2196f3);
+  color: #fff;
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-login-link {
+  color: #fff;
+  border-color: var(--bi-header-dark-accent, #7cc4ff);
+  background: transparent;
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-login-link:hover {
+  background: var(--bi-primary, #2196f3);
+  border-color: var(--bi-primary, #2196f3);
+  color: #fff;
+}
+
+/* Botón Ask AI compacto (mismo gradiente legible en ambos modos) */
+.panel-navbar .header-voz-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  border: none;
+  border-radius: 999px;
+  height: 34px;
+  padding: 0 0.9em;
+  box-sizing: border-box;
+  background: linear-gradient(90deg, #2196f3 10%, #64a5f5 90%);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.25);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #fff !important;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.panel-navbar .header-voz-btn:hover {
+  box-shadow: 0 4px 14px rgba(33, 150, 243, 0.35);
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+.panel-navbar .header-voz-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.panel-navbar .header-voz-text {
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Botón salir compacto */
+.panel-navbar .panel-link-cs {
+  border: 1px solid rgba(17, 72, 124, 0.25);
+  background: transparent;
+  background-color: transparent;
+  color: var(--bi-ink, #11487c);
+  border-radius: 999px;
+  height: 34px;
+  padding: 0 0.9em;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.panel-navbar .panel-link-cs:hover {
+  background: rgba(211, 47, 47, 0.1);
+  border-color: rgba(211, 47, 47, 0.4);
+  color: #b71c1c;
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .panel-link-cs {
+  color: var(--bi-header-dark-muted, #b9cde4);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .panel-link-cs:hover {
+  background: rgba(255, 110, 110, 0.14);
+  border-color: rgba(255, 110, 110, 0.5);
+  color: #ffb4b4;
+}
+
+/* ===== Toggle de tema: estilos BASE de respaldo =====
+   El componente ThemeToggle.jsx (R2-2) es autocontenido y puede traer
+   sus propios estilos; estas reglas solo evitan el "botón vacío" si
+   reutiliza la clase .bi-theme-toggle. */
+.panel-navbar .bi-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(17, 72, 124, 0.2);
+  background: transparent;
+  background-color: transparent;
+  color: var(--bi-ink, #11487c);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.panel-navbar .bi-theme-toggle:hover {
+  background: rgba(33, 150, 243, 0.12);
+  border-color: var(--bi-primary, #2196f3);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-theme-toggle {
+  color: var(--bi-header-dark-accent, #7cc4ff);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(124, 196, 255, 0.1);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .bi-theme-toggle:hover {
+  background: rgba(124, 196, 255, 0.2);
+}
+
+/* ===== AdminTabs dentro del header (ambos modos) ===== */
+.panel-navbar .panel-admin-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 3px 6px;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.panel-navbar .panel-admin-tabs .admin-tabs-list {
+  margin: 0;
+  padding: 0;
+  gap: 0.25rem;
+}
+
+.panel-navbar .admin-tab-icon {
+  display: none;
+}
+
+.panel-navbar .panel-admin-tab-link {
+  color: var(--bi-primary-dark, #1769aa);
+  background: rgba(33, 150, 243, 0.1);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35em 0.8em;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.panel-navbar .panel-admin-tab-link:hover,
+.panel-navbar .panel-admin-tab-link.active {
+  background: linear-gradient(90deg, #11487c 10%, #1769aa 90%);
+  color: #fff;
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .panel-admin-tab-link {
+  background: rgba(124, 196, 255, 0.14);
+  color: var(--bi-header-dark-ink, #e8f1fb);
+}
+
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .panel-admin-tab-link.active,
+:is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .panel-navbar .panel-admin-tab-link:hover {
+  background: linear-gradient(90deg, #1769aa 10%, #2196f3 90%);
+  color: #fff;
+}
+
+/* Heredados: otros componentes referencian estas clases */
+.panel-navbar .panel-libro-icon {
+  font-size: 1.5rem;
+}
+
+.panel-navbar .panel-back-btn {
   background: none;
   border: none;
   padding: 0;
-  margin-right: 1.5rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  transition: background 0.2s;
-  box-shadow: none;
-}
-.panel-back-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
-  padding: 10px;
-  border-radius: 20px;
 }
 
-.panel-back-btn:focus {
-  outline: none;
-}
-
-.panel-back-btn svg {
+.panel-navbar .panel-back-btn svg {
   stroke: #222;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 
-.header-voz-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  outline: none;
-  border-radius: 12px;
-  height: 44px;
-  min-width: 120px;
-  padding: 0 1.2em;
-  background: linear-gradient(90deg, #2196f3 10%, #a1c4fd 90%);
-  box-shadow: 0 2px 8px rgba(33,150,243,0.07);
-  cursor: pointer;
-  transition: box-shadow 0.18s, transform 0.18s;
-  font-weight: 600;
-  font-size: 1.08rem;
-  color: #fff !important;
-  gap: 0.7em;
-  text-decoration: none;
-  overflow: visible; /* Asegura que el texto no se oculte */
-}
-.header-voz-btn:hover {
-  box-shadow: 0 4px 16px rgba(33,150,243,0.13);
-  transform: translateY(-2px) scale(1.07);
-  color: #fff !important;
-}
+/* ===== Responsive: el nav colapsa a hamburguesa (breakpoint amplio para
+   que los 7 links + acciones nunca se apilen en filas ni se solapen) ===== */
+@media (max-width: 1120px) {
+  .panel-navbar {
+    padding: 0.55rem 0.9rem;
+  }
 
-.header-voz-icon {
-  width: 26px;
-  height: 26px;
-  display: block;
-}
+  .panel-navbar .panel-logo {
+    font-size: 1.15rem;
+  }
 
-.header-voz-text {
-  font-size: 1.08rem;
-  font-weight: 600;
-  color: #fff !important;
-  letter-spacing: 0.01em;
-  margin-left: 0.5em;
-  white-space: nowrap;
-  user-select: none;
-  display: inline;
-}
-.panel-link-cs{
+  .panel-navbar .bi-hamburger {
+    display: inline-flex;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  /* En mobile el nav inline y las acciones del topbar se apagan: todo
+     vive en el sidebar (.bi-drawer). Solo quedan logo + hamburguesa. */
+  .panel-navbar nav.bi-nav,
+  .panel-navbar .bi-nav,
+  .panel-navbar .panel-navbar-right {
+    display: none;
+  }
+
+  /* Backdrop + sidebar */
+  .bi-drawer-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 15, 30, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+    z-index: 190;
+  }
+
+  .bi-drawer-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .bi-drawer {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(320px, 86vw);
+    background: var(--bi-header-bg-solid, #ffffff);
+    box-shadow: -8px 0 32px rgba(8, 15, 30, 0.2);
+    transform: translateX(105%);
+    transition: transform 0.26s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 200;
+    overflow-y: auto;
+    padding: 1rem 1.1rem 1.5rem;
+    box-sizing: border-box;
+  }
+
+  .bi-drawer.is-open {
+    transform: translateX(0);
+  }
+
+  :is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .bi-drawer {
+    background: var(--bi-header-dark-bg, #0a192f);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.55);
+  }
+
+  .bi-drawer-head {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.8rem;
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(17, 72, 124, 0.12);
+  }
+
+  .bi-drawer-logo {
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--bi-ink, #11487c);
+  }
+
+  :is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .bi-drawer-logo {
+    color: #e8f1fb;
+  }
+
+  .bi-drawer-close {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    height: 44px;
-    min-width: 120px;
-    padding: 0 1.2em;
-    background: linear-gradient(90deg, rgba(0, 0, 0) 5%, rgba(0,0,0) 95%) !important;
-    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.07);
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid rgba(17, 72, 124, 0.2);
+    background: none;
+    color: var(--bi-ink, #11487c);
     cursor: pointer;
-    transition: box-shadow 0.18s, transform 0.18s;
+  }
+
+  .bi-drawer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .bi-drawer-nav .bi-nav-link {
+    padding: 0.65em 0.9em;
+    font-size: 1rem;
+    color: #11487c;
+  }
+
+  .bi-drawer-nav .bi-nav-link:hover {
+    color: #1769aa;
+  }
+
+  :is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .bi-drawer-nav .bi-nav-link {
+    color: #e8f1fb;
+  }
+
+  .bi-drawer-nav .bi-nav-link--active {
+    box-shadow: none;
+    border-left: 3px solid var(--bi-primary, #2196f3);
+  }
+
+  .bi-drawer-foot {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    padding-bottom: 0.5rem;
+    border-top: 1px solid rgba(17, 72, 124, 0.12);
+  }
+
+  .bi-drawer-foot .header-voz-btn,
+  .bi-drawer-foot .bi-login-link,
+  .bi-drawer-foot .panel-admin-tabs {
+    grid-column: 1 / -1;
+  }
+
+  .bi-drawer-foot .header-voz-btn,
+  .bi-drawer-foot .bi-login-link {
+    justify-content: center;
+  }
+
+  .bi-drawer-foot .header-voz-text,
+  .bi-drawer-foot .bi-user-name {
+    display: inline;
+  }
+
+  .bi-drawer-foot .bi-session {
+    min-width: 0;
+  }
+
+  .bi-drawer-foot .panel-admin-tabs {
+    display: flex;
+  }
+
+  /* Controles del drawer (fuera del header por el portal): estilos propios
+     apilados full-width, en ambos modos. */
+  .bi-drawer-foot .header-voz-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45em;
+    width: 100%;
+    box-sizing: border-box;
+    height: 42px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #2196f3 10%, #64a5f5 90%);
+    color: #fff;
     font-weight: 600;
-    font-size: 1.08rem;
-    color: #fff !important;
-    gap: 0.7em;
+    font-size: 0.95rem;
     text-decoration: none;
-    overflow: visible;
-}
-.panel-link-cs:hover {
-  box-shadow: 0 4px 16px rgba(243,33,33,0.18);
-  border: none;
-  outline: none;
-  transform: translateY(-2px) scale(1.07);
-  background: rgb(255, 0, 0, 0.55)  !important;
+    white-space: nowrap;
+  }
 
-}
-.panel-admin-tabs {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.2rem;
-  margin: 0 1.5rem;
+  .bi-drawer-foot .header-voz-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .bi-drawer-foot .bi-session {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .bi-drawer-foot .bi-user-chip {
+    flex: 1;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1769aa;
+    background: rgba(33, 150, 243, 0.1);
+    border-radius: 999px;
+    padding: 0.5em 0.9em;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .bi-drawer-foot .bi-user-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .bi-drawer-foot .panel-link-cs {
+    border: 1px solid rgba(17, 72, 124, 0.25);
+    background: transparent;
+    color: #11487c;
+    border-radius: 999px;
+    height: 42px;
+    padding: 0 1em;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .bi-drawer-foot .bi-login-link {
+    display: block;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1769aa;
+    text-decoration: none;
+    padding: 0.6em 1em;
+    border-radius: 10px;
+    border: 1.5px solid #2196f3;
+  }
+
+  :is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .bi-drawer-foot .bi-user-chip {
+    color: #e8f1fb;
+    background: rgba(124, 196, 255, 0.14);
+  }
+
+  :is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .bi-drawer-foot .panel-link-cs {
+    color: #e8f1fb;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  :is(body[data-header-theme='dark'], html[data-theme='dark'], body.dark) .bi-drawer-foot .bi-login-link {
+    color: #fff;
+  }
 }
 
-.panel-admin-tab-link {
- color: var(--text);
-  text-decoration: none;
-  font-size: 1.08rem;
-  font-weight: 500;
-  padding: 0.4em 1.1em;
-  border-radius: 8px;
-  transition: background var(--transition), color var(--transition);
-}
+/* ===== Pantallas chicas: el grupo derecho debe entrar en 360px ===== */
+@media (max-width: 640px) {
+  .panel-navbar {
+    padding: 0.5rem 0.6rem;
+    gap: 0.4rem;
+  }
 
+  .panel-navbar .panel-logo {
+    font-size: 0.95rem;
+  }
 
-/* Modo oscuro */
-body.dark .panel-admin-tab-link {
-  background: linear-gradient(90deg, #11487c 10%, #1769aa 90%);
-  color: #fff !important;
-}
-body.dark .panel-admin-tab-link.active,
-body.dark .panel-admin-tab-link:hover {
-  background: linear-gradient(90deg, #1769aa 10%, #11487c 90%);
-  color: #fff !important;
+  .panel-navbar .panel-navbar-right {
+    gap: 0.3rem;
+  }
+
+  /* El asistente ya está en el nav hamburguesa: la pill sobra acá. */
+  .panel-navbar .header-voz-btn {
+    display: none;
+  }
+
+  .panel-navbar .panel-link-cs {
+    height: 32px;
+    font-size: 0.78rem;
+    padding: 0 0.7em;
+  }
+
+  .panel-navbar .bi-theme-toggle {
+    width: 32px;
+    height: 32px;
+  }
 }

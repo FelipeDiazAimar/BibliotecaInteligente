@@ -1,138 +1,62 @@
-/* Estilos generales */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #ffffff;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-}
-
-.register-container {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  width: 100%;
-  max-width: 400px;
-}
-
-h2 {
-  color: #333;
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-/* Estilos del formulario */
-.register-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #555;
-  font-weight: 500;
-}
-
-input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.3s;
-}
-
-input:focus {
-  border-color: #4a90e2;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-}
-
-/* Estilos del botón */
-.register-button {
-  background-color: #4a90e2;
-  color: white;
-  border: none;
-  padding: 0.75rem;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background-color 0.3s;
-}
-
-.register-button:hover {
-  background-color: #3a7bc8;
-}
-
-/* Enlace de login */
-.login-link {
-  text-align: center;
-  margin-top: 1.5rem;
-  color: #666;
-}
-
-.login-link a {
-  color: #4a90e2;
-  text-decoration: none;
-}
-
-.login-link a:hover {
-  text-decoration: underline;
-}
-
-/* Validación */
-input:invalid {
-  border-color: #ff6b6b;
-}
-
-input:valid {
-  border-color: #2196f3;
-}
+/* RegistroUsuario — mobile-first, compacto, a juego con LoginAlumno.
+   Tema claro por defecto; oscuro con body[data-header-theme='dark']
+   (convención vigente del Header). Tarjeta única compacta que entra en
+   900px de alto: brand dentro de la tarjeta, avatar chico, gaps densos,
+   email+DNI y password+confirmar en 2 columnas desde 480px.
+   Todos los selectores están bajo .registro-overlay para no filtrar estilos
+   globales a otras páginas. */
 
 .registro-overlay {
-  background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
-    url('/fondo-biblioteca2.png') no-repeat center center/cover;
+  --registro-accent: #2196f3;
+  --registro-accent-dark: #1769aa;
+  --registro-demo: #22c55e;
+  --registro-demo-dark: #15803d;
+  --registro-card: rgba(255, 255, 255, 0.94);
+  --registro-border: rgba(15, 40, 70, 0.14);
+  --registro-text: #16233a;
+  --registro-muted: #4b5b73;
+  --registro-input-bg: #ffffff;
+  --registro-input-border: #c4d0e0;
+  --registro-field-error: #b4232a;
+  --registro-error-bg: #fde8e8;
+  --registro-footer: #3c4c63;
+
+  background: linear-gradient(rgba(255, 255, 255, 0.78), rgba(238, 244, 250, 0.86)),
+    url('/fondo-biblioteca2.png') no-repeat center center / cover;
   min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   position: fixed;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   z-index: 0;
+  overflow-y: auto;
 }
 
-nav {
+.registro-overlay nav {
   width: 100%;
-  padding: 2rem 7vw 0 0;
+  padding: 0.75rem 1rem 0 0;
   display: flex;
   justify-content: flex-end;
 }
 
-nav ul {
+.registro-overlay nav ul {
   list-style: none;
   display: flex;
-  gap: 2.5rem;
-  margin: 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 0 1rem 0 0;
   padding: 0;
-  margin-right: 40px;
-
 }
 
-nav a, .nav-btn {
-  color: #fff;
+.registro-overlay nav a,
+.registro-overlay .nav-btn {
+  color: var(--registro-text);
   text-decoration: none;
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 500;
   letter-spacing: 0.03em;
   background: none;
@@ -140,167 +64,596 @@ nav a, .nav-btn {
   cursor: pointer;
   transition: color 0.2s;
 }
-nav a:hover, .nav-btn:hover {
-  color: #4eaaff;
+
+.registro-overlay nav a:hover,
+.registro-overlay .nav-btn:hover {
+  color: var(--registro-accent);
 }
 
 .registro-main {
   flex: 1;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  justify-content: center; /* Centra horizontalmente */
-  margin: 0;              /* Elimina márgenes que lo empujan */
-  min-height: 0;          /* Asegura que use todo el espacio disponible */
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.registro-header {
+/* Tarjeta única compacta (brand + demo + form adentro). */
+.registro-card {
+  background: var(--registro-card);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--registro-border);
+  border-radius: 1rem;
+  padding: 1rem 1rem;
+  width: min(28rem, 100%);
+  box-sizing: border-box;
+  box-shadow: 0 8px 32px rgba(15, 40, 70, 0.18);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  margin-right: 80px;
+  align-items: stretch;
+  gap: 0.65rem;
 }
 
-.registro-logo {
-  color: #fff;
-  font-weight: bold;
-  font-size: 2.1rem;
-  letter-spacing: 1px;
-  line-height: 1.1;
-  margin-bottom: 2.5rem;
-}
-
-.registro-titulo {
-  font-size: 2.1rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-  line-height: 1.1;
-}
-
-.registro- {
-  font-size: 1.1rem;
-  letter-spacing: 2px;
-  margin-top: 0.5rem;
-  display: block;
-}
-
-.registro-form {
-  background: rgba(0,0,0,0.45);
-  border-radius: 50px;
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
-  min-width: 340px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+.registro-brand {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 0.3rem;
+  text-align: center;
 }
 
 .registro-avatar {
-  width: 90px;
-  height: 90px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  border: 3px solid #fff;
+  border: 2px solid var(--registro-accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-  background: rgba(255,255,255,0.05);
+  background: linear-gradient(135deg, #2196f3, #1769aa);
 }
 
-.registro-form input {
-  width: 100%;
-  padding: 0.7em;
-  border-radius: 7px;
-  border: none;
-  margin-top: 4px;
-  font-size: 16px;
-  background: #fff;
-  color: #222;
-  box-sizing: border-box;
+.registro-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
 }
 
+.registro-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--registro-text);
+  letter-spacing: 1px;
+  font-family: 'SF Pro', 'Inter', 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+}
+
+.registro-subtitle {
+  color: var(--registro-muted);
+  font-size: 0.78rem;
+  letter-spacing: 1.5px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* Sesión ya activa: visible, no confusa. */
+.registro-session {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.75rem;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.registro-session-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--registro-text);
+}
+
+.registro-session-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.registro-session-go {
+  flex: 1;
+  text-align: center;
+  background: var(--registro-demo);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: 2rem;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  min-width: 7rem;
+}
+
+.registro-session-go:hover {
+  background: var(--registro-demo-dark);
+}
+
+.registro-session-out {
+  flex: 1;
+  background: none;
+  border: 1px solid var(--registro-input-border);
+  color: var(--registro-muted);
+  border-radius: 2rem;
+  padding: 0.5em 1em;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 7rem;
+}
+
+.registro-session-out:hover:not(:disabled) {
+  border-color: var(--registro-field-error);
+  color: var(--registro-field-error);
+}
+
+/* Bloque demo: obvio, primero dentro de la tarjeta. */
+.registro-demo-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.registro-demo-badge {
+  margin: 0;
+  align-self: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--registro-demo-dark);
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  padding: 0.3em 0.9em;
+  border-radius: 2rem;
+  text-align: center;
+}
+
+.registro-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--registro-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.registro-divider::before,
+.registro-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--registro-border);
+}
+
+.registro-demo-autofill {
+  background: rgba(33, 150, 243, 0.08);
+  border: 1px dashed var(--registro-accent);
+  border-radius: 0.6rem;
+  color: var(--registro-accent-dark);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5em 0.8em;
+}
+
+.registro-demo-autofill:hover:not(:disabled) {
+  background: rgba(33, 150, 243, 0.16);
+}
+
+.registro-demo-autofill:focus-visible {
+  outline: 2px solid var(--registro-accent);
+  outline-offset: 2px;
+}
+
+.registro-demo-autofill:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.registro-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.registro-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.registro-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+}
+
+.registro-label {
+  display: block;
+  color: var(--registro-text);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.registro-form input,
 .registro-form select {
   width: 100%;
-  padding: 0.7em;
-  border-radius: 7px;
-  border: none;
-  margin-top: 4px;
+  padding: 0.55em 0.75em;
+  border-radius: 0.5rem;
+  border: 1px solid var(--registro-input-border);
   font-size: 16px;
-  background: #fff;
-  color: #222;
+  background: var(--registro-input-bg);
+  color: var(--registro-text);
   box-sizing: border-box;
+  transition: background 0.2s, border-color 0.2s;
+  outline: none;
 }
 
 .registro-form input::placeholder {
-  color: #888;
+  color: #8a97ab;
   opacity: 1;
 }
 
-.registro-btn {
-  background: #2196f3;
-  color: #fff;
+.registro-form select option {
+  color: #222;
+}
+
+.registro-form input:focus,
+.registro-form select:focus {
+  border-color: var(--registro-accent);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.18);
+}
+
+.registro-form input:focus-visible,
+.registro-form select:focus-visible {
+  outline: 2px solid var(--registro-accent);
+  outline-offset: 2px;
+}
+
+.registro-form input:disabled,
+.registro-form select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.registro-form input[aria-invalid='true'] {
+  border-color: var(--registro-field-error);
+}
+
+.registro-field-error {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--registro-field-error);
+}
+
+.registro-password-wrap {
+  position: relative;
+}
+
+.registro-password-wrap input {
+  padding-right: 4.8rem;
+}
+
+.registro-password-toggle {
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
   border: none;
-  border-radius: 8px;
-  padding: 0.9em 0;
-  font-size: 1.1rem;
+  color: var(--registro-accent-dark);
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 8px;
-  width: 100%;
-  transition: background 0.2s;
+  padding: 0.4em 0.5em;
+  border-radius: 0.4em;
 }
-.registro-btn:hover {
-  background: #1769aa;
+
+.registro-password-toggle:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.registro-password-toggle:focus-visible {
+  outline: 2px solid var(--registro-accent);
+  outline-offset: 2px;
+}
+
+.registro-password-toggle:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.registro-btn {
+  background: var(--registro-accent);
+  color: #fff;
+  border: none;
+  border-radius: 3rem;
+  padding: 0.7em 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.15rem;
+  width: 100%;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.registro-btn:hover:not(:disabled) {
+  background: var(--registro-accent-dark);
+}
+
+.registro-btn:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.registro-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.registro-btn:focus-visible {
+  outline: 3px solid var(--registro-accent);
+  outline-offset: 3px;
+}
+
+.registro-btn-demo {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 60%, #15803d 100%);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.45);
+  margin-top: 0;
+  font-size: 1rem;
+  padding: 0.75em 0;
+}
+
+.registro-btn-demo:hover:not(:disabled) {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.55);
 }
 
 .registro-error {
-  color: #ffbaba;
-  background: #6a0000;
-  border-radius: 6px;
-  padding: 0.5em;
-  font-size: 14px;
+  color: var(--registro-field-error);
+  background: var(--registro-error-bg);
+  border: 1px solid rgba(159, 29, 29, 0.3);
+  border-radius: 0.4rem;
+  padding: 0.6em 0.8em;
+  font-size: 0.85rem;
   text-align: center;
   width: 100%;
+  box-sizing: border-box;
 }
 
-footer {
-  color: #868686;
+/* Enlace a login */
+.registro-overlay .registro-login {
   text-align: center;
-  padding: 1.2rem 0 0.7rem 0;
-  font-size: 1rem;
-  opacity: 0.85;
+  margin: 0;
+  color: var(--registro-muted);
+  font-size: 0.88rem;
+}
+
+/* Compat: el JSX viejo usaba .login-link dentro del overlay. */
+.registro-overlay .login-link {
+  text-align: center;
+  margin: 0;
+  color: var(--registro-muted);
+  font-size: 0.88rem;
+}
+
+.registro-overlay .registro-login-link,
+.registro-overlay .login-link a {
+  color: var(--registro-accent-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.registro-overlay .registro-login-link:hover,
+.registro-overlay .login-link a:hover {
+  text-decoration: underline;
+}
+
+.registro-overlay .registro-login-link:focus-visible,
+.registro-overlay .login-link a:focus-visible {
+  outline: 2px solid var(--registro-accent);
+  outline-offset: 2px;
+}
+
+.registro-link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--registro-accent-dark);
+  font-weight: 600;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.registro-link-btn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.registro-link-btn:focus-visible {
+  outline: 2px solid var(--registro-accent);
+  outline-offset: 2px;
+}
+
+.registro-session-go:focus-visible,
+.registro-session-out:focus-visible {
+  outline: 2px solid var(--registro-accent);
+  outline-offset: 2px;
+}
+
+.registro-footer {
+  color: var(--registro-footer);
+  text-align: center;
+  padding: 0.7rem 1rem 0.6rem;
+  font-size: 0.82rem;
+  opacity: 0.9;
   letter-spacing: 0.02em;
 }
 
 /* Toast styles para RegistroUsuario */
 .registro-toast {
   position: fixed;
-  top: 30px;
+  top: 1rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
-  min-width: 320px;
-  max-width: 400px;
-  padding: 1em 2em;
-  border-radius: 10px;
+  width: min(22rem, calc(100% - 2rem));
+  box-sizing: border-box;
+  padding: 0.8em 1.4em;
+  border-radius: 0.6rem;
   color: #fff;
   font-weight: 600;
-  font-size: 18px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  font-size: 0.95rem;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
   cursor: pointer;
-  animation: fadeInDown 0.5s;
+  animation: registroFadeInDown 0.4s;
 }
 
 .registro-toast.success {
-  background: linear-gradient(90deg,#43e97b 0,#38f9d7 100%);
+  background: linear-gradient(90deg, #43e97b 0, #38f9d7 100%);
+  color: #06281c;
 }
 
 .registro-toast.error {
-  background: linear-gradient(90deg,#ff5858 0,#f857a6 100%);
+  background: linear-gradient(90deg, #ff5858 0, #f857a6 100%);
 }
 
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-40px) translateX(-50%);}
-  to   { opacity: 1; transform: translateY(0) translateX(-50%);}
+@keyframes registroFadeInDown {
+  from { opacity: 0; transform: translateY(-40px) translateX(-50%); }
+  to { opacity: 1; transform: translateY(0) translateX(-50%); }
+}
+
+/* ---------- Tema oscuro (convención vigente) ---------- */
+body[data-header-theme='dark'] .registro-overlay {
+  --registro-card: rgba(0, 0, 0, 0.55);
+  --registro-border: rgba(255, 255, 255, 0.12);
+  --registro-text: #fff;
+  --registro-muted: rgba(255, 255, 255, 0.75);
+  --registro-input-bg: rgba(0, 0, 0, 0.82);
+  --registro-input-border: transparent;
+  --registro-field-error: #ffbaba;
+  --registro-error-bg: #6a0000;
+  --registro-footer: #fff;
+
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+    url('/fondo-biblioteca2.png') no-repeat center center / cover;
+}
+
+body[data-header-theme='dark'] .registro-overlay nav a,
+body[data-header-theme='dark'] .registro-overlay .nav-btn {
+  color: #fff;
+}
+
+body[data-header-theme='dark'] .registro-overlay nav a:hover,
+body[data-header-theme='dark'] .registro-overlay .nav-btn:hover {
+  color: #4eaaff;
+}
+
+body[data-header-theme='dark'] .registro-card {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+body[data-header-theme='dark'] .registro-avatar {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+body[data-header-theme='dark'] .registro-form input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+body[data-header-theme='dark'] .registro-form input:focus,
+body[data-header-theme='dark'] .registro-form select:focus {
+  background: rgba(18, 18, 22, 0.92);
+  box-shadow: none;
+}
+
+body[data-header-theme='dark'] .registro-demo-badge {
+  color: #bbf7d0;
+}
+
+body[data-header-theme='dark'] .registro-password-toggle,
+body[data-header-theme='dark'] .registro-demo-autofill,
+body[data-header-theme='dark'] .registro-overlay .registro-login-link,
+body[data-header-theme='dark'] .registro-overlay .login-link a,
+body[data-header-theme='dark'] .registro-link-btn {
+  color: #4eaaff;
+}
+
+body[data-header-theme='dark'] .registro-demo-autofill {
+  background: none;
+  border-color: #4eaaff;
+}
+
+body[data-header-theme='dark'] .registro-session-text {
+  color: #fff;
+}
+
+body[data-header-theme='dark'] .registro-session-out {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+body[data-header-theme='dark'] .registro-btn:focus-visible {
+  outline-color: #fff;
+}
+
+body[data-header-theme='dark'] .registro-footer {
+  opacity: 0.85;
+}
+
+@media (min-width: 480px) {
+  .registro-card {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .registro-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .registro-overlay nav {
+    padding: 1rem 2rem 0 0;
+  }
+
+  .registro-overlay nav ul {
+    gap: 1.5rem;
+  }
+
+  .registro-overlay nav a,
+  .registro-overlay .nav-btn {
+    font-size: 1rem;
+  }
+}
+
+/* Sin layout lateral: la tarjeta única queda centrada como el login. */
+@media (prefers-reduced-motion: reduce) {
+  .registro-toast {
+    animation: none;
+  }
+
+  .registro-btn,
+  .registro-form input,
+  .registro-form select,
+  .registro-overlay nav a,
+  .registro-demo-autofill,
+  .registro-session-go,
+  .registro-session-out {
+    transition: none;
+  }
 }

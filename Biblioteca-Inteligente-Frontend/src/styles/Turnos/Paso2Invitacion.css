@@ -20,6 +20,25 @@
   margin-bottom: 8px;
   color: #1769aa;
 }
+.paso2-dni-input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 12px;
+  min-width: 240px;
+}
+.paso2-email-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.paso2-email-row input {
+  flex: 1;
+  min-width: 0;
+  color: #222;
+}
 .paso2-dni-input input {
   font-size: 1.2rem;
   padding: 0.5rem 1.2rem;
@@ -74,4 +93,349 @@
 .paso2-solicitar-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* Acciones del paso (Volver + Continuar/Confirmar) */
+.paso2-acciones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+.paso2-volver-btn {
+  background: #eceff1;
+  color: #37474f;
+  border: 1.5px solid #cfd8dc;
+  border-radius: 12px;
+  padding: 1.2rem 2rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.paso2-volver-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.paso2-hint {
+  color: #607d8b;
+  font-size: 0.95rem;
+  margin-top: 8px;
+}
+
+/* Botón quitar integrante */
+.paso2-quitar-btn {
+  background: #ffebee;
+  color: #e53935;
+  border: 1.5px solid #e57373;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.paso2-quitar-btn:hover {
+  background: #e53935;
+  color: #fff;
+}
+
+/* Resumen de confirmación */
+.paso2-resumen {
+  background: #fff;
+  border: 1.5px solid #dbeafe;
+  border-radius: 16px;
+  padding: 1.6rem 2rem;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto 8px auto;
+  box-sizing: border-box;
+}
+.paso2-resumen-titulo {
+  color: #1565c0;
+  font-size: 1.3rem;
+  margin: 0 0 1rem 0;
+}
+.paso2-resumen-lista {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.paso2-resumen-lista > div {
+  display: flex;
+  gap: 12px;
+}
+.paso2-resumen-lista dt {
+  font-weight: 700;
+  color: #37474f;
+  min-width: 130px;
+}
+.paso2-resumen-lista dd {
+  margin: 0;
+  color: #222;
+  overflow-wrap: anywhere;
+}
+.paso2-resumen-invitados {
+  margin-top: 1rem;
+  color: #37474f;
+}
+.paso2-resumen-invitados ul {
+  margin: 0.4rem 0 0 0;
+  padding-left: 18px;
+  color: #1565c0;
+}
+
+@media (max-width: 900px) {
+  .paso2-container {
+    min-height: 0;
+    padding: 1.6rem 1.1rem;
+  }
+  .paso2-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .paso2-solicitar-btn {
+    width: 100%;
+  }
+  .paso2-volver-btn {
+    width: 100%;
+    padding: 1rem;
+  }
+}
+
+/* El input de email ocupa todo el ancho disponible (pisa el ancho fijo legado) */
+.paso2-dni-input .paso2-email-row input {
+  width: auto;
+  flex: 1;
+  margin-right: 0;
+}
+
+/* Clases de IntegrantesList (reemplazan estilos inline, solo presentación) */
+.integrantes-wrap {
+  flex: 1.5;
+  padding: 1.5rem 1.5rem 1.5rem 0;
+  min-width: 260px;
+}
+.integrantes-title {
+  font-weight: 700;
+  font-size: 1.45rem;
+  margin-bottom: 18px;
+  color: #1976d2;
+  letter-spacing: 0.5px;
+}
+.integrantes-empty {
+  color: #607d8b;
+  font-style: italic;
+}
+.integrantes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.integrante-card {
+  background: linear-gradient(90deg, #e3f2fd 0%, #f8fafc 100%);
+  border: 1.5px solid #dbeafe;
+  border-radius: 16px;
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 2px 10px #b3c6e022;
+  min-height: 72px;
+}
+.integrante-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.5px solid #90caf9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px #b3c6e033;
+  flex-shrink: 0;
+}
+.integrante-main {
+  flex: 1;
+  min-width: 0;
+}
+.integrante-name {
+  font-weight: 700;
+  font-size: 1.13rem;
+  color: #222;
+  margin-bottom: 2px;
+  letter-spacing: 0.2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.integrante-detail {
+  color: #607d8b;
+  font-size: 0.97rem;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   R2-6 · Dark mode paso 2 + resumen premium (solo presentación)
+   ============================================================ */
+body[data-header-theme='dark'] .paso2-container,
+html[data-theme='dark'] .paso2-container {
+  background: linear-gradient(120deg, #10294d 0%, #0a1a33 100%);
+  border: 1px solid #1e3a5f;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+  color: #f5f5f5;
+}
+body[data-header-theme='dark'] .integrantes-title,
+html[data-theme='dark'] .integrantes-title,
+body[data-header-theme='dark'] .paso2-dni-input label,
+html[data-theme='dark'] .paso2-dni-input label {
+  color: #90caf9;
+}
+body[data-header-theme='dark'] .integrantes-empty,
+html[data-theme='dark'] .integrantes-empty,
+body[data-header-theme='dark'] .paso2-hint,
+html[data-theme='dark'] .paso2-hint {
+  color: #9fb3c8;
+}
+body[data-header-theme='dark'] .integrante-card,
+html[data-theme='dark'] .integrante-card {
+  background: linear-gradient(90deg, rgba(21, 101, 192, 0.35) 0%, rgba(10, 35, 66, 0.7) 100%);
+  border-color: #1e3a5f;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+body[data-header-theme='dark'] .integrante-avatar,
+html[data-theme='dark'] .integrante-avatar {
+  background: #0b1d36;
+  border-color: #90caf9;
+}
+body[data-header-theme='dark'] .integrante-name,
+html[data-theme='dark'] .integrante-name {
+  color: #f5f5f5;
+}
+body[data-header-theme='dark'] .integrante-detail,
+html[data-theme='dark'] .integrante-detail {
+  color: #b0bec5;
+}
+body[data-header-theme='dark'] .paso2-dni-input input,
+html[data-theme='dark'] .paso2-dni-input input {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: #1e3a5f;
+  color: #f5f5f5;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+body[data-header-theme='dark'] .paso2-dni-input input::placeholder,
+html[data-theme='dark'] .paso2-dni-input input::placeholder {
+  color: #8fa3b8;
+  opacity: 1;
+}
+body[data-header-theme='dark'] .paso2-dni-input input:focus,
+html[data-theme='dark'] .paso2-dni-input input:focus {
+  outline: 2px solid #90caf9;
+  outline-offset: 1px;
+  border-color: #90caf9;
+}
+body[data-header-theme='dark'] .paso2-dni-input button,
+html[data-theme='dark'] .paso2-dni-input button {
+  background: linear-gradient(90deg, #42a5f5 0%, #1565c0 100%);
+  color: #fff;
+}
+body[data-header-theme='dark'] .paso2-mensaje.success,
+html[data-theme='dark'] .paso2-mensaje.success {
+  color: #a5d6a7;
+}
+body[data-header-theme='dark'] .paso2-mensaje.error,
+html[data-theme='dark'] .paso2-mensaje.error {
+  color: #ef9a9a;
+}
+
+/* CTAs claros: primario + ghost con jerarquía visible en dark */
+body[data-header-theme='dark'] .paso2-solicitar-btn,
+html[data-theme='dark'] .paso2-solicitar-btn {
+  background: linear-gradient(90deg, #42a5f5 0%, #1565c0 100%);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+body[data-header-theme='dark'] .paso2-solicitar-btn:hover:not(:disabled),
+html[data-theme='dark'] .paso2-solicitar-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #90caf9 0%, #1976d2 100%);
+  color: #06121f;
+}
+body[data-header-theme='dark'] .paso2-volver-btn,
+html[data-theme='dark'] .paso2-volver-btn {
+  background: rgba(255, 255, 255, 0.07);
+  color: #e3f2fd;
+  border-color: #35507a;
+}
+body[data-header-theme='dark'] .paso2-volver-btn:hover:not(:disabled),
+html[data-theme='dark'] .paso2-volver-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+}
+body[data-header-theme='dark'] .paso2-solicitar-btn:focus-visible,
+html[data-theme='dark'] .paso2-solicitar-btn:focus-visible,
+body[data-header-theme='dark'] .paso2-volver-btn:focus-visible,
+html[data-theme='dark'] .paso2-volver-btn:focus-visible,
+body[data-header-theme='dark'] .paso2-dni-input button:focus-visible,
+html[data-theme='dark'] .paso2-dni-input button:focus-visible {
+  outline: 2px solid #e3f2fd;
+  outline-offset: 2px;
+}
+body[data-header-theme='dark'] .paso2-quitar-btn,
+html[data-theme='dark'] .paso2-quitar-btn {
+  background: rgba(229, 57, 53, 0.16);
+  color: #ef9a9a;
+  border-color: #6f1d1d;
+}
+body[data-header-theme='dark'] .paso2-quitar-btn:hover,
+html[data-theme='dark'] .paso2-quitar-btn:hover {
+  background: #c62828;
+  color: #fff;
+}
+
+/* Resumen destacado: tarjeta premium con borde luminoso en dark */
+body[data-header-theme='dark'] .paso2-resumen,
+html[data-theme='dark'] .paso2-resumen {
+  background: linear-gradient(135deg, #0f2b52 0%, #0a1a33 100%);
+  border: 1.5px solid #90caf9;
+  box-shadow: 0 0 0 3px rgba(144, 202, 249, 0.18), 0 4px 20px rgba(0, 0, 0, 0.5);
+  color: #f5f5f5;
+}
+body[data-header-theme='dark'] .paso2-resumen-titulo,
+html[data-theme='dark'] .paso2-resumen-titulo {
+  color: #90caf9;
+}
+body[data-header-theme='dark'] .paso2-resumen-lista dt,
+html[data-theme='dark'] .paso2-resumen-lista dt {
+  color: #b0bec5;
+}
+body[data-header-theme='dark'] .paso2-resumen-lista dd,
+html[data-theme='dark'] .paso2-resumen-lista dd {
+  color: #f5f5f5;
+}
+body[data-header-theme='dark'] .paso2-resumen-invitados,
+html[data-theme='dark'] .paso2-resumen-invitados {
+  color: #cfd8e3;
+  border-top: 1px solid #1e3a5f;
+  padding-top: 1rem;
+}
+body[data-header-theme='dark'] .paso2-resumen-invitados ul,
+html[data-theme='dark'] .paso2-resumen-invitados ul {
+  color: #90caf9;
+}
+
+@media (max-width: 900px) {
+  .integrantes-wrap {
+    padding: 0;
+    min-width: 0;
+  }
 }

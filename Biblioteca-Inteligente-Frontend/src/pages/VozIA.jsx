@@ -2,65 +2,346 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import '../styles/VozIA.css';
+import { DEMO_MODE, demoDelay, mensajeErrorAmable } from '../lib/demo';
+import { buscarRespuestaDemo } from '../data/demoAsistente';
+import { librosDemo } from '../data/demoLibros';
+
+const API_URL = 'http://localhost:3000/api/asistente';
+
+/* ---------- Helpers de modo demo (defensivos ante el contrato) ---------- */
+
+function estaEnDemo() {
+  try {
+    if (typeof DEMO_MODE === 'function') return !!DEMO_MODE();
+    if (typeof DEMO_MODE === 'undefined') return true;
+    return !!DEMO_MODE;
+  } catch {
+    return true;
+  }
+}
+
+async function esperar(ms = 900) {
+  try {
+    if (typeof demoDelay === 'function') {
+      await demoDelay(ms);
+      return;
+    }
+    if (typeof demoDelay === 'number') {
+      await new Promise((r) => setTimeout(r, demoDelay));
+      return;
+    }
+  } catch {
+    /* cae al delay local */
+  }
+  await new Promise((r) => setTimeout(r, ms));
+}
+
+/** Convierte ids sugeridos (1..12) en { id, titulo } usando el dataset demo. */
+function resolverSugeridos(ids) {
+  const catalogo = Array.isArray(librosDemo) ? librosDemo : [];
+  return (ids || []).map((id) => {
+    const libro = catalogo.find((l) => l && l.id === id);
+    return { id, titulo: libro?.titulo || String(id) };
+  });
+}
+
+let proximoId = 1;
+const nuevoId = () => `voz-${Date.now()}-${proximoId++}`;
+
+/* ---------- Iconos SVG inline (sin emojis) ---------- */
+
+const svgBase = {
+  width: 20,
+  height: 20,
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 2,
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
+  'aria-hidden': true,
+};
+
+function IconMic() {
+  return (
+    <svg {...svgBase}>
+      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+    </svg>
+  );
+}
+
+function IconStop() {
+  return (
+    <svg {...svgBase} fill="currentColor" stroke="none">
+      <rect x="6" y="6" width="12" height="12" rx="2.5" />
+    </svg>
+  );
+}
+
+function IconVolumen() {
+  return (
+    <svg {...svgBase}>
+      <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+      <path d="M15.5 8.5a5 5 0 0 1 0 7" />
+      <path d="M18.5 5.5a9.4 9.4 0 0 1 0 13" />
+    </svg>
+  );
+}
+
+function IconMute() {
+  return (
+    <svg {...svgBase}>
+      <path d="M11 5 6 9H2v6h4l5 4V5Z" />
+      <line x1="22" y1="9" x2="16" y2="15" />
+      <line x1="16" y1="9" x2="22" y2="15" />
+    </svg>
+  );
+}
+
+function IconPapelera() {
+  return (
+    <svg {...svgBase}>
+      <path d="M3 6h18" />
+      <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+      <line x1="10" y1="11" x2="10" y2="17" />
+      <line x1="14" y1="11" x2="14" y2="17" />
+    </svg>
+  );
+}
+
+function IconAvion() {
+  return (
+    <svg {...svgBase}>
+      <path d="M22 2 11 13" />
+      <path d="M22 2 15 22l-4-9-9-4 20-7Z" />
+    </svg>
+  );
+}
+
+function IconSparkle() {
+  return (
+    <svg
+      width={14}
+      height={14}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      className="vozia-chip-icon"
+    >
+      <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z" />
+    </svg>
+  );
+}
+
+const PREGUNTAS_RAPIDAS = [
+  '¿Qué libros de física me recomendás?',
+  'Recomendame una novela para leer',
+  '¿Cómo pido un préstamo?',
+];
 
 export default function VozIA() {
+  const [enDemo] = useState(estaEnDemo);
+  const [mensajes, setMensajes] = useState([]);
   const [pregunta, setPregunta] = useState('');
   const [cargando, setCargando] = useState(false);
-  const [historial, setHistorial] = useState([]);
+  const [escuchando, setEscuchando] = useState(false);
+  const [muteado, setMuteado] = useState(false);
+  const [soporteVoz, setSoporteVoz] = useState(false);
+  const [vozDisponible] = useState(() => typeof window !== 'undefined' && 'speechSynthesis' in window);
+
   const formRef = useRef(null);
+  const finRef = useRef(null);
+  const recRef = useRef(null);
+  const cargandoRef = useRef(false);
+  const muteadoRef = useRef(false);
+  const enviarRef = useRef(null);
   const navigate = useNavigate();
+
+  cargandoRef.current = cargando;
+  muteadoRef.current = muteado;
 
   const onLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('biblio_demo_session');
+    try { localStorage.setItem('biblio_demo_closed', '1'); } catch {}
     navigate('/login');
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    fetch('http://localhost:3000/api/asistente/historial', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => setHistorial(Array.isArray(data) ? data.reverse() : []))
-      .catch(() => setHistorial([]));
-  }, []);
+  /* ---------- Síntesis de voz (opcional, con mute) ---------- */
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    if (!pregunta.trim()) return;
-    setCargando(true);
-
-    // 1. Actualiza el historial localmente de inmediato (optimistic update)
-    setHistorial(prev => [
-      {
-        texto: pregunta,
-        Respuesta: { texto: "Procesando..." }
-      },
-      ...prev
-    ]);
-
+  const hablar = (texto) => {
     try {
-      const token = localStorage.getItem('token');
-      await fetch('http://localhost:3000/api/asistente/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ prompt: pregunta })
-      });
-      // 2. Sincroniza el historial real cuando el backend responde
-      fetch('http://localhost:3000/api/asistente/historial', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(res => res.json())
-        .then(data => setHistorial(Array.isArray(data) ? data.reverse() : []));
-      setPregunta('');
+      if (muteadoRef.current) return;
+      if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(texto);
+      utter.lang = 'es-ES';
+      window.speechSynthesis.speak(utter);
+    } catch {
+      /* síntesis no disponible: degradación silenciosa */
+    }
+  };
+
+  const alternarMute = () => {
+    setMuteado((prev) => {
+      if (prev === false) {
+        // Se está silenciando: cortar la lectura en curso.
+        try { window.speechSynthesis?.cancel(); } catch { /* noop */ }
+      }
+      return !prev;
+    });
+  };
+
+  /* ---------- Núcleo: misma lógica demo/real que AsistenteIA ---------- */
+
+  const responderDemo = async (texto) => {
+    await esperar(900);
+    const { respuesta, sugeridos } = buscarRespuestaDemo(texto);
+    return { texto: respuesta, sugeridos: resolverSugeridos(sugeridos) };
+  };
+
+  const preguntarBackend = async (texto) => {
+    const token = localStorage.getItem('token');
+    const res = await fetch(`${API_URL}/ask`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ prompt: texto }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(mensajeErrorAmable(data?.error, 'El asistente no pudo responder. Intentá de nuevo.'));
+    return { texto: data.respuesta || 'Sin respuesta, intentá de nuevo.', sugeridos: [] };
+  };
+
+  const enviarPregunta = async (textoBruto) => {
+    const texto = (textoBruto ?? '').trim();
+    if (!texto || cargandoRef.current) return;
+    cargandoRef.current = true;
+    setCargando(true);
+    setPregunta('');
+    setMensajes((prev) => [...prev, { id: nuevoId(), rol: 'usuario', texto, sugeridos: [] }]);
+    try {
+      let respuesta;
+      if (estaEnDemo()) {
+        respuesta = await responderDemo(texto);
+      } else {
+        try {
+          respuesta = await preguntarBackend(texto);
+        } catch {
+          respuesta = await responderDemo(texto); // cae a demo si el backend falla
+        }
+      }
+      setMensajes((prev) => [...prev, { id: nuevoId(), rol: 'asistente', ...respuesta }]);
+      hablar(respuesta.texto);
       setTimeout(() => {
         if (formRef.current) formRef.current.scrollIntoView({ behavior: 'smooth' });
       }, 100);
-    } catch {
-      // Manejo de error opcional
+    } finally {
+      cargandoRef.current = false;
+      setCargando(false);
     }
-    setCargando(false);
+  };
+
+  // Ref estable para invocar el envío desde los callbacks del reconocedor.
+  useEffect(() => {
+    enviarRef.current = enviarPregunta;
+  });
+
+  /* ---------- Reconocimiento de voz (con fallback a texto) ---------- */
+
+  useEffect(() => {
+    const SR = typeof window !== 'undefined'
+      ? window.SpeechRecognition || window.webkitSpeechRecognition
+      : null;
+    if (!SR) {
+      setSoporteVoz(false);
+      return;
+    }
+    setSoporteVoz(true);
+    const rec = new SR();
+    rec.lang = 'es-ES';
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    rec.onresult = (e) => {
+      const texto = e.results?.[0]?.[0]?.transcript ?? '';
+      setPregunta(texto);
+      if (texto.trim() && enviarRef.current) enviarRef.current(texto);
+    };
+    rec.onerror = () => setEscuchando(false);
+    rec.onend = () => setEscuchando(false);
+    recRef.current = rec;
+    return () => {
+      try { rec.abort(); } catch { /* noop */ }
+      try { window.speechSynthesis?.cancel(); } catch { /* noop */ }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const alternarEscucha = () => {
+    const rec = recRef.current;
+    if (!rec) return;
+    try {
+      if (escuchando) {
+        rec.stop();
+      } else {
+        rec.start();
+        setEscuchando(true);
+      }
+    } catch {
+      setEscuchando(false);
+    }
+  };
+
+  /* ---------- Historial real (solo lectura, solo modo real) ---------- */
+
+  useEffect(() => {
+    if (!estaEnDemo()) {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      fetch(`${API_URL}/historial`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          const items = Array.isArray(data) ? data : [];
+          const seed = [];
+          for (const item of items) {
+            seed.push({ id: nuevoId(), rol: 'usuario', texto: item.texto, sugeridos: [] });
+            seed.push({
+              id: nuevoId(),
+              rol: 'asistente',
+              texto: item.Respuesta?.texto || 'Sin respuesta',
+              sugeridos: [],
+            });
+          }
+          setMensajes(seed);
+        })
+        .catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    // Solo scrollear cuando hay conversación: en el montaje inicial no mover
+    // la página (si no, el título y la onda quedan fuera de vista).
+    if (mensajes.length === 0 && !cargando) return;
+    finRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [mensajes, cargando]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    enviarPregunta(pregunta);
+  };
+
+  const limpiar = () => {
+    setMensajes([]);
+    try { window.speechSynthesis?.cancel(); } catch { /* noop */ }
   };
 
   return (
@@ -79,8 +360,7 @@ export default function VozIA() {
       <main className="vozia-main" style={{ width: '100%', maxWidth: 700, margin: '0 auto' }}>
         <div className="vozia-content">
           <div className="vozia-wave">
-            {/* ...SVG animado... */}
-            <svg width="80" height="50" viewBox="0 0 80 50">
+            <svg width="80" height="50" viewBox="0 0 80 50" aria-hidden="true">
               <g>
                 <rect x="10" y="25" width="4" height="15" rx="2" fill="#3f51ff">
                   <animate attributeName="height" values="15;35;15" dur="1s" repeatCount="indefinite" />
@@ -113,71 +393,124 @@ export default function VozIA() {
               </g>
             </svg>
           </div>
-          <div className="vozia-historial">
-            {historial.length === 0 && (
-              <div style={{ color: '#888', textAlign: 'center', marginBottom: '1.5rem' }}>
-                No hay consultas previas.
+
+          {escuchando && (
+            <div className="vozia-aviso-voz" role="status">Escuchando… hablá ahora</div>
+          )}
+          {!soporteVoz && (
+            <div className="vozia-aviso-voz" role="status">
+              Reconocimiento de voz no disponible en este navegador: podés escribir tu pregunta.
+            </div>
+          )}
+
+          <div className="vozia-encabezado">
+            <h1 className="vozia-titulo">Asistente IA</h1>
+            <p className="vozia-subtitulo">Preguntame por libros, materias o préstamos</p>
+          </div>
+
+          <div className="vozia-chat" aria-live="polite">
+            {mensajes.length === 0 && !cargando && (
+              <div className="vozia-vacio">
+                <div className="vozia-vacio-texto">
+                  {soporteVoz
+                    ? 'Tocá el micrófono o elegí una pregunta para empezar.'
+                    : 'Elegí una pregunta o escribila abajo.'}
+                </div>
+                <div className="vozia-rapidas" role="group" aria-label="Preguntas sugeridas">
+                  {PREGUNTAS_RAPIDAS.map((rapida) => (
+                    <button
+                      key={rapida}
+                      type="button"
+                      className="vozia-rapida-btn"
+                      onClick={() => enviarPregunta(rapida)}
+                    >
+                      <IconSparkle />
+                      <span>{rapida}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
-            {historial.map((item, idx) => (
-              <React.Fragment key={item.id || idx}>
-                <div
-                  className="vozia-pregunta"
-                  style={{
-                    margin: '0.5em 0 0.1em 0',
-                    color: 'var(--vozia-pregunta-color, #222)',
-                    fontWeight: 500,
-                    textAlign: 'center'
-                  }}
-                >
-                  Pregunta: {item.texto}
-                </div>
-                <div
-                  className="vozia-respuesta"
-                  style={{
-                    margin: '0 0 1.2em 1.2em',
-                    color: 'var(--vozia-respuesta-color, #333)',
-                    textAlign: 'center'
-                  }}
-                >
-                  Respuesta: {item.Respuesta?.texto || <span style={{ color: '#888' }}>Sin respuesta</span>}
-                </div>
-              </React.Fragment>
+            {mensajes.map((msg) => (
+              <div
+                key={msg.id}
+                className={`vozia-burbuja ${msg.rol === 'usuario' ? 'vozia-burbuja-usuario' : 'vozia-burbuja-asistente'}`}
+              >
+                <div>{msg.texto}</div>
+                {msg.rol === 'asistente' && msg.sugeridos?.length > 0 && (
+                  <div className="vozia-sugerencias">
+                    {msg.sugeridos.map((s) => (
+                      <Link key={s.id} to={`/libros/${s.id}`} className="vozia-chip" title={`Ver detalle de ${s.titulo}`}>
+                        <IconSparkle />
+                        <span>{s.titulo}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
+            {cargando && (
+              <div className="vozia-burbuja vozia-burbuja-asistente vozia-typing" aria-label="Escribiendo respuesta">
+                <span className="vozia-punto" />
+                <span className="vozia-punto" />
+                <span className="vozia-punto" />
+              </div>
+            )}
+            <div ref={finRef} />
           </div>
-          <form className="vozia-form" onSubmit={handleSubmit} ref={formRef}>
+
+          <form className="vozia-form vozia-barra" onSubmit={handleSubmit} ref={formRef}>
+            <div className="vozia-barra-grupo vozia-barra-grupo--izq" role="group" aria-label="Controles de voz y limpieza">
+              <button
+                type="button"
+                className={`vozia-icon-btn vozia-mic-btn${escuchando ? ' escuchando' : ''}`}
+                onClick={alternarEscucha}
+                disabled={!soporteVoz || cargando}
+                aria-label={escuchando ? 'Detener escucha' : 'Dictar por voz'}
+                title={soporteVoz ? (escuchando ? 'Detener escucha' : 'Dictar por voz') : 'Reconocimiento de voz no disponible'}
+              >
+                {escuchando ? <IconStop /> : <IconMic />}
+              </button>
+              <button
+                type="button"
+                className={`vozia-icon-btn vozia-mute-btn${muteado ? ' is-off' : ''}`}
+                onClick={alternarMute}
+                disabled={!vozDisponible}
+                aria-label={muteado ? 'Activar lectura en voz alta' : 'Silenciar lectura en voz alta'}
+                title={vozDisponible ? (muteado ? 'Activar lectura en voz alta' : 'Silenciar lectura en voz alta') : 'Síntesis de voz no disponible'}
+                aria-pressed={muteado}
+              >
+                {muteado ? <IconMute /> : <IconVolumen />}
+              </button>
+              <button
+                type="button"
+                className="vozia-icon-btn vozia-limpiar-btn"
+                onClick={limpiar}
+                disabled={cargando || mensajes.length === 0}
+                aria-label="Limpiar conversación"
+                title="Limpiar conversación"
+              >
+                <IconPapelera />
+              </button>
+            </div>
             <input
               className="vozia-input"
               type="text"
-              placeholder="Que libros me recomiendas para estudiar física 2?"
+              placeholder="Preguntá por un libro, una materia…"
               value={pregunta}
               onChange={e => setPregunta(e.target.value)}
               disabled={cargando}
-              style={{ color: "#222" }}
+              aria-label="Pregunta al asistente"
             />
             <button
-              className="vozia-btn-magic"
+              className="vozia-enviar-btn"
               type="submit"
               disabled={cargando || !pregunta.trim()}
-              aria-label="Enviar"
+              aria-label="Enviar pregunta"
+              title="Enviar pregunta"
             >
-              <svg
-                width="44"
-                height="44"
-                viewBox="0 0 44 44"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="vozia-flecha"
-              >
-                <circle cx="22" cy="22" r="22" fill="#3f51ff" />
-                <path
-                  d="M16 11L32 22L16 33"
-                  stroke="#fff"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <IconAvion />
+              <span className="vozia-enviar-texto">Enviar</span>
             </button>
           </form>
         </div>

@@ -1,5 +1,6 @@
 const { Busqueda } = require('../models');
 const { validationResult } = require('express-validator');
+const { sendDbOrInternal } = require('../middlewares/apiError');
 
 exports.getBusquedas = async (req, res) => {
   try {
@@ -13,7 +14,7 @@ exports.getBusquedas = async (req, res) => {
     });
     res.json(busquedas);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return sendDbOrInternal(res, error, 'Error al obtener búsquedas');
   }
 };
 
@@ -37,7 +38,7 @@ exports.createBusqueda = async (req, res) => {
 
     res.status(201).json(nuevaBusqueda);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return sendDbOrInternal(res, error, 'Error al crear la búsqueda');
   }
 };
 
@@ -54,7 +55,7 @@ exports.updateBusqueda = async (req, res) => {
     await busqueda.update({ termino });
     res.json(busqueda);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return sendDbOrInternal(res, error, 'Error al actualizar la búsqueda');
   }
 };
 
@@ -66,7 +67,7 @@ exports.deleteBusqueda = async (req, res) => {
     await busqueda.destroy();
     res.json({ mensaje: 'Búsqueda eliminada correctamente' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return sendDbOrInternal(res, error, 'Error al eliminar la búsqueda');
   }
 };
 
@@ -76,6 +77,6 @@ exports.getBusquedaById = async (req, res) => {
     if (!busqueda) return res.status(404).json({ error: 'Búsqueda no encontrada' });
     res.json(busqueda);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return sendDbOrInternal(res, error, 'Error al obtener la búsqueda');
   }
 };

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
+import { DEMO_MODE, DEMO_USER, fetchConFallback } from './lib/demo.js'
 import Portada from './pages/portada.jsx'
-import LibroForm from './components/LibroForm'
 import LoginAlumno from './pages/LoginAlumno'
 import RegistroUsuario from './pages/RegistroUsuario'
 import AsistenteIA from './components/AsistenteIA'
@@ -15,45 +15,68 @@ import CatalogoPage from './pages/CatalogoPage'
 import Turno from './pages/Turno';
 import BookDetail from './pages/BookDetail'; // Asegúrate de que la ruta sea correcta
 import AcercaDe from './pages/AcercaDe';
+import ScrollTop from './components/ScrollTop';
 import { useUser } from './context/UserContext';
+
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 function App() {
   const { usuario, setUsuario } = useUser();
   const [libros, setLibros] = useState([])
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/libros')
-      .then(res => res.json())
-      .then(data => setLibros(data))
-      .catch(err => console.error(err))
+    let vivo = true;
+    fetchConFallback(`${API_BASE}/api/libros`, undefined, [])
+      .then(data => { if (vivo) setLibros(Array.isArray(data) ? data : []); });
+    return () => { vivo = false; };
   }, [])
 
-  // Componente para proteger rutas que requieren autenticación
+  // Componente para proteger rutas que requieren autenticación.
+  // Siempre se pasa primero por /login: sin sesión se redirige,
+  // en modo demo y en modo real por igual.
   function RequireAuth({ usuario, children, adminOnly = false }) {
     if (!usuario) return <Navigate to="/login" replace />;
     if (adminOnly && usuario.rol !== 'admin') return <Navigate to="/login" replace />;
-    if (!adminOnly && usuario.rol === 'admin') return <Navigate to="/admin" replace />;
     return children;
   }
 
   // Función para login (puedes mejorarla si quieres)
+  // Contrato R3 (key 'biblio_demo_closed'): no revivir demo tras un logout.
+  function demoPermitido() {
+    try {
+      return localStorage.getItem('biblio_demo_closed') !== '1';
+    } catch {
+      return true;
+    }
+  }
   async function handleLogin() {
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
     if (token && userId) {
-      const res = await fetch(`http://localhost:3000/api/usuarios/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      setUsuario(data); // data debe ser el usuario autenticado
+      try {
+        const data = await fetchConFallback(`${API_BASE}/api/usuarios/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }, null);
+        if (data) {
+          try { localStorage.removeItem('biblio_demo_closed'); } catch {}
+          setUsuario(data); // data debe ser el usuario autenticado
+        }
+        else if (DEMO_MODE && demoPermitido()) setUsuario(DEMO_USER);
+      } catch {
+        if (DEMO_MODE && demoPermitido()) setUsuario(DEMO_USER);
+      }
+    } else if (DEMO_MODE && demoPermitido()) {
+      setUsuario(DEMO_USER);
     }
   }
 
   async function logout() {
+    try { localStorage.setItem('biblio_demo_closed', '1'); } catch {}
+    try { localStorage.removeItem('biblio_demo_session'); } catch {}
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        await fetch('http://localhost:3000/api/auth/logout', {
+        await fetch(`${API_BASE}/api/auth/logout`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -63,8 +86,13 @@ function App() {
     }
 
     // Conserva solo las últimas 3 búsquedas en el historial del catálogo
-    const busquedas = JSON.parse(localStorage.getItem('busquedasCatalogo') || '[]');
-    const ultimas3 = busquedas.slice(-3);
+    let ultimas3 = [];
+    try {
+      const busquedas = JSON.parse(localStorage.getItem('busquedasCatalogo') || '[]');
+      ultimas3 = Array.isArray(busquedas) ? busquedas.slice(-3) : [];
+    } catch {
+      ultimas3 = [];
+    }
 
     // Borra solo los datos de sesión
     localStorage.removeItem('token');
@@ -81,16 +109,26 @@ function App() {
   }
 
   useEffect(() => {
+    // Contrato R3 (key 'biblio_demo_closed'): la sesión demo solo existe si
+    // el usuario entró explícitamente (el contexto la restaura); aquí nunca
+    // se crea ni se revive tras un logout.
+    // Sin sesión previa no se crea ninguna: siempre se pasa por /login.
+    // (La sesión explícita guardada en localStorage ya la restauró el
+    // contexto en su init; aquí no se pisa para no borrarla.)
+    if (DEMO_MODE && !localStorage.getItem('token') && !localStorage.getItem('userId')) {
+      return;
+    }
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('userId');
     if (token && userId) {
-      fetch(`http://localhost:3000/api/usuarios/${userId}`, {
+      fetchConFallback(`${API_BASE}/api/usuarios/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
-      })
-        .then(res => res.json())
-        .then(data => setUsuario(data))
-        .catch(() => setUsuario(null));
+      }, null)
+        .then(data => setUsuario(data ?? (DEMO_MODE && demoPermitido() ? DEMO_USER : null)));
+    } else if (!DEMO_MODE) {
+      setUsuario(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -152,8 +190,8 @@ function App() {
             <div>
               <h1>Lista de Libros</h1>
               <ul>
-                {libros.map(libro => (
-                  <li key={libro.id || Math.random()} style={{marginBottom: '2rem', border: '1px solid #ccc', padding: '1rem'}}>
+                {libros.map((libro, i) => (
+                  <li key={libro.id ?? i} style={{marginBottom: '2rem', border: '1px solid #ccc', padding: '1rem'}}>
                     <strong>Título:</strong> {libro.titulo}<br />
                     <strong>Subtítulo:</strong> {libro.subtitulo}<br />
                     <strong>Autor:</strong> {libro.autor}<br />
@@ -176,7 +214,7 @@ function App() {
                       <div>
                         <strong>Portada:</strong><br />
                         <img
-                          src={`http://localhost:3000/api/libros/${libro.id}/portada`}
+                          src={`${API_BASE}/api/libros/${libro.id}/portada`}
                           alt="Portada"
                           style={{maxWidth: '150px', maxHeight: '200px', border: '1px solid #888'}}
                         />
@@ -193,6 +231,7 @@ function App() {
         } />
         <Route path="/libros/:id" element={<BookDetail />} />
       </Routes>
+      <ScrollTop />
     </BrowserRouter>
   )
 }

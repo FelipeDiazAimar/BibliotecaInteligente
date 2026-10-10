@@ -1,16 +1,8 @@
-import { createContext, useContext, useState } from "react";
-
-const UserContext = createContext();
-
-export function UserProvider({ children }) {
-  const [usuario, setUsuario] = useState(null);
-  return (
-    <UserContext.Provider value={{ usuario, setUsuario }}>
-      {children}
-    </UserContext.Provider>
-  );
-}
-
-export function useUser() {
-  return useContext(UserContext);
-}
+// Archivo legacy con nombre alternativo: re-exporta el contexto único de
+// UserContext para no crear dos contextos desincronizados.
+// Único source of truth: ./UserContext.jsx
+export {
+  UserProvider,
+  useUser,
+  DEMO_SESSION_KEY,
+} from "./UserContext.jsx";

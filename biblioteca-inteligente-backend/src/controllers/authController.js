@@ -1,10 +1,16 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Usuario, Prompt, Respuesta, Busqueda } = require('../models');
+const { getJwtSecret } = require('../config/demo');
+const { isDbConnectionError, sendDbUnavailable } = require('../middlewares/apiError');
 
 // Controlador para registrar un usuario nuevo
 exports.register = async (req, res) => {
   try {
+    const jwtSecret = getJwtSecret();
+    if (!jwtSecret) {
+      return res.status(500).json({ error: 'JWT_SECRET no configurado. Defínalo en el archivo .env (ver .env.example).' });
+    }
     // Crea el usuario con los datos recibidos
     const usuario = await Usuario.create({
       nombre: req.body.nombre,
@@ -14,9 +20,10 @@ exports.register = async (req, res) => {
       rol: req.body.rol
     });
     // Genera un token para que el usuario pueda autenticarse
-    const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, process.env.JWT_SECRET, { expiresIn: '8h' });
+    const token = jwt.sign({ id: usuario.id, rol: usuario.rol }, jwtSecret, { expiresIn: '8h' });
     res.status(201).json({ token, id: usuario.id });
   } catch (error) {
+    if (isDbConnectionError(error)) return sendDbUnavailable(res, error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -24,6 +31,10 @@ exports.register = async (req, res) => {
 // Controlador para iniciar sesión
 exports.login = async (req, res) => {
   try {
+    const jwtSecret = getJwtSecret();
+    if (!jwtSecret) {
+      return res.status(500).json({ error: 'JWT_SECRET no configurado. Defínalo en el archivo .env (ver .env.example).' });
+    }
     const { dni, password } = req.body;
     // Busca el usuario por dni
     const usuario = await Usuario.findOne({ where: { dni } });
@@ -38,12 +49,13 @@ exports.login = async (req, res) => {
     // Si todo está bien, genera un token para el usuario
     const token = jwt.sign(
       { id: usuario.id, dni: usuario.dni, rol: usuario.rol },
-      process.env.JWT_SECRET,
+      jwtSecret,
       { expiresIn: '8h' }
     );
     res.json({ token, id: usuario.id, rol: usuario.rol });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (isDbConnectionError(error)) return sendDbUnavailable(res, error);
+    res.status(500).json({ error: 'Error en el servidor' });
   }
 };
 
@@ -76,7 +88,8 @@ exports.logout = async (req, res) => {
 
     res.json({ mensaje: 'Sesión cerrada y datos eliminados.' });
   } catch (error) {
-    console.error('Error en logout:', error);
-    res.status(500).json({ error: error.message });
+    if (isDbConnectionError(error)) return sendDbUnavailable(res, error);
+    console.error('Error en logout:', error.message);
+    res.status(500).json({ error: 'Error al cerrar sesión' });
   }
 };

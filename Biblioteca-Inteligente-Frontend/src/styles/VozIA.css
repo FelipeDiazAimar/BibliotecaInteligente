@@ -62,6 +62,7 @@
   align-items: center;
   justify-content: flex-start; /* Cambia a flex-start para que el contenido crezca hacia abajo */
   width: 100%;
+  min-height: 0;
 }
 
 .vozia-content {
@@ -70,14 +71,25 @@
   align-items: center;
   width: 100%;
   max-width: 700px;
+  flex: 1;
+  padding-bottom: 1rem;
+  box-sizing: border-box;
 }
 
 .vozia-wave {
-  margin-top: 12rem;    /* Margen fijo debajo del header */
-  margin-bottom: 2.5rem;
+  margin-top: 2.75rem;
+  margin-bottom: 0.6rem;
   display: flex;
   justify-content: center;
 }
+
+.vozia-wave svg {
+  width: 64px;
+  height: auto;
+  display: block;
+}
+
+/* ===== Barra de chat: [mic][mute][limpiar] | input flexible | Enviar ===== */
 
 .vozia-form {
   display: flex;
@@ -89,17 +101,241 @@
   max-width: 700px;
 }
 
-.vozia-input {
+.vozia-form.vozia-barra {
+  gap: 0.6rem;
+  background: #ffffff;
+  border: 1px solid #e2e5ea;
+  border-radius: 999px;
+  padding: 0.45rem 0.55rem 0.45rem 0.5rem;
+  box-shadow: 0 4px 18px rgba(63, 81, 255, 0.10);
+  box-sizing: border-box;
+  margin-bottom: 0;
+  margin-top: auto;
+  flex-wrap: nowrap;
+  position: sticky;
+  bottom: 0.75rem;
+  z-index: 5;
+}
+
+.vozia-form.vozia-barra:focus-within {
+  border-color: #3f51ff;
+  box-shadow: 0 0 0 3px rgba(63, 81, 255, 0.15);
+}
+
+.vozia-barra-grupo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.vozia-barra-grupo--izq {
+  gap: 0.45rem;
+}
+
+/* Encabezado de la página del asistente */
+.vozia-encabezado {
+  text-align: center;
+  margin: 0.2rem 0 0.5rem;
+  padding: 0 1rem;
+}
+
+.vozia-titulo {
+  margin: 0;
+  font-size: clamp(1.25rem, 4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #1a237e;
+}
+
+.vozia-subtitulo {
+  margin: 0.2rem 0 0;
+  font-size: 0.92rem;
+  color: #5c6bc0;
+}
+
+body[data-header-theme='dark'] .vozia-titulo {
+  color: #e8eef7;
+}
+
+body[data-header-theme='dark'] .vozia-subtitulo {
+  color: #8fa1b8;
+}
+
+/* Estado vacío: composición centrada que ocupa el espacio + sugerencias */
+.vozia-vacio {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  max-width: 560px;
   flex: 1;
-  padding: 1.1em 1.2em;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  background: rgba(248,250,252,0.7);
-  color: #000000; /* Cambia el color del texto a negro */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.vozia-vacio-texto {
+  font-size: 1.02rem;
+  color: #455074;
+  line-height: 1.55;
+  margin: 0;
+}
+
+body[data-header-theme='dark'] .vozia-vacio-texto {
+  color: #aab8d3;
+}
+
+.vozia-rapidas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.vozia-rapida-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5em 0.9em;
+  min-height: 40px;
+  border-radius: 999px;
+  border: 1.5px solid #3f51ff;
+  background: #fff;
+  color: #3f51ff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, transform 0.14s ease, box-shadow 0.18s ease;
+}
+
+.vozia-rapida-btn svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.vozia-rapida-btn:hover {
+  background: #eef1ff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(63, 81, 255, 0.22);
+}
+
+.vozia-rapida-btn:active {
+  transform: scale(0.97);
+}
+
+body[data-header-theme='dark'] .vozia-rapida-btn {
+  background: #0f2038;
+  border-color: #5c6bc0;
+  color: #c5cae9;
+}
+
+body[data-header-theme='dark'] .vozia-rapida-btn:hover {
+  background: #16294a;
+}
+
+/* Botones icono base */
+.vozia-icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.vozia-icon-btn svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.vozia-icon-btn:hover:enabled {
+  transform: scale(1.07);
+}
+
+.vozia-icon-btn:active:enabled {
+  transform: scale(0.94);
+}
+
+.vozia-icon-btn:focus-visible {
+  outline: 2px solid #3f51ff;
+  outline-offset: 2px;
+}
+
+.vozia-icon-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Mic: gradiente protagonista */
+.vozia-mic-btn {
+  border: none;
+  background: linear-gradient(135deg, #3f51ff 0%, #7c4dff 100%);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(63, 81, 255, 0.35);
+}
+
+.vozia-mic-btn:hover:enabled {
+  box-shadow: 0 4px 16px rgba(63, 81, 255, 0.45);
+  filter: brightness(1.08);
+}
+
+.vozia-mic-btn:disabled {
+  background: #bdbdbd;
+}
+
+.vozia-mic-btn.escuchando {
+  background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+  animation: vozia-pulso 1.2s ease-in-out infinite;
+}
+
+@keyframes vozia-pulso {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(229, 57, 53, 0); }
+}
+
+/* Mute + limpiar: secundarios claros */
+.vozia-mute-btn,
+.vozia-limpiar-btn {
+  border: 1px solid #c5cae9;
+  background: #fff;
+  color: #3f51ff;
+}
+
+.vozia-mute-btn:hover:enabled,
+.vozia-limpiar-btn:hover:enabled {
+  background: #eef1ff;
+  border-color: #3f51ff;
+}
+
+.vozia-mute-btn.is-off {
+  background: #fff3e0;
+  border-color: #ffb74d;
+  color: #e65100;
+}
+
+.vozia-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.7em 0.8em;
+  border: none;
+  border-radius: 999px;
+  font-size: 1rem;
+  background: transparent;
+  color: #222;
   box-sizing: border-box;
   outline: none;
-  min-width: 32vw;
-  margin-bottom: 40px;
+  margin-bottom: 0;
 }
 
 /* Mantén el placeholder gris */
@@ -108,6 +344,56 @@
   opacity: 1;
 }
 
+/* Enviar: pill con gradiente + avión + texto */
+.vozia-enviar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  background: linear-gradient(135deg, #3f51ff 0%, #7c4dff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.15rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(63, 81, 255, 0.35);
+  transition: transform 0.15s ease, filter 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.vozia-enviar-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.vozia-enviar-btn:hover:enabled {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(63, 81, 255, 0.45);
+}
+
+.vozia-enviar-btn:active:enabled {
+  transform: scale(0.96);
+}
+
+.vozia-enviar-btn:focus-visible {
+  outline: 2px solid #3f51ff;
+  outline-offset: 2px;
+}
+
+.vozia-enviar-btn:disabled {
+  background: #e0e0e0;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.8;
+}
+
+/* Compat: botón mágico anterior (ya no se usa en el JSX nuevo) */
 .vozia-btn {
   background: #2196f3;
   color: #fff;
@@ -213,4 +499,534 @@ body[data-header-theme='dark'] .asistenteia-historial-list {
 }
 body[data-header-theme='dark'] .asistenteia-historial-item {
   border-bottom: 1px solid #444 !important;
+}
+
+/* ===== Chat del asistente (modo demo + modo real) ===== */
+
+/* Grupo de controles superior (legacy: se conserva por compatibilidad) */
+.vozia-controles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-bottom: 0.9rem;
+}
+
+.vozia-aviso-voz {
+  font-size: 0.9rem;
+  color: #5c6bc0;
+  text-align: center;
+  margin-bottom: 0.7rem;
+}
+
+.vozia-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 0;
+  max-height: none;
+  overflow-y: visible;
+  padding: 0.5rem 0.25rem;
+  box-sizing: border-box;
+}
+
+.vozia-burbuja {
+  max-width: 85%;
+  padding: 0.7rem 0.95rem;
+  border-radius: 14px;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  overflow-wrap: break-word;
+}
+
+.vozia-burbuja-usuario {
+  align-self: flex-end;
+  background: #3f51ff;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.vozia-burbuja-asistente {
+  align-self: flex-start;
+  background: #f1f3f5;
+  color: #222;
+  border: 1px solid #e2e5ea;
+  border-bottom-left-radius: 4px;
+}
+
+.vozia-sugerencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+}
+
+.vozia-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: #e3f2fd;
+  color: #1769aa;
+  text-decoration: none;
+  border: 1px solid #90caf9;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.vozia-chip-icon {
+  flex-shrink: 0;
+}
+
+.vozia-chip:hover {
+  background: #bbdefb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(23, 105, 170, 0.25);
+}
+
+.vozia-chip:active {
+  transform: scale(0.97);
+}
+
+.vozia-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.85rem 1rem;
+}
+
+.vozia-punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #888;
+  animation: vozia-parpadeo 1.2s infinite;
+}
+
+.vozia-punto:nth-child(2) { animation-delay: 0.2s; }
+.vozia-punto:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes vozia-parpadeo {
+  0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+
+.vozia-vacio {
+  color: #888;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+/* ===== AsistenteIA embebido: misma línea visual ===== */
+
+.asist-contenedor {
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.asist-rapidas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.asist-rapida-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #2196f3;
+  background: #fff;
+  color: #1769aa;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.asist-rapida-btn svg {
+  flex-shrink: 0;
+}
+
+.asist-rapida-btn:hover:enabled {
+  background: #e3f2fd;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.25);
+}
+
+.asist-rapida-btn:active:enabled {
+  transform: scale(0.97);
+}
+
+.asist-rapida-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.asist-sugeridos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.asist-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #e3f2fd;
+  color: #1769aa;
+  text-decoration: none;
+  border: 1px solid #90caf9;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.asist-chip:hover {
+  background: #bbdefb;
+  transform: translateY(-1px);
+}
+
+.asist-barra {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  background: #fff;
+  border: 1px solid #cfd8dc;
+  border-radius: 999px;
+  padding: 6px 8px 6px 6px;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+}
+
+.asist-barra:focus-within {
+  border-color: #2196f3;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15);
+}
+
+.asist-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #222;
+  font-size: 16px;
+  outline: none;
+}
+
+.asist-input::placeholder {
+  color: #888;
+}
+
+.asist-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #fff;
+  color: #666;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: background 0.2s ease, transform 0.15s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+.asist-icon-btn svg {
+  flex-shrink: 0;
+}
+
+.asist-icon-btn:hover:enabled {
+  background: #f1f1f1;
+  color: #333;
+  transform: translateY(-1px);
+}
+
+.asist-icon-btn:active:enabled {
+  transform: scale(0.96);
+}
+
+.asist-icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.asist-enviar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2196f3 0%, #7c4dff 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+  transition: filter 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.asist-enviar-btn:hover:enabled {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(33, 150, 243, 0.4);
+}
+
+.asist-enviar-btn:active:enabled {
+  transform: scale(0.96);
+}
+
+.asist-enviar-btn:disabled {
+  background: #e0e0e0;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Modo oscuro para el chat nuevo */
+body[data-header-theme='dark'] .vozia-burbuja-asistente {
+  background: #2b2b2b !important;
+  color: #fff !important;
+  border-color: #444 !important;
+}
+
+body[data-header-theme='dark'] .vozia-chip {
+  background: #1a3a5c !important;
+  color: #bbdefb !important;
+  border-color: #1769aa !important;
+}
+
+body[data-header-theme='dark'] .vozia-aviso-voz,
+body[data-header-theme='dark'] .vozia-vacio {
+  color: #bbb !important;
+}
+
+body[data-header-theme='dark'] .vozia-form.vozia-barra {
+  background: #1e1e1e !important;
+  border-color: #444 !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5) !important;
+}
+
+body[data-header-theme='dark'] .vozia-form.vozia-barra:focus-within {
+  border-color: #7c4dff !important;
+  box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.25) !important;
+}
+
+body[data-header-theme='dark'] .vozia-input {
+  color: #fff !important;
+}
+
+body[data-header-theme='dark'] .vozia-input::placeholder {
+  color: #999 !important;
+}
+
+body[data-header-theme='dark'] .vozia-mute-btn,
+body[data-header-theme='dark'] .vozia-limpiar-btn {
+  background: #2b2b2b !important;
+  color: #bbdefb !important;
+  border-color: #555 !important;
+}
+
+body[data-header-theme='dark'] .vozia-mute-btn:hover:enabled,
+body[data-header-theme='dark'] .vozia-limpiar-btn:hover:enabled {
+  background: #3a3a3a !important;
+  border-color: #7c4dff !important;
+}
+
+body[data-header-theme='dark'] .vozia-mute-btn.is-off {
+  background: #4a3000 !important;
+  border-color: #f9a825 !important;
+  color: #ffe082 !important;
+}
+
+body[data-header-theme='dark'] .vozia-enviar-btn {
+  box-shadow: 0 2px 10px rgba(124, 77, 255, 0.4) !important;
+}
+
+body[data-header-theme='dark'] .vozia-enviar-btn:disabled {
+  background: #3a3a3a !important;
+  color: #888 !important;
+}
+
+body[data-header-theme='dark'] .asist-contenedor {
+  background: #1e1e1e !important;
+  border-color: #444 !important;
+  color: #fff !important;
+}
+
+body[data-header-theme='dark'] .asist-rapida-btn {
+  background: #2b2b2b !important;
+  color: #bbdefb !important;
+  border-color: #1769aa !important;
+}
+
+body[data-header-theme='dark'] .asist-rapida-btn:hover:enabled {
+  background: #1a3a5c !important;
+}
+
+body[data-header-theme='dark'] .asist-barra {
+  background: #2b2b2b !important;
+  border-color: #555 !important;
+}
+
+body[data-header-theme='dark'] .asist-input {
+  color: #fff !important;
+}
+
+body[data-header-theme='dark'] .asist-input::placeholder {
+  color: #999 !important;
+}
+
+body[data-header-theme='dark'] .asist-icon-btn {
+  background: #2b2b2b !important;
+  color: #fff !important;
+  border-color: #555 !important;
+}
+
+body[data-header-theme='dark'] .asist-icon-btn:hover:enabled {
+  background: #3a3a3a !important;
+}
+
+body[data-header-theme='dark'] .asist-chip {
+  background: #1a3a5c !important;
+  color: #bbdefb !important;
+  border-color: #1769aa !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .vozia-burbuja {
+    max-width: 94%;
+    font-size: 0.92rem;
+  }
+
+  .vozia-chat {
+    max-height: 52vh;
+  }
+
+  .vozia-form.vozia-barra {
+    gap: 0.45rem;
+    padding: 0.35rem 0.45rem 0.35rem 0.4rem;
+  }
+
+  .vozia-icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .vozia-icon-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .vozia-input {
+    font-size: 1rem;
+    padding: 0.6em 0.6em;
+  }
+
+  .vozia-enviar-btn {
+    padding: 0.6rem 0.85rem;
+    font-size: 0.88rem;
+  }
+
+  .vozia-controles {
+    gap: 0.5rem;
+  }
+
+  .asist-barra {
+    gap: 6px;
+    padding: 5px 6px 5px 5px;
+  }
+
+  .asist-icon-btn-texto {
+    display: none;
+  }
+
+  .asist-icon-btn {
+    padding: 8px;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+  }
+
+  .asist-enviar-btn {
+    padding: 8px 12px;
+  }
+}
+
+/* 360px: Enviar solo icono, todo en una fila sin romper */
+@media (max-width: 480px) {
+  .vozia-form.vozia-barra {
+    gap: 0.35rem;
+    border-radius: 24px;
+  }
+
+  .vozia-barra-grupo--izq {
+    gap: 0.3rem;
+  }
+
+  .vozia-icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .vozia-enviar-texto {
+    display: none;
+  }
+
+  .vozia-enviar-btn {
+    padding: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    gap: 0;
+  }
+
+  .vozia-input {
+    font-size: 1rem;
+  }
+
+  /* La barra queda fija al pie en mobile */
+  .vozia-form.vozia-barra {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    width: min(700px, calc(100% - 1.25rem));
+    z-index: 50;
+  }
+
+  .vozia-content {
+    padding-bottom: 5.5rem;
+  }
+
+  .asist-enviar-texto {
+    display: none;
+  }
+
+  .asist-enviar-btn {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+  }
 }

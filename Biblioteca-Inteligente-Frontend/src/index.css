@@ -1,11 +1,81 @@
+/* ============================================================
+   Biblioteca Inteligente — Sistema de diseño global
+   Las variables --primary, --primary-light, --accent, --border,
+   --text, --muted, --bg, --shadow, --radius y --transition ya las
+   usan otros módulos (Catalogo.css, Header.css, PanelUsuario.css):
+   NO cambiar sus nombres. Las nuevas usan prefijo --biblio-.
+   ============================================================ */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  /* ---- Variables existentes (contrato, no renombrar) ---- */
+  --primary: #2563eb;
+  --primary-light: #e0e7ff;
+  --accent: #a5b4fc;
+  --border: #e5e7eb;
+  --text: #22223b;
+  --muted: #a0aec0;
+  --bg: #fff;
+  --shadow: 0 4px 24px rgba(30, 41, 59, 0.07);
+  --radius: 18px;
+  --transition: 0.18s cubic-bezier(.4, 0, .2, 1);
+
+  /* ---- Paleta biblioteca moderna (--biblio-*) ---- */
+  --biblio-navy: #1e2a4a;
+  --biblio-navy-deep: #0a0a13;
+  --biblio-blue: #11487c;
+  --biblio-gold: #c9a227;
+  --biblio-gold-soft: #f3e9c8;
+  --biblio-paper: #faf8f2;
+  --biblio-ink: #22223b;
+  --biblio-success: #15803d;
+  --biblio-warning: #b45309;
+  --biblio-danger: #b91c1c;
+  --biblio-header-dark-bg: linear-gradient(135deg, #0a0a13 0%, #11487c 100%);
+
+  /* ---- Superficies / formularios dual-theme (R2-2; light aquí, dark abajo) ---- */
+  --biblio-surface: #ffffff;
+  --biblio-surface-2: #f1f5f9;
+  --biblio-card-bg: #ffffff;
+  --biblio-input-bg: #ffffff;
+  --biblio-input-text: var(--text);
+  --biblio-link: var(--primary);
+  --biblio-focus: #2563eb;
+  --biblio-selection-bg: #2563eb;
+  --biblio-selection-text: #ffffff;
+
+  /* ---- Tipografías ---- */
+  --biblio-font-sans: 'Inter', 'Segoe UI', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --biblio-font-serif: Georgia, 'Times New Roman', serif;
+  --biblio-font-size-xs: 0.75rem;
+  --biblio-font-size-sm: 0.875rem;
+  --biblio-font-size-base: 1rem;
+  --biblio-font-size-lg: 1.25rem;
+  --biblio-font-size-xl: 1.6rem;
+  --biblio-font-size-2xl: 2.1rem;
+  --biblio-line-height: 1.5;
+
+  /* ---- Espaciados ---- */
+  --biblio-space-xs: 0.25rem;
+  --biblio-space-sm: 0.5rem;
+  --biblio-space-md: 1rem;
+  --biblio-space-lg: 1.5rem;
+  --biblio-space-xl: 2.5rem;
+  --biblio-space-2xl: 4rem;
+  --biblio-container-max: 1200px;
+  --biblio-radius-sm: 8px;
+  --biblio-radius-lg: 18px;
+
+  /* ---- Breakpoints (referencia; usar en @media) ---- */
+  --biblio-breakpoint-sm: 640px;
+  --biblio-breakpoint-md: 900px;
+  --biblio-breakpoint-lg: 1200px;
+
+  font-family: var(--biblio-font-sans);
+  line-height: var(--biblio-line-height);
   font-weight: 400;
 
-  color-scheme: black;
-  color: rgba(0, 0, 0, 0.87);
-  background-color: #242424;
+  color-scheme: light;
+  color: var(--text);
+  background-color: var(--bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,9 +83,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--primary);
   text-decoration: inherit;
 }
 a:hover {
@@ -24,9 +100,17 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg);
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--biblio-font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+#root {
+  width: 100%;
   min-height: 100vh;
 }
 
@@ -44,23 +128,153 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color var(--transition);
 }
 button:hover {
-  border-color: #646cff;
+  border-color: var(--primary);
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-body[data-header-theme='dark'] {
-  background: linear-gradient(135deg, #0a0a13 0%, #11487c 100%) !important;
-  color: #f5f5f5 !important;
+/* ---- Dark theme por atributo (R2-2). Espejo en html[data-theme] + body.
+   Todo lo oscuro vive bajo estos selectores: el modo claro no se toca. ---- */
+body[data-header-theme='dark'],
+html[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Tokens base redefinidos a navy/slate legibles */
+  --bg: #0b1526;
+  --text: #e8eef7;
+  --muted: #94a3b8;
+  --border: rgba(148, 163, 184, 0.22);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --primary: #60a5fa;
+  --primary-light: rgba(96, 165, 250, 0.16);
+  --accent: #93c5fd;
+
+  /* Paleta --biblio-* en oscuro */
+  --biblio-navy: #dbeafe;
+  --biblio-blue: #7cb3e8;
+  --biblio-gold: #e3c455;
+  --biblio-gold-soft: rgba(227, 196, 85, 0.16);
+  --biblio-paper: #0f1e33;
+  --biblio-ink: #e8eef7;
+  --biblio-success: #4ade80;
+  --biblio-warning: #fbbf24;
+  --biblio-danger: #f87171;
+
+  /* Superficies / formularios */
+  --biblio-surface: #111f36;
+  --biblio-surface-2: #0a1428;
+  --biblio-card-bg: #13253f;
+  --biblio-input-bg: #0f2038;
+  --biblio-input-text: #e8eef7;
+  --biblio-link: #93c5fd;
+  --biblio-focus: #93c5fd;
+  --biblio-selection-bg: #3b82f6;
+  --biblio-selection-text: #ffffff;
 }
+
+body[data-header-theme='dark'] {
+  background: var(--bg);
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Compat: espejo para quien lea documentElement.dataset.theme */
+html[data-theme='dark'] body {
+  background: var(--bg);
+  background-color: var(--bg);
+  color: var(--text);
+}
+
 body[data-header-theme='light'] {
   background: #fff !important;
   color: #222 !important;
+}
+
+/* ---- Selección de texto ---- */
+::selection {
+  background: var(--biblio-selection-bg);
+  color: var(--biblio-selection-text);
+}
+
+/* ---- Focus visible global ---- */
+:focus-visible {
+  outline: 2px solid var(--biblio-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---- Base dark de formularios/botones (páginas sin dark propio) ---- */
+body[data-header-theme='dark'] a,
+html[data-theme='dark'] a {
+  color: var(--biblio-link);
+}
+
+body[data-header-theme='dark'] input,
+body[data-header-theme='dark'] textarea,
+body[data-header-theme='dark'] select,
+html[data-theme='dark'] input,
+html[data-theme='dark'] textarea,
+html[data-theme='dark'] select {
+  background-color: var(--biblio-input-bg);
+  color: var(--biblio-input-text);
+  border: 1px solid var(--border);
+  color-scheme: dark;
+}
+
+body[data-header-theme='dark'] input::placeholder,
+body[data-header-theme='dark'] textarea::placeholder,
+html[data-theme='dark'] input::placeholder,
+html[data-theme='dark'] textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+body[data-header-theme='dark'] button,
+html[data-theme='dark'] button {
+  border-color: var(--border);
+}
+
+body[data-header-theme='dark'] table,
+html[data-theme='dark'] table {
+  border-color: var(--border);
+}
+
+body[data-header-theme='dark'] th,
+body[data-header-theme='dark'] td,
+html[data-theme='dark'] th,
+html[data-theme='dark'] td {
+  border-color: var(--border);
+}
+
+/* ---- Utilidades responsive del shell ---- */
+.biblio-container {
+  width: 100%;
+  max-width: var(--biblio-container-max);
+  margin: 0 auto;
+  padding: 0 var(--biblio-space-md);
+}
+
+@media (max-width: 900px) {
+  h1 {
+    font-size: 2.2em;
+  }
+  .biblio-container {
+    padding: 0 var(--biblio-space-sm);
+  }
+}
+
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.8em;
+  }
+  button {
+    padding: 0.5em 1em;
+  }
 }
 
 @media (prefers-color-scheme: light) {

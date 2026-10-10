@@ -9,6 +9,7 @@ const auth = require('../middlewares/auth');
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+const { sendDbOrInternal } = require('../middlewares/apiError');
 
 // GET /api/libros/buscar?termino=palabra
 router.get('/buscar', async (req, res) => {
@@ -28,7 +29,7 @@ router.get('/buscar', async (req, res) => {
     });
     res.json(libros);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return sendDbOrInternal(res, error, 'Error al buscar libros');
   }
 });
 

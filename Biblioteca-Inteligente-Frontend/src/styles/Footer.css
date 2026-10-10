@@ -1,30 +1,168 @@
+/* Footer premium — fondo oscuro sólido propio en AMBOS modos.
+   Nunca transparente: así empalma sin franjas blancas tras cualquier página. */
+:root {
+  --bi-footer-bg: #0f2a47;
+  --bi-footer-bg-dark: #081627;
+  --bi-footer-text: #d7e6f5;
+  --bi-footer-muted: #9db8d2;
+  --bi-footer-accent: #2196f3;
+}
+
 .custom-footer {
-  width: 100vw;
-  background: transparent;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  z-index: 100;
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  align-self: stretch;
+  background: var(--bi-footer-bg, #0f2a47);
+  background-color: var(--bi-footer-bg, #0f2a47);
+  color: var(--bi-footer-text, #d7e6f5);
+  position: relative;
+  z-index: 50;
   padding: 0;
   margin: 0;
-  pointer-events: none;
+  box-sizing: border-box;
+  border-top: 2px solid rgba(33, 150, 243, 0.35);
+  box-shadow: 0 -8px 28px rgba(8, 22, 39, 0.25);
+}
+
+/* Fija el fondo en ambos temas: nunca hereda blancos accidentales. */
+body[data-header-theme='light'] .custom-footer {
+  background: var(--bi-footer-bg, #0f2a47);
+  background-color: var(--bi-footer-bg, #0f2a47);
+}
+
+body[data-header-theme='dark'] .custom-footer {
+  background: var(--bi-footer-bg-dark, #081627);
+  background-color: var(--bi-footer-bg-dark, #081627);
+  border-top-color: rgba(33, 150, 243, 0.45);
+}
+
+/* Por si el footer queda anidado en un contenedor centrado de otra página,
+   fuerza el ancho completo dentro de ese contexto. */
+.custom-footer > * {
+  box-sizing: border-box;
+}
+
+.bi-footer-grid {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem 2.5rem 1rem 2.5rem;
+  box-sizing: border-box;
+}
+
+.bi-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bi-footer-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.bi-footer-tagline {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--bi-footer-muted, #9db8d2);
+}
+
+.bi-footer-contact {
+  margin: 0.15rem 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--bi-footer-muted, #9db8d2);
+}
+
+.bi-footer-contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #7fc4fd;
+  flex-shrink: 0;
+}
+
+.bi-footer-contact-icon svg {
+  display: block;
+}
+
+.bi-footer-demo {
+  margin: 0.5rem 0 0 0;
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f2a47;
+  background: #ffd54f;
+  border-radius: 8px;
+  padding: 0.3em 0.8em;
+  width: fit-content;
+}
+
+.bi-footer-col {
+  display: flex;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.bi-footer-title {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+
+.bi-footer-link {
+  color: var(--bi-footer-text, #d7e6f5);
+  text-decoration: none;
+  font-size: 0.95rem;
+  width: fit-content;
+  border-radius: 6px;
+  transition: color 0.18s ease;
+}
+
+.bi-footer-link:hover {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bi-footer-link:focus-visible {
+  outline: 2px solid #7fc4fd;
+  outline-offset: 3px;
 }
 
 .footer-content {
   width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 0.7rem 2.5rem 0.7rem 2.5rem;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 2.5rem 1.3rem 2.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   box-sizing: border-box;
-  pointer-events: auto;
 }
 
 .footer-copy {
   flex: 1;
-  color: #999999;
-  font-size: 1rem;
-  opacity: 0.85;
+  color: var(--bi-footer-muted, #9db8d2);
+  font-size: 0.9rem;
   letter-spacing: 0.02em;
   text-align: left;
   user-select: none;
@@ -32,7 +170,7 @@
 
 .footer-socials {
   display: flex;
-  gap: 1.2rem;
+  gap: 0.8rem;
   align-items: center;
 }
 
@@ -40,34 +178,56 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 2.5px solid #111;
+  border: 2px solid rgba(255, 255, 255, 0.55);
   background: transparent;
+  color: #fff;
   transition: border-color 0.22s, box-shadow 0.22s, transform 0.18s, background 0.18s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  pointer-events: auto;
   position: relative;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .footer-social-link svg {
   display: block;
-  width: 26px;
-  height: 26px;
-  transition: transform 0.18s, filter 0.18s;
+  transition: transform 0.18s;
 }
 
 .footer-social-link:hover {
-  border-color: #2196f3;
-  background: rgba(33,150,243,0.08);
-  box-shadow: 0 4px 16px #2196f355;
-  transform: scale(1.13) rotate(-7deg);
+  border-color: var(--bi-footer-accent, #2196f3);
+  background: rgba(33, 150, 243, 0.18);
+  box-shadow: 0 4px 16px rgba(33, 150, 243, 0.35);
+  transform: translateY(-2px);
+  color: #fff;
 }
 
-.footer-social-link:hover svg {
-  filter: drop-shadow(0 0 8px #2196f3cc);
-  transform: scale(1.13) rotate(7deg);
+.footer-social-link:focus-visible {
+  outline: 2px solid #7fc4fd;
+  outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+  .bi-footer-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.5rem 1.25rem 0.5rem 1.25rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.25rem 1.25rem 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-social-link,
+  .footer-social-link svg,
+  .bi-footer-link {
+    transition: none;
+  }
 }
